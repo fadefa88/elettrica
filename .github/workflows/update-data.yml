@@ -20,8 +20,10 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Update data
+      - name: Update fuel prices
         run: python scripts/update_data.py
+      - name: Update thermal car database
+        run: python scripts/update_ice_cars.py
       - name: Commit changes if any
         run: |
           git config user.name "github-actions"
@@ -30,7 +32,7 @@ jobs:
             echo "No data changes to commit."
             exit 0
           fi
-          git add data/prices.json
+          git add data/prices.json data/ice_cars_world.json
           git commit -m "Update vehicle cost data"
           git pull --rebase origin main || true
           git push
