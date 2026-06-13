@@ -1,1 +1,12 @@
-{"updated_at":"2026-06-13","status":"seed","fuel":{"benzina":1.82,"gasolio":1.70},"electricity":{"home":0.30,"solar":0.08}}
+{
+  "updated_at": "2026-06-13T11:21:17.016494+00:00",
+  "status": "fallback_previous_values",
+  "fuel": {
+    "benzina": 1.82,
+    "gasolio": 1.7
+  },
+  "electricity": {
+    "home": 0.3,
+    "solar": 0.08
+  }
+}
