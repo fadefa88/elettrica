@@ -1,7 +1,7 @@
 {
   "source": "motornet.it",
   "status": "ok",
-  "scraped_at": "2026-06-14T17:44:43+00:00",
+  "scraped_at": "2026-06-14T18:07:36+00:00",
   "schema": "cars_motornet_v1",
   "request_policy": {
     "delay_seconds": 8.0,
@@ -28,7 +28,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2453/allestimento/ABA0337",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2453/allestimento/ABA0337",
-      "scraped_at": "2026-06-14T17:36:43+00:00",
+      "scraped_at": "2026-06-14T17:59:35+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 34400,
@@ -86,7 +86,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_fa995a4edb60ee.jpg",
       "image_bytes": 148710,
-      "image_downloaded_at": "2026-06-14T17:36:47+00:00"
+      "image_downloaded_at": "2026-06-14T17:59:40+00:00"
     },
     {
       "id": "motornet_a24799da553191",
@@ -101,7 +101,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2453/allestimento/ABA0338",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2453/allestimento/ABA0338",
-      "scraped_at": "2026-06-14T17:36:56+00:00",
+      "scraped_at": "2026-06-14T17:59:49+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 38900,
@@ -159,7 +159,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_a24799da553191.jpg",
       "image_bytes": 148710,
-      "image_downloaded_at": "2026-06-14T17:37:00+00:00"
+      "image_downloaded_at": "2026-06-14T17:59:53+00:00"
     },
     {
       "id": "motornet_2fe4d685b00d79",
@@ -174,7 +174,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2454/allestimento/ABA0339",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2454/allestimento/ABA0339",
-      "scraped_at": "2026-06-14T17:37:09+00:00",
+      "scraped_at": "2026-06-14T18:00:01+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 37400,
@@ -232,7 +232,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_2fe4d685b00d79.jpg",
       "image_bytes": 150399,
-      "image_downloaded_at": "2026-06-14T17:37:13+00:00"
+      "image_downloaded_at": "2026-06-14T18:00:05+00:00"
     },
     {
       "id": "motornet_3628fe987af176",
@@ -247,7 +247,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2454/allestimento/ABA0340",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2454/allestimento/ABA0340",
-      "scraped_at": "2026-06-14T17:37:21+00:00",
+      "scraped_at": "2026-06-14T18:00:14+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 41900,
@@ -305,7 +305,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_3628fe987af176.jpg",
       "image_bytes": 150399,
-      "image_downloaded_at": "2026-06-14T17:37:25+00:00"
+      "image_downloaded_at": "2026-06-14T18:00:18+00:00"
     },
     {
       "id": "motornet_09ddd17c1cff06",
@@ -320,7 +320,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2680/allestimento/ABA0348",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2680/allestimento/ABA0348",
-      "scraped_at": "2026-06-14T17:37:34+00:00",
+      "scraped_at": "2026-06-14T18:00:26+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 46250,
@@ -377,7 +377,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_09ddd17c1cff06.jpg",
       "image_bytes": 94357,
-      "image_downloaded_at": "2026-06-14T17:37:38+00:00"
+      "image_downloaded_at": "2026-06-14T18:00:31+00:00"
     },
     {
       "id": "motornet_27d878eece7665",
@@ -392,7 +392,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2680/allestimento/ABA0344",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2680/allestimento/ABA0344",
-      "scraped_at": "2026-06-14T17:37:46+00:00",
+      "scraped_at": "2026-06-14T18:00:39+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 42250,
@@ -449,7 +449,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_27d878eece7665.jpg",
       "image_bytes": 94357,
-      "image_downloaded_at": "2026-06-14T17:37:50+00:00"
+      "image_downloaded_at": "2026-06-14T18:00:43+00:00"
     },
     {
       "id": "motornet_e5e1f9f75b77e3",
@@ -464,7 +464,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7172",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7172",
-      "scraped_at": "2026-06-14T17:40:52+00:00",
+      "scraped_at": "2026-06-14T18:03:44+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 6500,
@@ -528,7 +528,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_e5e1f9f75b77e3.jpg",
       "image_bytes": 203830,
-      "image_downloaded_at": "2026-06-14T17:40:57+00:00"
+      "image_downloaded_at": "2026-06-14T18:03:49+00:00"
     },
     {
       "id": "motornet_dcdfb4cdb31e70",
@@ -543,7 +543,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7148",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7148",
-      "scraped_at": "2026-06-14T17:41:05+00:00",
+      "scraped_at": "2026-06-14T18:03:58+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 52750,
@@ -609,7 +609,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_dcdfb4cdb31e70.jpg",
       "image_bytes": 203830,
-      "image_downloaded_at": "2026-06-14T17:41:09+00:00"
+      "image_downloaded_at": "2026-06-14T18:04:02+00:00"
     },
     {
       "id": "motornet_8eb457426cb8da",
@@ -624,7 +624,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7174",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7174",
-      "scraped_at": "2026-06-14T17:41:18+00:00",
+      "scraped_at": "2026-06-14T18:04:10+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 57750,
@@ -690,7 +690,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_8eb457426cb8da.jpg",
       "image_bytes": 203830,
-      "image_downloaded_at": "2026-06-14T17:41:22+00:00"
+      "image_downloaded_at": "2026-06-14T18:04:15+00:00"
     },
     {
       "id": "motornet_f45cf30484ded2",
@@ -705,7 +705,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7150",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7150",
-      "scraped_at": "2026-06-14T17:41:30+00:00",
+      "scraped_at": "2026-06-14T18:04:23+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 58250,
@@ -771,7 +771,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_f45cf30484ded2.jpg",
       "image_bytes": 203830,
-      "image_downloaded_at": "2026-06-14T17:41:34+00:00"
+      "image_downloaded_at": "2026-06-14T18:04:27+00:00"
     },
     {
       "id": "motornet_81900bf51b37c5",
@@ -786,7 +786,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7153",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2213/allestimento/ALF7153",
-      "scraped_at": "2026-06-14T17:41:43+00:00",
+      "scraped_at": "2026-06-14T18:04:36+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 63250,
@@ -852,7 +852,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_81900bf51b37c5.jpg",
       "image_bytes": 203830,
-      "image_downloaded_at": "2026-06-14T17:41:47+00:00"
+      "image_downloaded_at": "2026-06-14T18:04:40+00:00"
     },
     {
       "id": "motornet_615f7463cdb64a",
@@ -867,7 +867,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7191",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7191",
-      "scraped_at": "2026-06-14T17:41:55+00:00",
+      "scraped_at": "2026-06-14T18:04:48+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 39800,
@@ -926,7 +926,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_615f7463cdb64a.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:42:00+00:00"
+      "image_downloaded_at": "2026-06-14T18:04:52+00:00"
     },
     {
       "id": "motornet_7c54f7c859db09",
@@ -941,7 +941,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7194",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7194",
-      "scraped_at": "2026-06-14T17:42:08+00:00",
+      "scraped_at": "2026-06-14T18:05:01+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 49400,
@@ -999,7 +999,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_7c54f7c859db09.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:42:12+00:00"
+      "image_downloaded_at": "2026-06-14T18:05:05+00:00"
     },
     {
       "id": "motornet_eec44bbe4e3604",
@@ -1014,7 +1014,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7249",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7249",
-      "scraped_at": "2026-06-14T17:42:21+00:00",
+      "scraped_at": "2026-06-14T18:05:13+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 44600,
@@ -1074,7 +1074,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_eec44bbe4e3604.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:42:25+00:00"
+      "image_downloaded_at": "2026-06-14T18:05:18+00:00"
     },
     {
       "id": "motornet_3a696dce1e4aa5",
@@ -1089,7 +1089,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7247",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7247",
-      "scraped_at": "2026-06-14T17:42:33+00:00",
+      "scraped_at": "2026-06-14T18:05:26+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 41700,
@@ -1149,7 +1149,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_3a696dce1e4aa5.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:42:37+00:00"
+      "image_downloaded_at": "2026-06-14T18:05:30+00:00"
     },
     {
       "id": "motornet_2bbc5a10e18bc9",
@@ -1164,7 +1164,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7248",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7248",
-      "scraped_at": "2026-06-14T17:42:46+00:00",
+      "scraped_at": "2026-06-14T18:05:39+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 43200,
@@ -1224,7 +1224,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_2bbc5a10e18bc9.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:42:50+00:00"
+      "image_downloaded_at": "2026-06-14T18:05:43+00:00"
     },
     {
       "id": "motornet_adf836ace8396b",
@@ -1239,7 +1239,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7189",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7189",
-      "scraped_at": "2026-06-14T17:42:58+00:00",
+      "scraped_at": "2026-06-14T18:05:51+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 5500,
@@ -1306,7 +1306,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_adf836ace8396b.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:43:03+00:00"
+      "image_downloaded_at": "2026-06-14T18:05:55+00:00"
     },
     {
       "id": "motornet_6720b230e191ba",
@@ -1321,7 +1321,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7245",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7245",
-      "scraped_at": "2026-06-14T17:43:11+00:00",
+      "scraped_at": "2026-06-14T18:06:04+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 5750,
@@ -1388,7 +1388,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_6720b230e191ba.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:43:15+00:00"
+      "image_downloaded_at": "2026-06-14T18:06:08+00:00"
     },
     {
       "id": "motornet_a9850c900551e1",
@@ -1403,7 +1403,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7243",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7243",
-      "scraped_at": "2026-06-14T17:43:24+00:00",
+      "scraped_at": "2026-06-14T18:06:16+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 5750,
@@ -1470,7 +1470,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_a9850c900551e1.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:43:28+00:00"
+      "image_downloaded_at": "2026-06-14T18:06:20+00:00"
     },
     {
       "id": "motornet_04f433ff6d7764",
@@ -1485,7 +1485,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7244",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7244",
-      "scraped_at": "2026-06-14T17:43:36+00:00",
+      "scraped_at": "2026-06-14T18:06:29+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 5750,
@@ -1552,7 +1552,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_04f433ff6d7764.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:43:40+00:00"
+      "image_downloaded_at": "2026-06-14T18:06:33+00:00"
     },
     {
       "id": "motornet_db29f9701bad81",
@@ -1567,7 +1567,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7241",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7241",
-      "scraped_at": "2026-06-14T17:43:49+00:00",
+      "scraped_at": "2026-06-14T18:06:41+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 5500,
@@ -1634,7 +1634,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_db29f9701bad81.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:43:53+00:00"
+      "image_downloaded_at": "2026-06-14T18:06:46+00:00"
     },
     {
       "id": "motornet_05f87db25ded8a",
@@ -1649,7 +1649,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7239",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7239",
-      "scraped_at": "2026-06-14T17:44:01+00:00",
+      "scraped_at": "2026-06-14T18:06:54+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 5500,
@@ -1716,7 +1716,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_05f87db25ded8a.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:44:05+00:00"
+      "image_downloaded_at": "2026-06-14T18:06:58+00:00"
     },
     {
       "id": "motornet_7bbc21d249fb56",
@@ -1731,7 +1731,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7240",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2602/allestimento/ALF7240",
-      "scraped_at": "2026-06-14T17:44:14+00:00",
+      "scraped_at": "2026-06-14T18:07:07+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 5500,
@@ -1798,7 +1798,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_7bbc21d249fb56.jpg",
       "image_bytes": 141043,
-      "image_downloaded_at": "2026-06-14T17:44:18+00:00"
+      "image_downloaded_at": "2026-06-14T18:07:11+00:00"
     },
     {
       "id": "motornet_407a270a533a71",
@@ -1813,7 +1813,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2386/allestimento/ALF7228",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2386/allestimento/ALF7228",
-      "scraped_at": "2026-06-14T17:44:26+00:00",
+      "scraped_at": "2026-06-14T18:07:19+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 6130,
@@ -1878,7 +1878,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_407a270a533a71.jpg",
       "image_bytes": 115229,
-      "image_downloaded_at": "2026-06-14T17:44:31+00:00"
+      "image_downloaded_at": "2026-06-14T18:07:23+00:00"
     },
     {
       "id": "motornet_1ea69a86334615",
@@ -1893,7 +1893,7 @@
       "source_site": "motornet.it",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2386/allestimento/ALF7237",
       "motornet_detail_url": "https://www.motornet.it/auto/scheda-modello/modello/2386/allestimento/ALF7237",
-      "scraped_at": "2026-06-14T17:44:39+00:00",
+      "scraped_at": "2026-06-14T18:07:32+00:00",
       "price_source": "motornet_listino_nuovo",
       "consumption_source": "motornet_technical_sheet",
       "price_eur": 6130,
@@ -1957,7 +1957,7 @@
       },
       "image_local_path": "assets/cars/motornet/motornet_1ea69a86334615.jpg",
       "image_bytes": 115229,
-      "image_downloaded_at": "2026-06-14T17:44:43+00:00"
+      "image_downloaded_at": "2026-06-14T18:07:36+00:00"
     }
   ],
   "errors": []
