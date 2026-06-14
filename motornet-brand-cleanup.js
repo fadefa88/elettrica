@@ -17,6 +17,7 @@
       .replace(/^\s*modelli\s+/i,'')
       .replace(/^\s*modello\s+/i,'')
       .replace(/\s+/g,' ')
+      .replace(/\s*-\s*$/,'')
       .trim();
   }
   function badBrand(value){
@@ -52,7 +53,7 @@
       const rx = new RegExp('^' + b.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\s+', 'i');
       while(rx.test(out)) out = out.replace(rx,'').trim();
     });
-    return out;
+    return clean(out);
   }
   function dedupeLeadingModel(text){
     let out = clean(text);
@@ -60,10 +61,9 @@
     if(parts.length >= 2 && parts[0].toLowerCase() === parts[1].toLowerCase()){
       out = parts.slice(1).join(' ');
     }
-    // Alpine Alpine A110 -> Alpine A110; Fiat Fiat 500 -> Fiat 500; etc.
     const m = out.match(/^([A-Za-zÀ-ÿ-]+)\s+\1\b\s*(.*)$/i);
     if(m) out = (m[1] + ' ' + (m[2] || '')).trim();
-    return out;
+    return clean(out);
   }
   function resolveModel(car, brand){
     const candidates = [car?.model, car?.version, car?.powertrain].map(clean).filter(Boolean);
@@ -77,40 +77,14 @@
     const n = Number(String(value ?? '').replace(',', '.').match(/-?\d+(?:\.\d+)?/)?.[0]);
     return Number.isFinite(n) && n > 0 ? n : undefined;
   }
-  function plausibleL100(n){ return Number.isFinite(n) && n > 0 && n <= 30; }
-  function plausibleKg100(n){ return Number.isFinite(n) && n > 0 && n <= 20; }
-  function plausibleCo2(n){ return Number.isFinite(n) && n >= 0 && n <= 600; }
-  function specNumber(car, tests){
-    const raw = car?.specs_raw;
-    if(!raw || typeof raw !== 'object') return undefined;
-    for(const [k,v] of Object.entries(raw)){
-      const key = String(k || '').toLowerCase().replace(/\s+/g,' ');
-      if(tests.some(rx => rx.test(key))){
-        const n = toNumber(v);
-        if(n) return n;
-      }
-    }
-    return undefined;
-  }
-  function sanitizeThermalNumbers(car){
-    const fuel = String(car?.fuel || '').toLowerCase();
-    const isElectric = fuel.includes('elettr');
-    if(isElectric) return;
-
-    let l100 = toNumber(car.consumption_l_100km);
-    if(!plausibleL100(l100)){
-      l100 = specNumber(car, [/consumo\s+combinato$/i, /consumo\s+misto/i, /consumo\s+urbano/i]);
-    }
-    car.consumption_l_100km = plausibleL100(l100) ? l100 : undefined;
-
-    let kg100 = toNumber(car.consumption_kg_100km);
-    car.consumption_kg_100km = plausibleKg100(kg100) ? kg100 : undefined;
-
-    let co2 = toNumber(car.emissions_g_km);
-    if(!plausibleCo2(co2)){
-      co2 = specNumber(car, [/co2\s+combinato/i, /emissioni.*co2/i]);
-    }
-    car.emissions_g_km = plausibleCo2(co2) ? co2 : undefined;
+  function keepMotornetNumbers(car){
+    if(!car) return;
+    const l100 = toNumber(car.consumption_l_100km);
+    if(l100) car.consumption_l_100km = l100;
+    const kg100 = toNumber(car.consumption_kg_100km);
+    if(kg100) car.consumption_kg_100km = kg100;
+    const co2 = toNumber(car.emissions_g_km);
+    if(co2) car.emissions_g_km = co2;
   }
   function fixCar(car){
     if(!car) return;
@@ -119,7 +93,7 @@
     car.brand = brand;
     car.model = model;
     car.powertrain = dedupeLeadingModel(stripBrand(car.powertrain || car.version || '', brand)) || car.powertrain || car.version || '';
-    sanitizeThermalNumbers(car);
+    keepMotornetNumbers(car);
   }
   function uniq(values){ return [...new Set(values.filter(Boolean))].sort(); }
   function opt(values,label){ return '<option value="all">'+label+'</option>'+values.map(v=>'<option value="'+String(v).replace(/"/g,'&quot;')+'">'+v+'</option>').join(''); }
