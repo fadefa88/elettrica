@@ -17,6 +17,7 @@ from bs4 import BeautifulSoup
 BASE = "https://www.auto.it"
 OUT = Path("data/cars_autoit.json")
 UA = "ElettricaImporter/1.0 (+https://github.com/fadefa88/elettrica)"
+IMAGE_ALLOWED_HOST = "motornet.it"
 
 SOURCES = {
     "E": ("elettrica", "electric", "https://www.auto.it/listino-nuovo/search?fuelType=E&sort=lowestPrice%20desc"),
@@ -119,7 +120,102 @@ def discover_links(html: str) -> list[str]:
     return links
 
 
-def parse_detail(html: str, url: str, code: str, label: str, category: str) -> dict | None:
+def normalize_image_url(url: str) -> str:
+    url = url.replace("\\/", "/").strip()
+    url = urllib.parse.unquote(url)
+    return full_url(url)
+
+
+def is_allowed_image_url(url: str) -> bool:
+    parsed = urllib.parse.urlparse(url)
+    return IMAGE_ALLOWED_HOST in parsed.netloc.lower()
+
+
+def image_ext_from_url_or_type(url: str, content_type: str) -> str:
+    content_type = (content_type or "").lower().split(";")[0].strip()
+    if content_type in {"image/jpeg", "image/jpg"}:
+        return ".jpg"
+    if content_type == "image/png":
+        return ".png"
+    if content_type == "image/webp":
+        return ".webp"
+    suffix = Path(urllib.parse.urlparse(url).path).suffix.lower()
+    if suffix in {".jpg", ".jpeg", ".png", ".webp"}:
+        return ".jpg" if suffix == ".jpeg" else suffix
+    return ".jpg"
+
+
+def extract_image_url(soup: BeautifulSoup, html: str) -> str | None:
+    candidates: list[str] = []
+
+    meta_selectors = [
+        {"property": "og:image"},
+        {"property": "og:image:secure_url"},
+        {"name": "twitter:image"},
+        {"name": "twitter:image:src"},
+    ]
+    for selector in meta_selectors:
+        tag = soup.find("meta", selector)
+        if tag and tag.get("content"):
+            candidates.append(str(tag["content"]))
+
+    link = soup.find("link", rel=lambda value: value and "image_src" in value)
+    if link and link.get("href"):
+        candidates.append(str(link["href"]))
+
+    for img in soup.find_all("img"):
+        for attr in ["src", "data-src", "data-original", "data-lazy", "data-url"]:
+            if img.get(attr):
+                candidates.append(str(img[attr]))
+        if img.get("srcset"):
+            for part in str(img["srcset"]).split(","):
+                src = part.strip().split(" ")[0]
+                if src:
+                    candidates.append(src)
+
+    regex = re.compile(r"https?:\\?/\\?/[^\"'\s<>]+motornet\.it[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?", re.I)
+    candidates.extend(regex.findall(html))
+
+    for candidate in candidates:
+        url = normalize_image_url(candidate)
+        if is_allowed_image_url(url):
+            return url
+    return None
+
+
+def download_image(session: requests.Session, image_url: str, car_id: str, image_dir: Path, timeout: int, max_bytes: int) -> dict | None:
+    image_url = normalize_image_url(image_url)
+    if not is_allowed_image_url(image_url):
+        return None
+
+    response = session.get(image_url, timeout=timeout, stream=True)
+    response.raise_for_status()
+
+    ext = image_ext_from_url_or_type(image_url, response.headers.get("content-type", ""))
+    image_dir.mkdir(parents=True, exist_ok=True)
+    local_path = image_dir / f"{car_id}{ext}"
+
+    downloaded = 0
+    with local_path.open("wb") as handle:
+        for chunk in response.iter_content(chunk_size=16384):
+            if not chunk:
+                continue
+            downloaded += len(chunk)
+            if downloaded > max_bytes:
+                local_path.unlink(missing_ok=True)
+                raise RuntimeError("image_too_large")
+            handle.write(chunk)
+
+    return {
+        "image_source_url": image_url,
+        "image_source_host": urllib.parse.urlparse(image_url).netloc.lower(),
+        "image_local_path": str(local_path).replace("\\", "/"),
+        "image_bytes": downloaded,
+        "image_downloaded_at": now(),
+    }
+
+
+def parse_detail(html: str, url: str, code: str, label: str, category: str) -> tuple[dict | None, str | None]:
     soup = BeautifulSoup(html, "html.parser")
     text = soup.get_text(" ", strip=True)
     title = clean((soup.find("h1") or soup.find("title") or soup).get_text(" "))
@@ -137,6 +233,12 @@ def parse_detail(html: str, url: str, code: str, label: str, category: str) -> d
         "scraped_at": now(),
         "price_source": "autoit_listino_nuovo",
     }
+
+    image_url = extract_image_url(soup, html)
+    if image_url:
+        car["image_source_url"] = image_url
+        car["image_source_host"] = urllib.parse.urlparse(image_url).netloc.lower()
+
     for block in json_blocks(soup):
         for item in walk(block):
             blob = json.dumps(item, ensure_ascii=False)[:3500]
@@ -159,16 +261,24 @@ def parse_detail(html: str, url: str, code: str, label: str, category: str) -> d
                     pass
             for key, value in specs(blob).items():
                 car.setdefault(key, value)
+
     for key, value in specs(text).items():
         car.setdefault(key, value)
+
     if not car.get("price_eur"):
         price = parse_price(text)
         if price:
             car["price_eur"] = price
+
     if not car["brand"]:
         parts = title.split()
         car["brand"] = parts[0] if parts else ""
-    return car if car["brand"] and car["model"] else None
+
+    return (car if car["brand"] and car["model"] else None), image_url
+
+
+def str_to_bool(value: str) -> bool:
+    return str(value).strip().lower() in {"1", "true", "yes", "y", "si", "sì", "on"}
 
 
 def main() -> None:
@@ -178,7 +288,15 @@ def main() -> None:
     parser.add_argument("--delay", type=float, default=25)
     parser.add_argument("--timeout", type=int, default=30)
     parser.add_argument("--backoff", type=float, default=120)
+    parser.add_argument("--download-images", default="true", help="true/false")
+    parser.add_argument("--image-delay", type=float, default=5)
+    parser.add_argument("--image-dir", default="assets/cars/autoit")
+    parser.add_argument("--max-image-mb", type=float, default=6)
     args = parser.parse_args()
+
+    should_download_images = str_to_bool(args.download_images)
+    image_dir = Path(args.image_dir)
+    max_image_bytes = int(args.max_image_mb * 1024 * 1024)
 
     robots = urllib.robotparser.RobotFileParser()
     robots.set_url(BASE + "/robots.txt")
@@ -197,6 +315,9 @@ def main() -> None:
     errors: list[dict] = []
     seen: set[str] = set()
     requests_count = 0
+    images_found = 0
+    images_downloaded = 0
+    image_errors = 0
 
     for code, (label, category, list_url) in SOURCES.items():
         if len(cars) >= args.limit:
@@ -239,10 +360,32 @@ def main() -> None:
                     time.sleep(args.backoff)
                     break
                 detail.raise_for_status()
-                car = parse_detail(detail.text, link, code, label, category)
+                car, image_url = parse_detail(detail.text, link, code, label, category)
                 if car:
+                    if image_url:
+                        images_found += 1
+                    if should_download_images and image_url:
+                        try:
+                            time.sleep(args.image_delay)
+                            image_data = download_image(
+                                session=session,
+                                image_url=image_url,
+                                car_id=car["id"],
+                                image_dir=image_dir,
+                                timeout=args.timeout,
+                                max_bytes=max_image_bytes,
+                            )
+                            requests_count += 1
+                            if image_data:
+                                car.update(image_data)
+                                images_downloaded += 1
+                        except Exception as image_exc:
+                            image_errors += 1
+                            car["image_error"] = str(image_exc)
+                            errors.append({"url": image_url, "error": f"image: {image_exc}"})
                     cars.append(car)
-                    print(f"  + {car.get('brand')} {car.get('model')} [{label}] price={car.get('price_eur')}")
+                    img_status = " image=local" if car.get("image_local_path") else (" image=url" if car.get("image_source_url") else " image=none")
+                    print(f"  + {car.get('brand')} {car.get('model')} [{label}] price={car.get('price_eur')}{img_status}")
             except Exception as exc:
                 errors.append({"url": link, "error": str(exc)})
                 if "429" in str(exc):
@@ -260,12 +403,28 @@ def main() -> None:
             "limit": args.limit,
             "pages_per_fuel": args.pages_per_fuel,
             "requests_count": requests_count,
+            "download_images": should_download_images,
+            "image_delay_seconds": args.image_delay,
+            "image_dir": str(image_dir).replace("\\", "/"),
+            "max_image_mb": args.max_image_mb,
+        },
+        "image_stats": {
+            "found": images_found,
+            "downloaded": images_downloaded,
+            "errors": image_errors,
         },
         "cars": cars,
         "errors": errors[-100:],
     }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("Done cars=", len(cars), "errors=", len(errors), "requests=", requests_count, "status=", payload["status"])
+    print(
+        "Done cars=", len(cars),
+        "errors=", len(errors),
+        "requests=", requests_count,
+        "images_found=", images_found,
+        "images_downloaded=", images_downloaded,
+        "status=", payload["status"],
+    )
 
 
 if __name__ == "__main__":
