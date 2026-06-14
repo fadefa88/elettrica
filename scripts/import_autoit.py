@@ -18,6 +18,7 @@ BASE = "https://www.auto.it"
 OUT = Path("data/cars_autoit.json")
 UA = "ElettricaImporter/1.0 (+https://github.com/fadefa88/elettrica)"
 IMAGE_ALLOWED_HOST = "motornet.it"
+MODEL_IMAGE_PATH_MARKER = "/img/modelli/auto/"
 
 SOURCES = {
     "E": ("elettrica", "electric", "https://www.auto.it/listino-nuovo/search?fuelType=E&sort=lowestPrice%20desc"),
@@ -121,7 +122,7 @@ def discover_links(html: str) -> list[str]:
 
 
 def normalize_image_url(url: str) -> str:
-    url = url.replace("\\/", "/").strip()
+    url = str(url or "").replace("\\/", "/").strip()
     url = urllib.parse.unquote(url)
     return full_url(url)
 
@@ -129,6 +130,44 @@ def normalize_image_url(url: str) -> str:
 def is_allowed_image_url(url: str) -> bool:
     parsed = urllib.parse.urlparse(url)
     return IMAGE_ALLOWED_HOST in parsed.netloc.lower()
+
+
+def is_model_image_url(url: str) -> bool:
+    parsed = urllib.parse.urlparse(url)
+    path = urllib.parse.unquote(parsed.path).lower()
+    return is_allowed_image_url(url) and MODEL_IMAGE_PATH_MARKER in path
+
+
+def is_rejected_image_url(url: str) -> bool:
+    parsed = urllib.parse.urlparse(url)
+    path = urllib.parse.unquote(parsed.path).lower()
+    filename = Path(path).name.lower()
+    rejected_markers = [
+        "logo",
+        "logos",
+        "marchio",
+        "marchi",
+        "brand",
+        "placeholder",
+        "default",
+        "no-image",
+        "no_image",
+        "spacer",
+        "blank",
+    ]
+    return any(marker in path or marker in filename for marker in rejected_markers)
+
+
+def candidate_score(url: str) -> int:
+    if is_rejected_image_url(url):
+        return -100
+    if is_model_image_url(url):
+        score = 100
+        path = urllib.parse.unquote(urllib.parse.urlparse(url).path).lower()
+        if path.endswith("_1.jpg") or path.endswith("_1.jpeg") or path.endswith("_1.webp"):
+            score += 10
+        return score
+    return -10
 
 
 def image_ext_from_url_or_type(url: str, content_type: str) -> str:
@@ -145,7 +184,7 @@ def image_ext_from_url_or_type(url: str, content_type: str) -> str:
     return ".jpg"
 
 
-def extract_image_url(soup: BeautifulSoup, html: str) -> str | None:
+def collect_image_candidates(soup: BeautifulSoup, html: str) -> list[str]:
     candidates: list[str] = []
 
     meta_selectors = [
@@ -173,19 +212,34 @@ def extract_image_url(soup: BeautifulSoup, html: str) -> str | None:
                 if src:
                     candidates.append(src)
 
-    regex = re.compile(r"https?:\\?/\\?/[^\"'\s<>]+motornet\.it[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?", re.I)
-    candidates.extend(regex.findall(html))
+    regexes = [
+        r"https?:\\?/\\?/[^\"'\s<>]+motornet\.it[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?",
+        r"/img/modelli/auto/[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?",
+    ]
+    for pattern in regexes:
+        candidates.extend(re.findall(pattern, html, re.I))
 
+    unique: list[str] = []
     for candidate in candidates:
         url = normalize_image_url(candidate)
-        if is_allowed_image_url(url):
-            return url
-    return None
+        if url not in unique:
+            unique.append(url)
+    return unique
+
+
+def extract_image_url(soup: BeautifulSoup, html: str) -> str | None:
+    candidates = collect_image_candidates(soup, html)
+    scored = [(candidate_score(url), url) for url in candidates]
+    scored = [(score, url) for score, url in scored if score > 0]
+    if not scored:
+        return None
+    scored.sort(key=lambda item: item[0], reverse=True)
+    return scored[0][1]
 
 
 def download_image(session: requests.Session, image_url: str, car_id: str, image_dir: Path, timeout: int, max_bytes: int) -> dict | None:
     image_url = normalize_image_url(image_url)
-    if not is_allowed_image_url(image_url):
+    if not is_model_image_url(image_url) or is_rejected_image_url(image_url):
         return None
 
     response = session.get(image_url, timeout=timeout, stream=True)
@@ -407,6 +461,7 @@ def main() -> None:
             "image_delay_seconds": args.image_delay,
             "image_dir": str(image_dir).replace("\\", "/"),
             "max_image_mb": args.max_image_mb,
+            "model_image_path_marker": MODEL_IMAGE_PATH_MARKER,
         },
         "image_stats": {
             "found": images_found,
