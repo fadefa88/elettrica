@@ -48,7 +48,12 @@ jobs:
             --limit "${{ github.event.inputs.limit }}" \
             --brand-codes "${{ github.event.inputs.brand_codes }}" \
             --delay "${{ github.event.inputs.delay }}" \
-            --download-images "${{ github.event.inputs.download_images }}"
+            --download-images "${{ github.event.inputs.download_images }}" \
+            --checkpoint-commit "false"
+
+      - name: Postprocess Motornet catalogue
+        run: |
+          python scripts/postprocess_motornet_catalog.py
 
       - name: Commit imported catalogue
         run: |
