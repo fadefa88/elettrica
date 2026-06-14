@@ -15,7 +15,7 @@ concurrency:
 jobs:
   update-data:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,20 +27,18 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Update fuel prices
+      - name: Update Italian fuel prices
         run: python scripts/update_data.py
-      - name: Update thermal car database
-        run: python scripts/update_ice_cars.py
       - name: Commit changes if any
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data/prices.json data/ice_cars_world.json
+          git add data/prices.json
           if git diff --cached --quiet; then
-            echo "No data changes to commit."
+            echo "No fuel price changes to commit."
             exit 0
           fi
-          git commit -m "Update vehicle cost data"
+          git commit -m "Update Italian fuel prices"
           for attempt in 1 2 3; do
             echo "Push attempt $attempt"
             git pull --rebase origin main
