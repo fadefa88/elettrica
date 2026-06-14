@@ -1,7 +1,16 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse, datetime as dt, hashlib, json, re, time, urllib.parse, urllib.robotparser
+
+import argparse
+import datetime as dt
+import hashlib
+import json
+import re
+import time
+import urllib.parse
+import urllib.robotparser
 from pathlib import Path
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -22,31 +31,38 @@ SOURCES = {
     "IM": ("ibrida_metano", "thermal", "https://www.auto.it/listino-nuovo/search?fuelType=IM&sort=lowestPrice%20desc"),
 }
 
-def now():
+
+def now() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
 
-def clean(x):
-    return re.sub(r"\s+", " ", str(x or "")).strip()
 
-def full_url(u):
-    return urllib.parse.urljoin(BASE, u.split("#")[0])
+def clean(value: object) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip()
 
-def make_id(url, code):
-    return "autoit_" + code.lower() + "_" + hashlib.sha1((code + "|" + url).encode()).hexdigest()[:12]
 
-def parse_price(text):
-    for rx in [r"€\s*([\d\.]+)", r"([\d\.]+)\s*€"]:
-        m = re.search(rx, text or "", re.I)
-        if m:
+def full_url(url: str) -> str:
+    return urllib.parse.urljoin(BASE, url.split("#")[0])
+
+
+def make_id(url: str, code: str) -> str:
+    raw = f"{code}|{url}".encode("utf-8")
+    return "autoit_" + code.lower() + "_" + hashlib.sha1(raw).hexdigest()[:12]
+
+
+def parse_price(text: str) -> int | None:
+    for pattern in [r"€\s*([\d\.]+)", r"([\d\.]+)\s*€"]:
+        match = re.search(pattern, text or "", re.I)
+        if match:
             try:
-                return int(m.group(1).replace(".", ""))
+                return int(match.group(1).replace(".", ""))
             except ValueError:
                 pass
     return None
 
-def specs(text):
+
+def specs(text: str) -> dict:
     text = clean(text)
-    out = {}
+    out: dict[str, float | int] = {}
     patterns = [
         ("power_kw", r"(\d+(?:,\d+)?)\s*kW", float),
         ("power_cv", r"(\d+(?:,\d+)?)\s*CV", int),
@@ -57,113 +73,53 @@ def specs(text):
         ("range_wltp_km", r"(?:autonomia|WLTP|range)[^\d]{0,25}(\d{2,4})\s*km", int),
         ("emissions_g_km", r"(\d{1,3})\s*g\s*/\s*km", int),
     ]
-    for key, rx, cast in patterns:
-        m = re.search(rx, text, re.I)
-        if m:
-            val = float(m.group(1).replace(",", "."))
-            out[key] = int(val) if cast is int else round(val, 1)
+    for key, pattern, cast in patterns:
+        match = re.search(pattern, text, re.I)
+        if match:
+            value = float(match.group(1).replace(",", "."))
+            out[key] = int(value) if cast is int else round(value, 1)
     if "power_cv" in out and "power_kw" not in out:
-        out["power_kw"] = round(out["power_cv"] * 0.7355, 1)
+        out["power_kw"] = round(float(out["power_cv"]) * 0.7355, 1)
     return out
 
-def walk(o):
-    if isinstance(o, dict):
-        yield o
-        for v in o.values():
-            yield from walk(v)
-    elif isinstance(o, list):
-        for x in o:
-            yield from walk(x)
 
-def json_blocks(soup):
+def walk(value):
+    if isinstance(value, dict):
+        yield value
+        for child in value.values():
+            yield from walk(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from walk(child)
+
+
+def json_blocks(soup: BeautifulSoup) -> list:
     blocks = []
-    for s in soup.find_all("script"):
-        raw = (s.string or s.get_text(" ")).strip()
+    for script in soup.find_all("script"):
+        raw = (script.string or script.get_text(" ")).strip()
         if not raw:
             continue
-        if s.get("type") == "application/ld+json" or raw.startswith("{") or raw.startswith("["):
+        if script.get("type") == "application/ld+json" or raw.startswith("{") or raw.startswith("["):
             try:
                 blocks.append(json.loads(raw))
             except Exception:
                 pass
     return blocks
 
-def discover_links(html):
+
+def discover_links(html: str) -> list[str]:
     soup = BeautifulSoup(html, "html.parser")
-    links = []
-
-    for a in soup.find_all("a", href=True):
-        url = full_url(a["href"])
+    links: list[str] = []
+    for anchor in soup.find_all("a", href=True):
+        url = full_url(anchor["href"])
         path = urllib.parse.urlparse(url).path
-
         is_model_page = path.startswith("/marche/") and "/modelli/" in path
-
         if is_model_page and url not in links:
             links.append(url)
-
     return links
 
-def first_hrefs(html, limit=20):
-    soup = BeautifulSoup(html, "html.parser")
-    urls = []
-    for a in soup.find_all("a", href=True):
-        url = full_url(a["href"])
-        if url not in urls:
-            urls.append(url)
-        if len(urls) >= limit:
-            break
-    return urls
 
-def script_debug(html, limit=12):
-    soup = BeautifulSoup(html, "html.parser")
-    scripts = soup.find_all("script")
-    rows = []
-    parsed_json = 0
-    for i, script in enumerate(scripts[:limit], start=1):
-        raw = (script.string or script.get_text(" ") or "").strip()
-        stype = script.get("type") or "inline/unknown"
-        sid = script.get("id") or ""
-        looks_json = raw.startswith("{") or raw.startswith("[") or stype == "application/ld+json"
-        if looks_json:
-            try:
-                json.loads(raw)
-                parsed_json += 1
-            except Exception:
-                pass
-        rows.append({
-            "n": i,
-            "type": stype,
-            "id": sid,
-            "len": len(raw),
-            "looks_json": looks_json,
-            "head": clean(raw[:120]),
-        })
-    return len(scripts), parsed_json, rows
-
-def debug_list_page(code, html, links):
-    print(f"--- DEBUG LIST PAGE {code} ---")
-    print("HTML scaricato: sì")
-    print("lunghezza HTML:", len(html))
-    print("link dettaglio trovati:", len(links))
-
-    print("prime 20 URL trovate nella pagina:")
-    hrefs = first_hrefs(html, 20)
-    if not hrefs:
-        print("  (nessun href trovato)")
-    for i, url in enumerate(hrefs, start=1):
-        print(f"  {i:02d}. {url}")
-
-    total_scripts, parsed_json, rows = script_debug(html)
-    print("script tag trovati:", total_scripts)
-    print("eventuali script JSON parseabili:", parsed_json)
-    print("prime info script:")
-    if not rows:
-        print("  (nessuno script trovato)")
-    for row in rows:
-        print("  -", row)
-    print(f"--- END DEBUG {code} ---")
-
-def parse_detail(html, url, code, label, category):
+def parse_detail(html: str, url: str, code: str, label: str, category: str) -> dict | None:
     soup = BeautifulSoup(html, "html.parser")
     text = soup.get_text(" ", strip=True)
     title = clean((soup.find("h1") or soup.find("title") or soup).get_text(" "))
@@ -182,60 +138,54 @@ def parse_detail(html, url, code, label, category):
         "price_source": "autoit_listino_nuovo",
     }
     for block in json_blocks(soup):
-        for d in walk(block):
-            blob = json.dumps(d, ensure_ascii=False)[:3500]
-            if not any(w in blob.lower() for w in ["brand", "model", "price", "prezzo", "kw", "cv"]):
+        for item in walk(block):
+            blob = json.dumps(item, ensure_ascii=False)[:3500]
+            if not any(word in blob.lower() for word in ["brand", "model", "price", "prezzo", "kw", "cv"]):
                 continue
-
-            b = d.get("brand") or d.get("manufacturer") or d.get("make")
-            if isinstance(b, dict):
-                b = b.get("name")
-            if b and not car["brand"]:
-                car["brand"] = clean(b)
-
-            m = d.get("model") or d.get("name")
-            if m and car["model"] == title:
-                car["model"] = clean(m)
-
-            offers = d.get("offers") if isinstance(d.get("offers"), dict) else {}
-            p = d.get("price") or offers.get("price") or offers.get("lowPrice")
-            if p and not car.get("price_eur"):
+            brand = item.get("brand") or item.get("manufacturer") or item.get("make")
+            if isinstance(brand, dict):
+                brand = brand.get("name")
+            if brand and not car["brand"]:
+                car["brand"] = clean(brand)
+            model = item.get("model") or item.get("name")
+            if model and car["model"] == title:
+                car["model"] = clean(model)
+            offers = item.get("offers") if isinstance(item.get("offers"), dict) else {}
+            price = item.get("price") or offers.get("price") or offers.get("lowPrice")
+            if price and not car.get("price_eur"):
                 try:
-                    car["price_eur"] = int(float(str(p).replace(",", ".")))
+                    car["price_eur"] = int(float(str(price).replace(",", ".")))
                 except Exception:
                     pass
-
-            for k, v in specs(blob).items():
-                car.setdefault(k, v)
-
-    for k, v in specs(text).items():
-        car.setdefault(k, v)
-
+            for key, value in specs(blob).items():
+                car.setdefault(key, value)
+    for key, value in specs(text).items():
+        car.setdefault(key, value)
     if not car.get("price_eur"):
-        p = parse_price(text)
-        if p:
-            car["price_eur"] = p
-
+        price = parse_price(text)
+        if price:
+            car["price_eur"] = price
     if not car["brand"]:
         parts = title.split()
         car["brand"] = parts[0] if parts else ""
-
     return car if car["brand"] and car["model"] else None
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--limit", type=int, default=80)
-    ap.add_argument("--pages-per-fuel", type=int, default=2)
-    ap.add_argument("--delay", type=float, default=4)
-    ap.add_argument("--timeout", type=int, default=30)
-    args = ap.parse_args()
 
-    rp = urllib.robotparser.RobotFileParser()
-    rp.set_url(BASE + "/robots.txt")
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--limit", type=int, default=650)
+    parser.add_argument("--pages-per-fuel", type=int, default=1)
+    parser.add_argument("--delay", type=float, default=25)
+    parser.add_argument("--timeout", type=int, default=30)
+    parser.add_argument("--backoff", type=float, default=120)
+    args = parser.parse_args()
+
+    robots = urllib.robotparser.RobotFileParser()
+    robots.set_url(BASE + "/robots.txt")
     try:
-        rp.read()
-    except Exception as e:
-        print("WARN robots non leggibile:", e)
+        robots.read()
+    except Exception as exc:
+        print("WARN robots non leggibile:", exc)
 
     session = requests.Session()
     session.headers.update({
@@ -243,57 +193,59 @@ def main():
         "Accept-Language": "it-IT,it;q=0.9,en;q=0.6",
     })
 
-    cars, errors, seen = [], [], set()
+    cars: list[dict] = []
+    errors: list[dict] = []
+    seen: set[str] = set()
+    requests_count = 0
 
     for code, (label, category, list_url) in SOURCES.items():
         if len(cars) >= args.limit:
             break
-
-        print("LIST", code, list_url)
-
-        if not rp.can_fetch(UA, list_url):
+        print(f"LIST {code} {list_url}")
+        if not robots.can_fetch(UA, list_url):
             errors.append({"url": list_url, "error": "blocked_by_robots"})
-            print("HTML scaricato: no - blocked_by_robots")
+            print("  blocked_by_robots")
             continue
-
         try:
             time.sleep(args.delay)
-            r = session.get(list_url, timeout=args.timeout)
-            print("HTTP status:", r.status_code)
-            if r.status_code == 429:
-                raise RuntimeError("429 Too Many Requests")
-            r.raise_for_status()
-        except Exception as e:
-            errors.append({"url": list_url, "error": str(e)})
-            print("HTML scaricato: no -", str(e))
+            response = session.get(list_url, timeout=args.timeout)
+            requests_count += 1
+            if response.status_code == 429:
+                print(f"  429 on list, backoff {args.backoff}s")
+                time.sleep(args.backoff)
+                break
+            response.raise_for_status()
+        except Exception as exc:
+            errors.append({"url": list_url, "error": str(exc)})
+            print("  list error:", exc)
             continue
-
-        links = discover_links(r.text)
-        debug_list_page(code, r.text, links)
-
+        links = discover_links(response.text)
+        print(f"  model links: {len(links)}")
         for link in links:
             if len(cars) >= args.limit:
                 break
             if link in seen:
                 continue
             seen.add(link)
-
-            if not rp.can_fetch(UA, link):
+            if not robots.can_fetch(UA, link):
                 errors.append({"url": link, "error": "blocked_by_robots"})
                 continue
-
             try:
                 time.sleep(args.delay)
-                d = session.get(link, timeout=args.timeout)
-                if d.status_code == 429:
-                    raise RuntimeError("429 Too Many Requests")
-                d.raise_for_status()
-                car = parse_detail(d.text, link, code, label, category)
+                detail = session.get(link, timeout=args.timeout)
+                requests_count += 1
+                if detail.status_code == 429:
+                    print(f"  429 on detail, backoff {args.backoff}s")
+                    time.sleep(args.backoff)
+                    break
+                detail.raise_for_status()
+                car = parse_detail(detail.text, link, code, label, category)
                 if car:
                     cars.append(car)
-            except Exception as e:
-                errors.append({"url": link, "error": str(e)})
-                if "429" in str(e):
+                    print(f"  + {car.get('brand')} {car.get('model')} [{label}] price={car.get('price_eur')}")
+            except Exception as exc:
+                errors.append({"url": link, "error": str(exc)})
+                if "429" in str(exc):
                     break
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -302,11 +254,19 @@ def main():
         "status": "ok" if cars else "empty",
         "scraped_at": now(),
         "schema": "cars_autoit_v1",
+        "request_policy": {
+            "delay_seconds": args.delay,
+            "backoff_seconds": args.backoff,
+            "limit": args.limit,
+            "pages_per_fuel": args.pages_per_fuel,
+            "requests_count": requests_count,
+        },
         "cars": cars,
         "errors": errors[-100:],
     }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("Done cars=", len(cars), "errors=", len(errors), "status=", payload["status"])
+    print("Done cars=", len(cars), "errors=", len(errors), "requests=", requests_count, "status=", payload["status"])
+
 
 if __name__ == "__main__":
     main()
