@@ -192,10 +192,7 @@ def collect_image_candidates(soup: BeautifulSoup, html: str) -> list[str]:
                 src = part.strip().split(" ")[0]
                 if src:
                     candidates.append(src)
-    regexes = [
-        r"https?:\\?/\\?/[^\"'\s<>]+motornet\.it[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?",
-        r"/img/modelli/auto/[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?",
-    ]
+    regexes = [r"https?:\\?/\\?/[^\"'\s<>]+motornet\.it[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?", r"/img/modelli/auto/[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?"]
     for pattern in regexes:
         candidates.extend(re.findall(pattern, html, re.I))
     unique: list[str] = []
@@ -235,13 +232,7 @@ def download_image(session: requests.Session, image_url: str, car_id: str, image
                 local_path.unlink(missing_ok=True)
                 raise RuntimeError("image_too_large")
             handle.write(chunk)
-    return {
-        "image_source_url": image_url,
-        "image_source_host": urllib.parse.urlparse(image_url).netloc.lower(),
-        "image_local_path": str(local_path).replace("\\", "/"),
-        "image_bytes": downloaded,
-        "image_downloaded_at": now(),
-    }
+    return {"image_source_url": image_url, "image_source_host": urllib.parse.urlparse(image_url).netloc.lower(), "image_local_path": str(local_path).replace("\\", "/"), "image_bytes": downloaded, "image_downloaded_at": now()}
 
 
 def strip_brand(value: object, brand: str) -> str:
@@ -321,28 +312,7 @@ def str_to_bool(value: str) -> bool:
 
 
 def build_payload(cars, errors, args, requests_count, images_found, images_downloaded, image_errors, image_dir, should_download_images):
-    return {
-        "source": "auto.it",
-        "status": "ok" if cars else "empty",
-        "scraped_at": now(),
-        "schema": "cars_autoit_v1",
-        "request_policy": {
-            "delay_seconds": args.delay,
-            "backoff_seconds": args.backoff,
-            "limit": args.limit,
-            "pages_per_fuel": args.pages_per_fuel,
-            "requests_count": requests_count,
-            "download_images": should_download_images,
-            "image_delay_seconds": args.image_delay,
-            "image_dir": str(image_dir).replace("\\", "/"),
-            "max_image_mb": args.max_image_mb,
-            "model_image_path_marker": MODEL_IMAGE_PATH_MARKER,
-            "checkpoint_every": args.checkpoint_every,
-        },
-        "image_stats": {"found": images_found, "downloaded": images_downloaded, "errors": image_errors},
-        "cars": cars,
-        "errors": errors[-100:],
-    }
+    return {"source": "auto.it", "status": "ok" if cars else "empty", "scraped_at": now(), "schema": "cars_autoit_v1", "request_policy": {"delay_seconds": args.delay, "backoff_seconds": args.backoff, "limit": args.limit, "pages_per_fuel": args.pages_per_fuel, "requests_count": requests_count, "download_images": should_download_images, "image_delay_seconds": args.image_delay, "image_dir": str(image_dir).replace("\\", "/"), "max_image_mb": args.max_image_mb, "model_image_path_marker": MODEL_IMAGE_PATH_MARKER, "checkpoint_every": args.checkpoint_every}, "image_stats": {"found": images_found, "downloaded": images_downloaded, "errors": image_errors}, "cars": cars, "errors": errors[-100:]}
 
 
 def write_payload(payload: dict) -> None:
@@ -352,15 +322,23 @@ def write_payload(payload: dict) -> None:
 
 def git_checkpoint(count: int, image_dir: Path) -> None:
     try:
+        subprocess.run(["git", "config", "user.name", "github-actions"], check=False)
+        subprocess.run(["git", "config", "user.email", "github-actions@github.com"], check=False)
         subprocess.run(["git", "add", str(OUT), str(image_dir)], check=False)
         diff = subprocess.run(["git", "diff", "--cached", "--quiet"], check=False)
         if diff.returncode == 0:
             print(f"Checkpoint {count}: no changes")
             return
-        subprocess.run(["git", "commit", "-m", f"Checkpoint Auto.it catalogue ({count} cars)"], check=False)
+        commit = subprocess.run(["git", "commit", "-m", f"Checkpoint Auto.it catalogue ({count} cars)"], check=False)
+        if commit.returncode != 0:
+            print(f"WARN checkpoint commit failed at {count} cars")
+            return
         subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=False)
-        subprocess.run(["git", "push"], check=False)
-        print(f"Checkpoint committed at {count} cars")
+        push = subprocess.run(["git", "push"], check=False)
+        if push.returncode == 0:
+            print(f"Checkpoint committed at {count} cars")
+        else:
+            print(f"WARN checkpoint push failed at {count} cars")
     except Exception as exc:
         print(f"WARN checkpoint failed at {count} cars: {exc}")
 
@@ -391,22 +369,18 @@ def main() -> None:
     parser.add_argument("--checkpoint-every", type=int, default=25)
     parser.add_argument("--checkpoint-commit", default="true", help="true/false")
     args = parser.parse_args()
-
     should_download_images = str_to_bool(args.download_images)
     args.checkpoint_commit = str_to_bool(args.checkpoint_commit)
     image_dir = Path(args.image_dir)
     max_image_bytes = int(args.max_image_mb * 1024 * 1024)
-
     robots = urllib.robotparser.RobotFileParser()
     robots.set_url(BASE + "/robots.txt")
     try:
         robots.read()
     except Exception as exc:
         print("WARN robots non leggibile:", exc)
-
     session = requests.Session()
     session.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9,en;q=0.6"})
-
     cars: list[dict] = []
     errors: list[dict] = []
     seen: set[str] = set()
@@ -415,7 +389,6 @@ def main() -> None:
     images_downloaded = 0
     image_errors = 0
     last_checkpoint = 0
-
     for code, (label, category, list_url) in SOURCES.items():
         if len(cars) >= args.limit:
             break
@@ -481,7 +454,6 @@ def main() -> None:
                 errors.append({"url": link, "error": str(exc)})
                 if "429" in str(exc):
                     break
-
     payload = build_payload(cars, errors, args, requests_count, images_found, images_downloaded, image_errors, image_dir, should_download_images)
     write_payload(payload)
     print("Done cars=", len(cars), "errors=", len(errors), "requests=", requests_count, "images_found=", images_found, "images_downloaded=", images_downloaded, "status=", payload["status"])
