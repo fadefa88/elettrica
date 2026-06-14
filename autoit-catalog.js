@@ -14,6 +14,9 @@
     IM: 'ibrida_metano'
   };
 
+  const EV_FUELS = ['elettrica','elettrica_idrogeno'];
+  const ICE_FUELS = ['benzina','diesel','ibrida_benzina','ibrida_diesel','gpl','ibrida_gpl','metano','ibrida_metano'];
+
   const FUEL_LABELS = {
     elettrica: 'Elettrica',
     elettrica_idrogeno: 'Elettrica a idrogeno',
@@ -31,12 +34,13 @@
   function uniqueSorted(values){ return [...new Set(values.filter(Boolean))].sort(); }
   function esc(value){ return String(value || '').replace(/"/g,'&quot;'); }
   function optionListLocal(values, label){ return '<option value="all">'+(label || 'Tutte')+'</option>'+values.map(v=>'<option value="'+esc(v)+'">'+(FUEL_LABELS[v] || v)+'</option>').join(''); }
+  function fuelOptions(values, includeAll){ return (includeAll ? '<option value="all">Tutti</option>' : '') + values.map(v=>'<option value="'+esc(v)+'">'+(FUEL_LABELS[v] || v)+'</option>').join(''); }
 
   function injectAutoItStyles(){
     if(document.getElementById('autoitInjectedStyles')) return;
     const style = document.createElement('style');
     style.id = 'autoitInjectedStyles';
-    style.textContent = '.car-photo{cursor:zoom-in}.car-visual{width:100%;max-width:100%;grid-template-columns:minmax(0,190px) minmax(0,1fr);overflow:hidden}.car-visual>div{min-width:0}.car-visual b,.car-visual span,.car-visual em{overflow-wrap:anywhere;word-break:normal}.car-art.has-photo,.mini-photo.has-photo{background:#eef4f0}.car-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:28px}.car-lightbox.active{display:flex}.car-lightbox img{max-width:min(1120px,94vw);max-height:82vh;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.45);object-fit:contain}.car-lightbox-close{position:absolute;top:22px;right:22px;width:48px;height:48px;padding:0;border-radius:999px;background:#fff;color:#07110e;font-size:32px;line-height:1}.car-lightbox-caption{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);max-width:90vw;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.92);font-weight:900;color:#07110e;text-align:center}@media(max-width:760px){.car-visual{grid-template-columns:1fr}.car-lightbox{padding:16px}.car-lightbox img{max-width:96vw;max-height:78vh;border-radius:18px}.car-lightbox-close{top:14px;right:14px}}';
+    style.textContent = '#evVisual{max-width:860px}.car-photo{cursor:zoom-in}.car-art.has-photo,.mini-photo.has-photo{cursor:zoom-in}.car-visual{width:100%;max-width:100%;grid-template-columns:minmax(0,190px) minmax(0,1fr);overflow:hidden}.car-visual>div{min-width:0}.car-visual b,.car-visual span,.car-visual em{overflow-wrap:anywhere;word-break:normal}.car-art.has-photo,.mini-photo.has-photo{background:#eef4f0}.car-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:28px}.car-lightbox.active{display:flex}.car-lightbox img{max-width:min(1120px,94vw);max-height:82vh;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.45);object-fit:contain}.car-lightbox-close{position:absolute;top:22px;right:22px;width:48px;height:48px;padding:0;border-radius:999px;background:#fff;color:#07110e;font-size:32px;line-height:1}.car-lightbox-caption{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);max-width:90vw;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.92);font-weight:900;color:#07110e;text-align:center}@media(max-width:760px){.car-visual{grid-template-columns:1fr}.car-lightbox{padding:16px}.car-lightbox img{max-width:96vw;max-height:78vh;border-radius:18px}.car-lightbox-close{top:14px;right:14px}}';
     document.head.appendChild(style);
   }
 
@@ -144,12 +148,70 @@
     shell.prepend(badge);
   }
 
+  function ensureEvFuelControl(){
+    if(byId('evFuelPick')) return;
+    const brand = byId('evBrandPick');
+    if(!brand) return;
+    const label = document.createElement('label');
+    label.innerHTML = 'Alimentazione<select id="evFuelPick">'+fuelOptions(EV_FUELS, false)+'</select>';
+    const brandLabel = brand.closest('label');
+    if(brandLabel && brandLabel.parentNode) brandLabel.parentNode.insertBefore(label, brandLabel);
+    else brand.parentNode?.insertBefore(label, brand);
+    byId('evFuelPick').value = 'elettrica';
+    byId('evFuelPick').addEventListener('change', ()=>{ fillEvBrands(); if(typeof fillEvSelect === 'function') fillEvSelect(); });
+  }
+
+  function fillEvBrands(){
+    ensureEvFuelControl();
+    const pick = byId('evBrandPick');
+    if(!pick || typeof EV === 'undefined') return;
+    const current = pick.value || 'all';
+    const fuel = byId('evFuelPick')?.value || 'elettrica';
+    const brands = uniqueSorted(EV.filter(c=>c.fuel === fuel).map(c=>c.brand));
+    pick.innerHTML = optionListLocal(brands, 'Tutte');
+    pick.value = brands.includes(current) ? current : 'all';
+  }
+
+  function patchEvSelector(){
+    if(window.__autoitEvSelectorPatched) return;
+    window.__autoitEvSelectorPatched = true;
+    const originalToggle = typeof toggleManualEv === 'function' ? toggleManualEv : null;
+
+    try {
+      fillEvSelect = function(){
+        ensureEvFuelControl();
+        const fuel = byId('evFuelPick')?.value || 'elettrica';
+        const brand = byId('evBrandPick')?.value || 'all';
+        const current = byId('evSelect')?.value || '';
+        const arr = EV.filter(c=>(c.fuel === fuel) && (brand === 'all' || c.brand === brand));
+        if(byId('evSelect')){
+          byId('evSelect').innerHTML = '<option value="">Seleziona modello '+(FUEL_LABELS[fuel] || 'elettrico')+'</option>'+arr.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.brand)+' '+esc(c.model)+'</option>').join('');
+          byId('evSelect').value = arr.some(c=>c.id === current) ? current : '';
+        }
+        if(byId('evChoiceHint')) byId('evChoiceHint').textContent = '';
+        if(typeof setAutoFields === 'function') setAutoFields();
+        if(typeof calculate === 'function') calculate();
+        if(typeof updateNavigation === 'function') updateNavigation();
+      };
+    } catch(e) {}
+
+    try {
+      toggleManualEv = function(){
+        if(originalToggle) originalToggle();
+        const on = byId('manualEvMode')?.checked;
+        if(byId('evFuelPick')) byId('evFuelPick').disabled = !!on;
+      };
+    } catch(e) {}
+  }
+
   function refillControls(){
-    if(byId('evBrandPick') && typeof EV !== 'undefined') byId('evBrandPick').innerHTML = optionListLocal(uniqueSorted(EV.map(c=>c.brand)), 'Tutte');
+    patchEvSelector();
+    fillEvBrands();
     if(byId('iceBrandPick') && typeof IC !== 'undefined') byId('iceBrandPick').innerHTML = optionListLocal(uniqueSorted(IC.map(c=>c.brand)), 'Tutte');
-    if(byId('iceFuelPick') && typeof IC !== 'undefined'){
-      const fuels = uniqueSorted(IC.map(c=>c.fuel));
-      byId('iceFuelPick').innerHTML = '<option value="all">Tutti</option>'+fuels.map(f=>'<option value="'+esc(f)+'">'+(FUEL_LABELS[f] || f)+'</option>').join('');
+    if(byId('iceFuelPick')){
+      const current = byId('iceFuelPick').value || 'all';
+      byId('iceFuelPick').innerHTML = fuelOptions(ICE_FUELS, true);
+      byId('iceFuelPick').value = current === 'all' || ICE_FUELS.includes(current) ? current : 'all';
     }
     if(typeof fillEvSelect === 'function') fillEvSelect();
     if(typeof fillIceSelect === 'function') fillIceSelect();
@@ -169,8 +231,11 @@
     box.addEventListener('click', e=>{ if(e.target === box || e.target.classList.contains('car-lightbox-close')) close(); });
     document.addEventListener('keydown', e=>{ if(e.key === 'Escape') close(); });
     document.addEventListener('click', e=>{
-      const img = e.target.closest && e.target.closest('.car-photo');
+      const target = e.target.closest && e.target.closest('.car-photo,.car-art.has-photo,.mini-photo.has-photo');
+      if(!target) return;
+      const img = target.matches && target.matches('img.car-photo') ? target : target.querySelector('img.car-photo');
       if(!img || !img.getAttribute('src')) return;
+      e.preventDefault();
       box.querySelector('img').src = img.getAttribute('src');
       box.querySelector('.car-lightbox-caption').textContent = img.getAttribute('alt') || '';
       box.classList.add('active');
