@@ -32,6 +32,14 @@
   function esc(value){ return String(value || '').replace(/"/g,'&quot;'); }
   function optionListLocal(values, label){ return '<option value="all">'+(label || 'Tutte')+'</option>'+values.map(v=>'<option value="'+esc(v)+'">'+(FUEL_LABELS[v] || v)+'</option>').join(''); }
 
+  function injectAutoItStyles(){
+    if(document.getElementById('autoitInjectedStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'autoitInjectedStyles';
+    style.textContent = '.car-photo{cursor:zoom-in}.car-visual{width:100%;max-width:100%;grid-template-columns:minmax(0,190px) minmax(0,1fr);overflow:hidden}.car-visual>div{min-width:0}.car-visual b,.car-visual span,.car-visual em{overflow-wrap:anywhere;word-break:normal}.car-art.has-photo,.mini-photo.has-photo{background:#eef4f0}.car-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:28px}.car-lightbox.active{display:flex}.car-lightbox img{max-width:min(1120px,94vw);max-height:82vh;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.45);object-fit:contain}.car-lightbox-close{position:absolute;top:22px;right:22px;width:48px;height:48px;padding:0;border-radius:999px;background:#fff;color:#07110e;font-size:32px;line-height:1}.car-lightbox-caption{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);max-width:90vw;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.92);font-weight:900;color:#07110e;text-align:center}@media(max-width:760px){.car-visual{grid-template-columns:1fr}.car-lightbox{padding:16px}.car-lightbox img{max-width:96vw;max-height:78vh;border-radius:18px}.car-lightbox-close{top:14px;right:14px}}';
+    document.head.appendChild(style);
+  }
+
   function cleanName(value){
     return String(value || '')
       .replace(/\bundefined\b/gi,'')
@@ -151,6 +159,7 @@
 
   function setupLightbox(){
     if(document.getElementById('carImageLightbox')) return;
+    injectAutoItStyles();
     const box = document.createElement('div');
     box.id = 'carImageLightbox';
     box.className = 'car-lightbox';
