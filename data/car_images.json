@@ -31,6 +31,26 @@
       "license": "CC BY-SA",
       "license_url": "//commons.wikimedia.org/wiki/File:BAS_24,_Brussels_(P1170244-RR).jpg",
       "search_query": "\"Volvo EX30\" car"
+    },
+    "fiat_500e": {
+      "src": "assets/cars/fiat-500e.jpg",
+      "source": "Wikimedia Commons",
+      "source_url": "https://commons.wikimedia.org/wiki/File:%2215_-_EXPO_MILANO_2015_-_500e_automobile_grill_facing_left_focus_on_automobiles.jpg",
+      "file_title": "File:\"15 - EXPO MILANO 2015 - 500e automobile grill facing left focus on automobiles.jpg",
+      "author": "Pava at EXPO2015, Milan",
+      "license": "CC BY-SA 3.0 it",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/it/deed.en",
+      "search_query": "\"Fiat 500e\" car"
+    },
+    "renault_5": {
+      "src": "assets/cars/renault-5.jpg",
+      "source": "Wikimedia Commons",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Renault_5_E-Tech_Electric_Auto_Zuerich_2024_DSC_6501.jpg",
+      "file_title": "File:Renault 5 E-Tech Electric Auto Zuerich 2024 DSC 6501.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+      "search_query": "\"Renault 5 E-Tech\" car"
     }
   }
 }
