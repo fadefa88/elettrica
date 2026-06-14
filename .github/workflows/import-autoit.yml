@@ -6,15 +6,15 @@ on:
       limit:
         description: 'Numero massimo auto da importare'
         required: false
-        default: '80'
+        default: '40'
       pages_per_fuel:
         description: 'Pagine lista per alimentazione'
         required: false
-        default: '2'
+        default: '1'
       delay:
         description: 'Secondi tra richieste'
         required: false
-        default: '4'
+        default: '8'
 
 permissions:
   contents: write
