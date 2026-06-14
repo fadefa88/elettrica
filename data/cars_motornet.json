@@ -1,0 +1,19 @@
+{
+  "source": "motornet.it",
+  "status": "empty",
+  "scraped_at": "2026-06-14T17:04:57+00:00",
+  "schema": "cars_motornet_v1",
+  "request_policy": {
+    "delay_seconds": 8.0,
+    "limit": 1,
+    "requests_count": 1,
+    "checkpoint_every": 25,
+    "download_images": true,
+    "image_dir": "assets/cars/motornet"
+  },
+  "image_stats": {
+    "downloaded": 0
+  },
+  "cars": [],
+  "errors": []
+}
