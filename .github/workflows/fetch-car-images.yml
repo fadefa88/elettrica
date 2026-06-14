@@ -6,12 +6,19 @@ on:
       limit:
         description: "Maximum number of catalogue cars to process"
         required: false
-        default: "80"
-      refresh:
-        description: "Refresh already downloaded images"
+        default: "20"
+      delay:
+        description: "Seconds to wait between Wikimedia requests"
         required: false
-        type: boolean
-        default: false
+        default: "5"
+      query_limit:
+        description: "Maximum search queries per car"
+        required: false
+        default: "1"
+      result_limit:
+        description: "Maximum image results per query"
+        required: false
+        default: "8"
 
 permissions:
   contents: write
@@ -33,12 +40,7 @@ jobs:
           python-version: "3.11"
 
       - name: Fetch Wikimedia Commons images
-        run: |
-          if [ "${{ inputs.refresh }}" = "true" ]; then
-            python scripts/fetch_car_images.py --limit "${{ inputs.limit }}" --refresh
-          else
-            python scripts/fetch_car_images.py --limit "${{ inputs.limit }}"
-          fi
+        run: python scripts/fetch_car_images.py --limit "${{ inputs.limit }}" --delay "${{ inputs.delay }}" --query-limit "${{ inputs.query_limit }}" --result-limit "${{ inputs.result_limit }}"
 
       - name: Commit images and metadata
         run: |
