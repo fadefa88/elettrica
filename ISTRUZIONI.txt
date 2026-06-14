@@ -1,0 +1,30 @@
+Carica questi file nel repo:
+
+1. scripts/import_motornet.py
+2. .github/workflows/import-motornet.yml
+
+Poi crea un file iniziale:
+data/cars_motornet.json
+con:
+{
+  "source": "motornet.it",
+  "status": "empty",
+  "schema": "cars_motornet_v1",
+  "cars": [],
+  "errors": []
+}
+
+Test consigliato:
+workflow Import Motornet catalogue
+- limit: 10
+- brand_codes: ROL
+- delay: 5
+- download_images: true
+
+Se funziona:
+- brand_codes vuoto
+- limit 650
+- delay 8-10
+
+Frontend:
+modifica autoit-catalog.js per leggere prima data/cars_motornet.json e poi data/cars_autoit.json come fallback.

@@ -1,0 +1,64 @@
+name: Import Motornet catalogue
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Numero massimo auto da importare'
+        required: false
+        default: '650'
+      brand_codes:
+        description: 'Test su marche specifiche, es. ABA,ROL. Vuoto = tutte'
+        required: false
+        default: ''
+      delay:
+        description: 'Secondi tra pagine Motornet'
+        required: false
+        default: '8'
+      download_images:
+        description: 'Scarica immagini Motornet nel repo'
+        required: false
+        default: 'true'
+
+permissions:
+  contents: write
+
+jobs:
+  import-motornet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Import Motornet catalogue
+        run: |
+          python scripts/import_motornet.py \
+            --limit "${{ github.event.inputs.limit }}" \
+            --brand-codes "${{ github.event.inputs.brand_codes }}" \
+            --delay "${{ github.event.inputs.delay }}" \
+            --download-images "${{ github.event.inputs.download_images }}"
+
+      - name: Commit imported catalogue
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add data/cars_motornet.json assets/cars/motornet || true
+          if git diff --cached --quiet; then
+            echo "No Motornet catalogue changes to commit."
+            exit 0
+          fi
+          git commit -m "Import Motornet catalogue"
+          git pull --rebase origin main || true
+          git push
