@@ -22,6 +22,19 @@ UA = "ElettricaMotornetImporter/1.0 (+https://github.com/fadefa88/elettrica)"
 MODEL_IMAGE_PATH_MARKER = "/img/modelli/auto/"
 IMAGE_ALLOWED_HOST = "motornet.it"
 
+# Fallback: the Motornet brand selector often exposes only raw brand codes
+# (for example "ABA") instead of full URLs. If automatic discovery returns
+# nothing, these codes keep the importer usable.
+KNOWN_BRAND_CODES = [
+    "ABA", "ALF", "AST", "AUD", "BMW", "BYD", "CAD", "CHE", "CHC", "CIR",
+    "CIT", "CUP", "DAC", "DOD", "DR", "DS", "EVO", "FER", "FIA", "FOR",
+    "GMC", "HON", "HYU", "INE", "JAG", "JEE", "KIA", "LAN", "LND", "LEX",
+    "LOT", "MAS", "MAZ", "MCL", "MER", "MG", "MIL", "MIN", "MIT", "NIS",
+    "OPE", "PEU", "POL", "POR", "REN", "ROL", "SEA", "SKO", "SMA", "SUB",
+    "SUZ", "TES", "TOY", "VLV", "VLK", "VOL"
+]
+
+
 FUEL_CODE_BY_LABEL = {
     "elettrica": "E",
     "elettrica_idrogeno": "EH",
@@ -114,20 +127,56 @@ def extract_links(page, pattern: str) -> list[str]:
     values = page.evaluate("""
         () => {
           const out = [];
-          document.querySelectorAll('a[href], option[value]').forEach(el => {
-            const value = el.getAttribute('href') || el.getAttribute('value') || '';
-            if (value) out.push(value);
+
+          document.querySelectorAll('a[href], option[value], [data-href], [data-url], [data-value]').forEach(el => {
+            ['href', 'value', 'data-href', 'data-url', 'data-value'].forEach(attr => {
+              const value = el.getAttribute(attr);
+              if (value) out.push(value);
+            });
           });
+
+          // Some menus keep brand codes as visible text rather than value attributes.
+          document.querySelectorAll('option, li, button, a').forEach(el => {
+            const text = (el.innerText || el.textContent || '').trim();
+            if (/^[A-Z0-9]{2,4}$/.test(text)) out.push(text);
+          });
+
+          // Also inspect rendered HTML for hidden URLs.
+          out.push(document.documentElement.innerHTML || '');
+
           return out;
         }
     """)
+
     links = []
     rx = re.compile(pattern, re.I)
+
     for value in values:
+        if not value:
+            continue
+
+        value = str(value).strip()
+
+        # Raw brand code case: "ABA" => /auto/scheda-modello/ABA
+        if re.fullmatch(r"[A-Z0-9]{2,4}", value):
+            url = f"{BASE}/auto/scheda-modello/{value}"
+            path = urllib.parse.urlparse(url).path
+            if rx.search(path) and url not in links:
+                links.append(url)
+            continue
+
+        # Hidden HTML may contain many URLs.
+        for match in re.findall(r"/auto/scheda-modello(?:/modello/\d+/allestimento/[A-Za-z0-9_-]+|/[A-Z0-9]{2,4})", value):
+            url = full_url(match)
+            path = urllib.parse.urlparse(url).path
+            if rx.search(path) and url not in links:
+                links.append(url)
+
         url = full_url(value)
         path = urllib.parse.urlparse(url).path
         if rx.search(path) and url not in links:
             links.append(url)
+
     return links
 
 def rendered_text(page) -> str:
@@ -440,7 +489,10 @@ def main() -> None:
                 page.goto(LIST_URL, wait_until="domcontentloaded", timeout=args.timeout)
                 page.wait_for_timeout(2500)
                 requests_count += 1
-                brand_urls = extract_links(page, r"^/auto/scheda-modello/[A-Z0-9]{2,}$")
+                brand_urls = extract_links(page, r"^/auto/scheda-modello/[A-Z0-9]{2,4}$")
+                if not brand_urls:
+                    print("  automatic brand discovery returned 0 links; using known brand code fallback")
+                    brand_urls = [f"{BASE}/auto/scheda-modello/{code}" for code in KNOWN_BRAND_CODES]
             else:
                 brand_urls = []
                 errors.append({"url": LIST_URL, "error": "blocked_by_robots"})
@@ -462,7 +514,10 @@ def main() -> None:
                 page.wait_for_timeout(2500)
                 requests_count += 1
                 brand_title = rendered_title(page)
+                brand_code = urllib.parse.urlparse(brand_url).path.rstrip("/").split("/")[-1]
                 brand_name = clean(re.sub(r".*modelli\s+", "", brand_title, flags=re.I))
+                if not brand_name or brand_name.lower() in {"motornet.it", "listino", "listini", "auto"}:
+                    brand_name = brand_code
                 detail_links = extract_links(page, r"^/auto/scheda-modello/modello/\d+/allestimento/[^/]+$")
                 print("  detail links:", len(detail_links))
             except Exception as exc:
