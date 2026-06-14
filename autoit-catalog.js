@@ -1,5 +1,6 @@
 (function(){
-  const AUTOIT_CATALOG_URL = 'data/cars_autoit.json';
+  const CATALOG_URL = 'data/cars_motornet.json';
+  const CATALOG_NAME = 'Motornet';
 
   const FUEL_BY_CODE = {
     E: 'elettrica',
@@ -30,27 +31,26 @@
     ibrida_metano: 'Ibrida metano'
   };
 
+  const BRAND_CLEANUPS = [
+    /^e\s+listini\s+del\s+nuovo\s+/i,
+    /^listini\s+del\s+nuovo\s+/i,
+    /^modelli\s+/i,
+    /^modello\s+/i
+  ];
+
   function byId(id){ return document.getElementById(id); }
   function uniqueSorted(values){ return [...new Set(values.filter(Boolean))].sort(); }
   function esc(value){ return String(value || '').replace(/"/g,'&quot;'); }
   function optionListLocal(values, label){ return '<option value="all">'+(label || 'Tutte')+'</option>'+values.map(v=>'<option value="'+esc(v)+'">'+(FUEL_LABELS[v] || v)+'</option>').join(''); }
   function fuelOptions(values, includeAll){ return (includeAll ? '<option value="all">Tutti</option>' : '') + values.map(v=>'<option value="'+esc(v)+'">'+(FUEL_LABELS[v] || v)+'</option>').join(''); }
 
-  function injectAutoItStyles(){
-    if(document.getElementById('autoitInjectedStyles')) return;
-    const style = document.createElement('style');
-    style.id = 'autoitInjectedStyles';
-    style.textContent = '#evVisual{max-width:860px}.car-photo{cursor:zoom-in}.car-art.has-photo,.mini-photo.has-photo{cursor:zoom-in}.car-visual{width:100%;max-width:100%;grid-template-columns:minmax(0,190px) minmax(0,1fr);overflow:hidden}.car-visual>div{min-width:0}.car-visual b,.car-visual span,.car-visual em{overflow-wrap:anywhere;word-break:normal}.car-art.has-photo,.mini-photo.has-photo{background:#eef4f0}.car-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:28px}.car-lightbox.active{display:flex}.car-lightbox img{max-width:min(1120px,94vw);max-height:82vh;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.45);object-fit:contain}.car-lightbox-close{position:absolute;top:22px;right:22px;width:48px;height:48px;padding:0;border-radius:999px;background:#fff;color:#07110e;font-size:32px;line-height:1}.car-lightbox-caption{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);max-width:90vw;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.92);font-weight:900;color:#07110e;text-align:center}@media(max-width:760px){.car-visual{grid-template-columns:1fr}.car-lightbox{padding:16px}.car-lightbox img{max-width:96vw;max-height:78vh;border-radius:18px}.car-lightbox-close{top:14px;right:14px}}';
-    document.head.appendChild(style);
-  }
-
   function cleanName(value){
-    return String(value || '')
+    let text = String(value || '')
       .replace(/\bundefined\b/gi,'')
-      .replace(/^Modelli\s+/i,'')
-      .replace(/^Modello\s+/i,'')
       .replace(/\s+/g,' ')
       .trim();
+    BRAND_CLEANUPS.forEach(rx => { text = text.replace(rx,'').trim(); });
+    return text;
   }
 
   function stripBrand(value, brand){
@@ -65,7 +65,7 @@
   function normalizeFuel(car){
     const code = String(car.fuel_code || '').toUpperCase();
     if(FUEL_BY_CODE[code]) return FUEL_BY_CODE[code];
-    const raw = String(car.fuel || '').toLowerCase();
+    const raw = String(car.fuel || car.fuel_original || '').toLowerCase();
     if(FUEL_LABELS[raw]) return raw;
     if(raw.includes('idrogeno')) return 'elettrica_idrogeno';
     if(raw.includes('ibrida') && raw.includes('diesel')) return 'ibrida_diesel';
@@ -76,7 +76,7 @@
     if(raw.includes('gpl')) return 'gpl';
     if(raw.includes('metano')) return 'metano';
     if(raw.includes('benzina')) return 'benzina';
-    if(raw.includes('elettrica')) return 'elettrica';
+    if(raw.includes('elettr')) return 'elettrica';
     return raw || 'benzina';
   }
 
@@ -103,17 +103,6 @@
     } catch(e) {}
   }
 
-  function resolveModel(car, brand){
-    const rawModel = cleanName(car.model);
-    const versionModel = stripBrand(car.version, brand);
-    const powertrainModel = stripBrand(car.powertrain, brand);
-    const strippedModel = stripBrand(rawModel, brand);
-    const b = cleanName(brand).toLowerCase();
-    const m = cleanName(rawModel).toLowerCase();
-    const badModel = !strippedModel || strippedModel.toLowerCase() === b || m === (b+' '+b).trim() || /undefined/i.test(rawModel);
-    return badModel ? (versionModel || powertrainModel || strippedModel || 'Modello Auto.it') : strippedModel;
-  }
-
   function positiveNumber(value){
     const n = Number(value);
     return Number.isFinite(n) && n > 0 ? n : undefined;
@@ -122,14 +111,11 @@
   function estimateEvConsumption(car, fuel){
     const direct = positiveNumber(car.consumption_kwh_100km);
     if(direct) return direct;
-
     const battery = positiveNumber(car.battery_kwh);
     const range = positiveNumber(car.range_wltp_km);
     if(battery && range) return Math.round((battery / range * 100) * 10) / 10;
-
     const price = positiveNumber(car.price_eur) || 0;
     const text = (String(car.brand || '')+' '+String(car.model || '')+' '+String(car.version || '')+' '+String(car.powertrain || '')).toLowerCase();
-
     if(fuel === 'elettrica_idrogeno') return 18;
     if(text.includes('suv') || text.includes('maybach') || text.includes('spectre') || (battery && battery >= 95) || price >= 100000) return 22;
     if((battery && battery >= 75) || price >= 65000) return 19.5;
@@ -137,13 +123,37 @@
     return 17.5;
   }
 
+  function resolveModel(car, brand){
+    const rawModel = cleanName(car.model);
+    const versionModel = stripBrand(car.version, brand);
+    const powertrainModel = stripBrand(car.powertrain, brand);
+    const strippedModel = stripBrand(rawModel, brand);
+    const b = cleanName(brand).toLowerCase();
+    const m = cleanName(rawModel).toLowerCase();
+    const badModel = !strippedModel || strippedModel.toLowerCase() === b || m === (b+' '+b).trim() || /undefined/i.test(rawModel) || /^e\s+listini\s+del\s+nuovo/i.test(rawModel);
+    return badModel ? (versionModel || powertrainModel || strippedModel || 'Modello Motornet') : strippedModel;
+  }
+
+  function normalizeBrand(car){
+    let brand = cleanName(car.brand);
+    const version = cleanName(car.version || car.model || car.powertrain || '');
+    if(!brand || /^e\s+listini\s+del\s+nuovo/i.test(car.brand || '')){
+      brand = cleanName(String(car.brand || '').replace(/^e\s+listini\s+del\s+nuovo\s+/i,''));
+      if(!brand){
+        const m = version.match(/^([A-Z][A-Za-zÀ-ÿ-]+(?:\s+[A-Z][A-Za-zÀ-ÿ-]+)?)/);
+        brand = m ? cleanName(m[1]) : 'Motornet';
+      }
+    }
+    return brand;
+  }
+
   function normalizeCar(car){
     const fuel = normalizeFuel(car);
     const category = fuel === 'elettrica' || fuel === 'elettrica_idrogeno' ? 'electric' : 'thermal';
-    const brand = cleanName(car.brand) || 'Auto.it';
+    const brand = normalizeBrand(car);
     const model = resolveModel(car, brand);
-    const evConsumption = category === 'electric' ? estimateEvConsumption(car, fuel) : positiveNumber(car.consumption_kwh_100km);
     const rawEvConsumption = positiveNumber(car.consumption_kwh_100km);
+    const evConsumption = category === 'electric' ? estimateEvConsumption(car, fuel) : rawEvConsumption;
     return {
       ...car,
       brand,
@@ -164,14 +174,23 @@
 
   function validCar(car){ return car && car.id && car.brand && car.model && Number(car.price_eur || 0) > 0; }
 
+  function injectCatalogStyles(){
+    if(document.getElementById('catalogInjectedStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'catalogInjectedStyles';
+    style.textContent = '#evVisual{max-width:860px}.car-photo{cursor:zoom-in}.car-art.has-photo,.mini-photo.has-photo{cursor:zoom-in}.car-visual{width:100%;max-width:100%;grid-template-columns:minmax(0,190px) minmax(0,1fr);overflow:hidden}.car-visual>div{min-width:0}.car-visual b,.car-visual span,.car-visual em{overflow-wrap:anywhere;word-break:normal}.car-art.has-photo,.mini-photo.has-photo{background:#eef4f0}.car-lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:28px}.car-lightbox.active{display:flex}.car-lightbox img{max-width:min(1120px,94vw);max-height:82vh;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.45);object-fit:contain}.car-lightbox-close{position:absolute;top:22px;right:22px;width:48px;height:48px;padding:0;border-radius:999px;background:#fff;color:#07110e;font-size:32px;line-height:1}.car-lightbox-caption{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);max-width:90vw;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.92);font-weight:900;color:#07110e;text-align:center}@media(max-width:760px){.car-visual{grid-template-columns:1fr}.car-lightbox{padding:16px}.car-lightbox img{max-width:96vw;max-height:78vh;border-radius:18px}.car-lightbox-close{top:14px;right:14px}}';
+    document.head.appendChild(style);
+  }
+
   function addBadge(evCount, iceCount, partial){
-    if(document.getElementById('autoitCatalogBadge')) return;
+    const old = document.getElementById('autoitCatalogBadge');
+    if(old) old.remove();
     const shell = document.querySelector('.app-shell');
     if(!shell) return;
     const badge = document.createElement('div');
     badge.id = 'autoitCatalogBadge';
     badge.style.cssText = 'margin:0 0 12px;padding:10px 14px;border-radius:999px;background:rgba(66,245,147,.16);border:1px solid rgba(66,245,147,.35);font-weight:800;font-size:.86rem;color:#0b3d26;display:inline-flex;gap:8px;align-items:center';
-    badge.innerHTML = '<i class="fa-solid fa-database"></i> Catalogo Auto.it attivo · '+evCount+' elettriche · '+iceCount+' termiche'+(partial?' · fallback dove manca Auto.it':'');
+    badge.innerHTML = '<i class="fa-solid fa-database"></i> Catalogo '+CATALOG_NAME+' attivo · '+evCount+' elettriche · '+iceCount+' termiche'+(partial?' · fallback dove manca '+CATALOG_NAME:'');
     shell.prepend(badge);
   }
 
@@ -200,10 +219,9 @@
   }
 
   function patchEvSelector(){
-    if(window.__autoitEvSelectorPatched) return;
-    window.__autoitEvSelectorPatched = true;
+    if(window.__catalogEvSelectorPatched) return;
+    window.__catalogEvSelectorPatched = true;
     const originalToggle = typeof toggleManualEv === 'function' ? toggleManualEv : null;
-
     try {
       fillEvSelect = function(){
         ensureEvFuelControl();
@@ -221,7 +239,6 @@
         if(typeof updateNavigation === 'function') updateNavigation();
       };
     } catch(e) {}
-
     try {
       toggleManualEv = function(){
         if(originalToggle) originalToggle();
@@ -248,7 +265,7 @@
 
   function setupLightbox(){
     if(document.getElementById('carImageLightbox')) return;
-    injectAutoItStyles();
+    injectCatalogStyles();
     const box = document.createElement('div');
     box.id = 'carImageLightbox';
     box.className = 'car-lightbox';
@@ -269,17 +286,17 @@
     });
   }
 
-  async function applyAutoItCatalog(attempt){
+  async function applyCatalog(attempt){
     attempt = attempt || 1;
     if(typeof EV === 'undefined' || typeof IC === 'undefined' || typeof IMG === 'undefined'){
-      if(attempt < 20) setTimeout(()=>applyAutoItCatalog(attempt+1), 500);
+      if(attempt < 20) setTimeout(()=>applyCatalog(attempt+1), 500);
       return;
     }
     patchLegacyFuelHelpers();
     setupLightbox();
     let payload;
     try{
-      const response = await fetch(AUTOIT_CATALOG_URL+'?v='+Date.now());
+      const response = await fetch(CATALOG_URL+'?v='+Date.now());
       if(!response.ok) return;
       payload = await response.json();
     }catch(e){ return; }
@@ -296,12 +313,12 @@
     if(autoIc.length) IC = autoIc;
 
     imported.forEach(car=>{
-      if(car.image_url){ IMG[car.id] = {src: car.image_url, source: car.source_site || 'auto.it / motornet.it', license: 'autorizzata'}; }
+      if(car.image_url){ IMG[car.id] = {src: car.image_url, source: car.source_site || CATALOG_NAME, license: 'autorizzata'}; }
     });
 
     addBadge(autoEv.length || oldEvCount, autoIc.length || oldIcCount, !autoEv.length || !autoIc.length);
     refillControls();
   }
 
-  window.addEventListener('load',()=>setTimeout(()=>applyAutoItCatalog(),700));
+  window.addEventListener('load',()=>setTimeout(()=>applyCatalog(),700));
 })();
