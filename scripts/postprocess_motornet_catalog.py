@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 from typing import Any
 
@@ -24,6 +25,10 @@ BAD_PRICE_KEYWORDS = (
     "batteria",
     "velocità",
     "accelerazione",
+)
+MONEY_RE = re.compile(
+    r"(?<![\w/])(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d{5,7}(?:,\d{1,2})?)\s*(?:€|eur)",
+    re.I,
 )
 
 
@@ -48,7 +53,6 @@ def parse_number(value: Any) -> float | None:
         raw = raw.replace(",", ".")
     elif raw.count(".") == 1:
         before, after = raw.split(".")
-        # 6.8, 13.7, 17.2 are decimals. 34.400 is a thousands-style integer.
         if len(after) == 3 and len(before) <= 3:
             raw = before + after
     elif raw.count(".") > 1:
@@ -60,23 +64,24 @@ def parse_number(value: Any) -> float | None:
 
 
 def parse_money(value: Any) -> int | None:
-    text = clean(value)
+    text = clean(value).replace("\xa0", " ")
     if not text:
         return None
-    match = re.search(r"\d{1,3}(?:[.\s]\d{3})+(?:,\d+)?|\d{4,7}(?:,\d+)?", text)
+
+    match = MONEY_RE.search(text)
     if not match:
         return None
-    raw = match.group(0).replace(" ", "")
-    if "," in raw:
-        raw = raw.split(",", 1)[0]
-    raw = raw.replace(".", "")
+
+    raw = match.group(1).replace(" ", "").replace(".", "").replace(",", ".")
     try:
-        value_int = int(raw)
-    except ValueError:
+        amount = Decimal(raw)
+    except InvalidOperation:
         return None
-    if 5000 <= value_int <= 1000000:
-        return value_int
-    return None
+
+    if amount < Decimal("7000") or amount > Decimal("3000000"):
+        return None
+
+    return int(amount.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
 def specs(car: dict[str, Any]) -> dict[str, Any]:
@@ -98,7 +103,7 @@ def find_price(car: dict[str, Any]) -> int | None:
         if any(bad in k for bad in BAD_PRICE_KEYWORDS):
             continue
         if any(token in k for token in PRICE_KEYWORDS):
-            money = parse_money(value)
+            money = parse_money(f"{key} {value}")
             if money:
                 return money
     return None
@@ -160,21 +165,19 @@ def fix_price(car: dict[str, Any]) -> bool:
     if price:
         if current_int != price:
             car["price_eur"] = price
-            car["price_source"] = "motornet_specs_raw"
+            car["price_source"] = "motornet_prezzo_di_listino"
             car.pop("price_missing", None)
             return True
-        car["price_source"] = "motornet_specs_raw"
+        car["price_source"] = "motornet_prezzo_di_listino"
         car.pop("price_missing", None)
         return False
 
-    # No explicit price label: never keep a number that is actually cilindrata/power/CO2/etc.
     if current_int is not None and price_equals_non_price_field(car, current_int):
         car.pop("price_eur", None)
         car["price_missing"] = True
         car["price_source"] = "not_found_in_motornet_specs"
         return True
 
-    # For very low imported prices, be conservative: likely not a real new-car list price.
     if current_int is not None and current_int < 8000:
         car.pop("price_eur", None)
         car["price_missing"] = True
@@ -204,10 +207,10 @@ def main() -> None:
             missing_prices += 1
 
     data["postprocess"] = {
-        "version": "motornet_price_consumption_v1",
+        "version": "motornet_price_consumption_v2",
         "changed_fields": changed,
         "missing_prices": missing_prices,
-        "rule": "prices only from explicit Motornet price/listino fields; no global numeric fallback",
+        "rule": "prices only from explicit Motornet euro price/listino fields; no global numeric fallback",
     }
     CATALOG.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Postprocessed Motornet catalogue: changed={changed}, missing_prices={missing_prices}, cars={len(cars)}")
