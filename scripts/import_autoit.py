@@ -91,11 +91,16 @@ def json_blocks(soup):
 def discover_links(html):
     soup = BeautifulSoup(html, "html.parser")
     links = []
+
     for a in soup.find_all("a", href=True):
         url = full_url(a["href"])
         path = urllib.parse.urlparse(url).path
-        if "/listino-nuovo/" in path and "/search" not in path and url not in links:
+
+        is_model_page = path.startswith("/marche/") and "/modelli/" in path
+
+        if is_model_page and url not in links:
             links.append(url)
+
     return links
 
 def first_hrefs(html, limit=20):
