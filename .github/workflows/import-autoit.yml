@@ -6,7 +6,7 @@ on:
       limit:
         description: 'Numero massimo auto da importare'
         required: false
-        default: '40'
+        default: '650'
       pages_per_fuel:
         description: 'Pagine lista per alimentazione'
         required: false
@@ -14,7 +14,11 @@ on:
       delay:
         description: 'Secondi tra richieste'
         required: false
-        default: '8'
+        default: '25'
+      backoff:
+        description: 'Secondi di pausa se Auto.it/CDN risponde 429'
+        required: false
+        default: '120'
 
 permissions:
   contents: write
@@ -22,6 +26,7 @@ permissions:
 jobs:
   import-autoit:
     runs-on: ubuntu-latest
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,7 +40,11 @@ jobs:
           pip install requests beautifulsoup4
       - name: Import Auto.it catalogue
         run: |
-          python scripts/import_autoit.py --limit "${{ github.event.inputs.limit }}" --pages-per-fuel "${{ github.event.inputs.pages_per_fuel }}" --delay "${{ github.event.inputs.delay }}"
+          python scripts/import_autoit.py \
+            --limit "${{ github.event.inputs.limit }}" \
+            --pages-per-fuel "${{ github.event.inputs.pages_per_fuel }}" \
+            --delay "${{ github.event.inputs.delay }}" \
+            --backoff "${{ github.event.inputs.backoff }}"
       - name: Commit imported catalogue
         run: |
           git config user.name "github-actions"
