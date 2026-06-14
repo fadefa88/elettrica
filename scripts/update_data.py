@@ -2,6 +2,7 @@
 import csv, io, json, re, statistics
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import unquote
 import requests
 from openpyxl import load_workbook
 
@@ -71,16 +72,39 @@ def mimit():
             print('MIMIT source failed', url, e)
     return {}
 
+def pick_eu_link(html):
+    links = re.findall(r'href=["\']([^"\']+)["\']', html)
+    links = [l.replace('&amp;','&') for l in links]
+    candidates = []
+    for l in links:
+        decoded = unquote(l).lower()
+        if 'document/download' in decoded and ('xlsx' in decoded or 'spreadsheet' in decoded):
+            candidates.append(l)
+        elif '.xlsx' in decoded:
+            candidates.append(l)
+    def score(l):
+        d = unquote(l).lower()
+        s = 0
+        if 'with+taxes' in d or 'with taxes' in d: s += 100
+        if 'without+taxes' in d or 'without taxes' in d: s -= 100
+        if 'duties' in d or 'taxes+-' in d or 'taxes -' in d: s -= 25
+        if 'latest' in d or 'weekly' in d: s += 10
+        if 'price' in d or 'prices' in d: s += 5
+        return s
+    candidates = sorted(candidates, key=score, reverse=True)
+    print('EU candidate links', len(candidates), candidates[:3])
+    if not candidates: return None
+    l = candidates[0]
+    return 'https://energy.ec.europa.eu'+l if l.startswith('/') else l
+
 def eu_weekly():
     try:
         page = requests.get(EU_PAGE, timeout=(6,20), headers={'User-Agent':'Mozilla/5.0 elettrica-tco'})
         page.raise_for_status()
-        links = re.findall(r'href="([^"]+?\.xlsx[^"]*)"', page.text)
-        url = None
-        for l in links:
-            if any(x in l.lower() for x in ['weekly','tax','price']):
-                url = ('https://energy.ec.europa.eu'+l if l.startswith('/') else l).replace('&amp;','&'); break
-        if not url: return {}
+        url = pick_eu_link(page.text)
+        if not url:
+            print('EU source failed: no xlsx/document download link found')
+            return {}
         x = requests.get(url, timeout=(6,35), headers={'User-Agent':'Mozilla/5.0 elettrica-tco'}); x.raise_for_status()
         wb = load_workbook(io.BytesIO(x.content), data_only=True, read_only=True)
         candidates=[]; italy=0
@@ -91,7 +115,9 @@ def eu_weekly():
                     italy += 1
                     nums=[val(c) for c in cells]; nums=[n for n in nums if n and .5 <= n <= 3]
                     if len(nums) >= 2: candidates.append(nums)
-        if not candidates: return {}
+        if not candidates:
+            print('EU source failed: no Italy numeric row')
+            return {}
         nums=candidates[0]
         data={'benzina':round(max(nums[:3]),3),'gasolio':round(sorted(nums[:4])[1] if len(nums)>=4 else nums[1],3),'source':url,'frequency':'weekly_eu','samples':{'italy_rows':italy}}
         print('EU weekly parsed', data)
