@@ -1,8 +1,27 @@
 {
   "source": "auto.it",
-  "status": "empty",
-  "scraped_at": "2026-06-14T14:58:30+00:00",
+  "status": "ok",
+  "scraped_at": "2026-06-14T15:01:40+00:00",
   "schema": "cars_autoit_v1",
-  "cars": [],
+  "cars": [
+    {
+      "id": "autoit_e_04803eb47805",
+      "brand": "Ferrari",
+      "model": "Ferrari undefined",
+      "version": "Modelli Ferrari Luce",
+      "powertrain": "Modelli Ferrari Luce",
+      "fuel": "elettrica",
+      "fuel_code": "E",
+      "category": "electric",
+      "source_site": "auto.it",
+      "source_url": "https://www.auto.it/marche/ferrari-fer/modelli/luce-3561",
+      "scraped_at": "2026-06-14T15:01:40+00:00",
+      "price_source": "autoit_listino_nuovo",
+      "power_kw": 0.0,
+      "power_cv": 0,
+      "battery_kwh": 122.0,
+      "price_eur": 550000
+    }
+  ],
   "errors": []
 }
