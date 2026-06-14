@@ -34,38 +34,38 @@
         <p class="eyebrow">Auto elettrica</p>
         <h2>Sai già che auto elettrica comprare?</h2>
         <p class="muted">Scegli marca e modello. Il prezzo resta separato e bloccato: lo cambi solo con override.</p>
-        <div class="card soft"><div class="controls"><label>Marca EV<select id="evBrandPick"><option value="all">Tutte</option></select></label><label>Modello EV<select id="evSelect"></select></label></div><small id="evChoiceHint" class="hint"></small></div>
-        <div class="card soft price-override"><label class="locked"><span><input id="overrideEvPurchase" type="checkbox"> Override prezzo auto elettrica</span><input id="evPurchase" type="number" value="35000" step="500" readonly></label><small id="evPriceNote" class="hint">Prezzo indicativo da verificare con configuratore/listino ufficiale.</small></div>
+        <div class="card soft"><div class="controls"><label>Marca EV<select id="evBrandPick"><option value="all">Tutte</option></select></label><label>Modello EV<select id="evSelect"></select></label></div><small id="evChoiceHint" class="hint muted-hint"></small></div>
+        <div class="card soft price-override"><label class="locked"><span><input id="overrideEvPurchase" type="checkbox"> Override prezzo auto elettrica</span><input id="evPurchase" type="number" value="35000" step="500" readonly></label></div>
       </section>
 
       <section class="screen" data-step="2">
         <p class="eyebrow">Auto termica</p>
         <h2>Hai pensato a cosa prendere come alternativa termica?</h2>
         <p class="muted">Scegli il modello termico. Anche qui il prezzo sta sotto e si modifica solo con override.</p>
-        <div class="card soft"><div class="controls"><label>Carburante<select id="iceFuelPick"><option value="all">Tutti</option><option value="benzina">Benzina</option><option value="diesel">Diesel</option><option value="gpl">GPL</option><option value="metano">Metano</option></select></label><label>Marca termica<select id="iceBrandPick"><option value="all">Tutte</option></select></label><label class="full">Modello termica<select id="iceSelect"></select></label></div><small id="iceChoiceHint" class="hint"></small></div>
-        <div class="card soft price-override"><label class="locked"><span><input id="overridePurchase" type="checkbox"> Override prezzo auto termica</span><input id="icePurchase" type="number" value="30000" step="500" readonly></label><small id="icePriceNote" class="hint">Prezzo indicativo da verificare con configuratore/listino ufficiale.</small></div>
+        <div class="card soft"><div class="controls"><label>Carburante<select id="iceFuelPick"><option value="all">Tutti</option><option value="benzina">Benzina</option><option value="diesel">Diesel</option><option value="gpl">GPL</option><option value="metano">Metano</option></select></label><label>Marca termica<select id="iceBrandPick"><option value="all">Tutte</option></select></label><label class="full">Modello termica<select id="iceSelect"></select></label></div><small id="iceChoiceHint" class="hint muted-hint"></small></div>
+        <div class="card soft price-override"><label class="locked"><span><input id="overridePurchase" type="checkbox"> Override prezzo auto termica</span><input id="icePurchase" type="number" value="30000" step="500" readonly></label></div>
       </section>
 
       <section class="screen" data-step="3">
         <p class="eyebrow">Tempo e percorrenza</p>
         <h2>Per quanto tempo vuoi tenere la macchina?</h2>
         <p class="muted">Questi due dati incidono moltissimo su break-even e risparmio totale.</p>
-        <div class="card soft"><div class="controls"><label>Anni di possesso<input id="years" type="number" value="5" min="1" max="20"></label><label>Km annui previsti<input id="annualKm" type="number" value="15000" step="1000"></label></div></div>
+        <div class="card soft big-input-card"><div class="controls big-controls"><label>Anni di possesso<input id="years" type="number" value="5" min="1" max="20"></label><label>Km annui previsti<input id="annualKm" type="number" value="15000" step="1000"></label></div></div>
       </section>
 
       <section class="screen" data-step="4">
         <p class="eyebrow">Carburante, colonnine e costi veicolo</p>
         <h2>Questi sono i costi usati per il veicolo scelto.</h2>
-        <p class="muted">Mostro solo il carburante della termica selezionata. Se l'elettrica è Tesla, il costo colonnine usa la tariffa Tesla indicativa.</p>
         <div class="price-grid two"><div class="highlight"><small id="selectedFuelLabel">Carburante</small><b id="selectedFuelPrice">-</b></div><div class="highlight"><small id="selectedPublicLabel">Colonnine</small><b id="selectedPublicPrice">-</b></div></div>
         <div class="card soft"><div class="controls dense"><label class="locked"><span><input id="overrideFuelPrice" type="checkbox"> Override costo carburante</span><input id="fuelCostPrice" type="number" value="1.80" step="0.01" readonly></label><label class="locked"><span><input id="overridePublicCharge" type="checkbox"> Override costo colonnine</span><input id="publicChargePrice" type="number" value="0.74" step="0.01" readonly></label><label class="locked"><span><input id="overrideConsumption" type="checkbox"> Override consumo termica</span><input id="iceConsumption" type="number" value="5.5" step="0.1" readonly></label><label class="locked"><span><input id="overrideEvMaintenance" type="checkbox"> Override manutenzione EV</span><input id="evMaintenance" type="number" value="250" step="50" readonly></label><label class="locked"><span><input id="overrideIceMaintenance" type="checkbox"> Override manutenzione termica</span><input id="iceMaintenance" type="number" value="600" step="50" readonly></label><label class="locked"><span><input id="overrideIceTax" type="checkbox"> Override bollo termica</span><input id="iceTax" type="number" value="250" step="25" readonly></label><label class="locked"><span><input id="overrideEvTax" type="checkbox"> Override bollo EV dopo 5 anni</span><input id="evTaxAfter5" type="number" value="65" step="25" readonly></label><select id="iceType" class="hidden-field"><option value="diesel">Diesel</option><option value="benzina">Benzina</option><option value="gpl">GPL</option><option value="metano">Metano</option></select></div></div>
+        <p class="source-note" id="costsFootnote">* I costi vengono aggiornati in base ai dati disponibili.</p>
       </section>
 
       <section class="screen" data-step="5">
         <p class="eyebrow">Uso elettrico casa</p>
         <h2>Imposta quanto elettrico usi a casa.</h2>
-        <p class="muted">Qui definiamo quanto ricarichi a casa, quanta parte è coperta da fotovoltaico e che costo energetico usare.</p>
-        <div class="card soft"><div class="controls dense"><label>Ricarica EV a casa %<input id="homeShare" type="number" value="80" step="5"></label><label class="locked"><span><input id="noPv" type="checkbox"> Non ho impianto fotovoltaico</span><input id="solarShare" type="number" value="0" step="5"></label><label>Prezzo casa €/kWh<input id="homePrice" type="number" value="0.30" step="0.01"></label><label>Costo fotovoltaico €/kWh<input id="solarPrice" type="number" value="0.08" step="0.01"></label></div><div class="explain small"><b>Costo fotovoltaico €/kWh:</b> non è la bolletta. È una stima del costo/opportunità dell'energia prodotta dall'impianto: ammortamento, mancato ritiro/scambio, degrado e costi indiretti. Se non hai fotovoltaico, spunta “Non ho impianto fotovoltaico”.</div></div>
+        <p class="muted">Qui definiamo quanto ricarichi a casa e quanta energia della ricarica domestica viene coperta dal fotovoltaico.</p>
+        <div class="card soft"><div class="controls dense"><label>Ricarica EV a casa %<input id="homeShare" type="number" value="80" step="5"></label><label>Prezzo casa €/kWh<input id="homePrice" type="number" value="0.30" step="0.01"></label><label class="locked"><span>Quota ricarica casa coperta da fotovoltaico %</span><input id="solarShare" type="number" value="0" step="5"></label><label>Costo fotovoltaico €/kWh<input id="solarPrice" type="number" value="0.08" step="0.01"></label><label class="choice"><span><input id="noPv" type="checkbox"> Non ho impianto fotovoltaico</span></label><label class="choice"><span><input id="unknownPv" type="checkbox"> Non so: usa copertura media stimata</span></label></div><div class="explain small"><b>Quota fotovoltaico:</b> indica quale percentuale dell'energia usata per ricaricare a casa viene coperta dal tuo impianto. Se scegli “Non so”, il sito imposta automaticamente una copertura media stimata. <br><b>Costo fotovoltaico €/kWh:</b> non è la bolletta. È una stima del costo/opportunità dell'energia prodotta dall'impianto: ammortamento, mancato ritiro/scambio, degrado e costi indiretti.</div></div>
       </section>
 
       <section class="screen" data-step="6">
