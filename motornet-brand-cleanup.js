@@ -1,8 +1,8 @@
 (function(){
   const BRAND_BY_CODE = {
-    ABA:'Abarth', ALF:'Alfa Romeo', ALP:'Alpine', AST:'Aston Martin', AUD:'Audi', BEN:'Bentley', BNT:'Bentley', BMW:'BMW', BYD:'BYD', FER:'Ferrari', FIA:'Fiat', FOR:'Ford', HON:'Honda', HYU:'Hyundai', JAG:'Jaguar', JEE:'Jeep', KIA:'Kia', LAN:'Lancia', LND:'Land Rover', LEX:'Lexus', MAS:'Maserati', MAZ:'Mazda', MCL:'McLaren', MER:'Mercedes', MG:'MG', MIN:'Mini', MIL:'Mini', NIS:'Nissan', OPE:'Opel', PEU:'Peugeot', POR:'Porsche', REN:'Renault', ROL:'Rolls-Royce', SEA:'Seat', SKO:'Skoda', SMA:'Smart', SUB:'Subaru', SUZ:'Suzuki', TES:'Tesla', TOY:'Toyota', VLK:'Volkswagen', VLV:'Volvo', VOL:'Volvo'
+    ABA:'Abarth', ALF:'Alfa Romeo', ALP:'Alpine', AST:'Aston Martin', AUD:'Audi', BEN:'Bentley', BNT:'Bentley', BST:'Bestune', BES:'Bestune', BMW:'BMW', BYD:'BYD', FER:'Ferrari', FIA:'Fiat', FOR:'Ford', HON:'Honda', HYU:'Hyundai', JAG:'Jaguar', JEE:'Jeep', KIA:'Kia', LAN:'Lancia', LND:'Land Rover', LEX:'Lexus', MAS:'Maserati', MAZ:'Mazda', MCL:'McLaren', MER:'Mercedes', MG:'MG', MIN:'Mini', MIL:'Mini', NIS:'Nissan', OPE:'Opel', PEU:'Peugeot', POR:'Porsche', REN:'Renault', ROL:'Rolls-Royce', SEA:'Seat', SKO:'Skoda', SMA:'Smart', SUB:'Subaru', SUZ:'Suzuki', TES:'Tesla', TOY:'Toyota', VLK:'Volkswagen', VLV:'Volvo', VOL:'Volvo'
   };
-  const KNOWN = Array.from(new Set(Object.values(BRAND_BY_CODE).concat(['Bentley','Alfa Romeo','Rolls-Royce','Aston Martin','Land Rover','Mercedes-Benz']))).sort(function(a,b){return b.length-a.length;});
+  const KNOWN = Array.from(new Set(Object.values(BRAND_BY_CODE).concat(['Bentley','Bestune','Alfa Romeo','Rolls-Royce','Aston Martin','Land Rover','Mercedes-Benz']))).sort(function(a,b){return b.length-a.length;});
 
   function byId(id){ return document.getElementById(id); }
   function tidy(v){
