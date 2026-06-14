@@ -6,6 +6,13 @@
 
   function byId(id){ return document.getElementById(id); }
 
+  function normalizeKey(value){
+    return String(value || '')
+      .toLowerCase()
+      .replace(/\s+/g,' ')
+      .trim();
+  }
+
   function toNumber(value){
     if(value === null || value === undefined) return undefined;
     let text = String(value).trim();
@@ -34,7 +41,7 @@
     const raw = car && car.specs_raw;
     if(!raw || typeof raw !== 'object') return undefined;
     for(const [key, value] of Object.entries(raw)){
-      const k = String(key || '').toLowerCase().replace(/\s+/g,' ');
+      const k = normalizeKey(key);
       if(matchers.some(rx => rx.test(k))){
         const s = String(value || '').trim();
         if(s) return s;
@@ -43,9 +50,27 @@
     return undefined;
   }
 
+  function specExactValue(car, wantedKey){
+    const raw = car && car.specs_raw;
+    if(!raw || typeof raw !== 'object') return {found:false, value:undefined};
+    const wanted = normalizeKey(wantedKey);
+    for(const [key, value] of Object.entries(raw)){
+      if(normalizeKey(key) === wanted){
+        const s = String(value || '').trim();
+        return {found:true, value:s || undefined};
+      }
+    }
+    return {found:false, value:undefined};
+  }
+
   function specNumber(car, matchers){
     const value = specValue(car, matchers);
     return value ? toNumber(value) : undefined;
+  }
+
+  function specExactNumber(car, wantedKey){
+    const hit = specExactValue(car, wantedKey);
+    return {found: hit.found, number: hit.value ? toNumber(hit.value) : undefined};
   }
 
   function specMoney(car, matchers){
@@ -62,22 +87,22 @@
   }
 
   function motornetL100(rawCar){
-    const fromSpec = specNumber(rawCar, [
-      /^consumo\s+combinato$/i,
-      /consumo\s+misto/i,
-      /consumo\s+extraurb/i,
-      /consumo\s+urb/i
-    ]);
-    if(fromSpec) return fromSpec;
+    const combined = specExactNumber(rawCar, 'Consumo Combinato');
+    if(combined.number) return combined.number;
+
+    // If the Motornet JSON has the exact key but the value is a placeholder
+    // such as "Consumo Combinato Max", do not fall back to extraurbano/urbano
+    // or to old imported values. The frontend must reflect the combined field.
+    if(combined.found) return undefined;
+
     return toNumber(rawCar && rawCar.consumption_l_100km);
   }
 
   function motornetKg100(rawCar){
-    return specNumber(rawCar, [
-      /^consumo\s+gas\s+combinato$/i,
-      /consumo\s+metano/i,
-      /kg\s*\/\s*100/i
-    ]) || toNumber(rawCar && rawCar.consumption_kg_100km);
+    const gasCombined = specExactNumber(rawCar, 'Consumo Gas Combinato');
+    if(gasCombined.number) return gasCombined.number;
+    if(gasCombined.found) return undefined;
+    return toNumber(rawCar && rawCar.consumption_kg_100km);
   }
 
   function motornetPrice(rawCar){
@@ -149,9 +174,12 @@
       const l100 = motornetL100(raw);
       if(kg100 && (fuel.includes('metano') || fuel.includes('gas'))){
         car.consumption_kg_100km = kg100;
+        car.consumption_source = 'motornet_specs_raw_consumo_gas_combinato';
         delete car.consumption_l_100km;
       } else if(l100){
         car.consumption_l_100km = l100;
+        car.consumption_source = 'motornet_specs_raw_consumo_combinato';
+        delete car.consumption_kg_100km;
       }
     }
 
