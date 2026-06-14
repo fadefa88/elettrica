@@ -22,9 +22,6 @@ UA = "ElettricaMotornetImporter/1.0 (+https://github.com/fadefa88/elettrica)"
 MODEL_IMAGE_PATH_MARKER = "/img/modelli/auto/"
 IMAGE_ALLOWED_HOST = "motornet.it"
 
-# Fallback: the Motornet brand selector often exposes only raw brand codes
-# (for example "ABA") instead of full URLs. If automatic discovery returns
-# nothing, these codes keep the importer usable.
 KNOWN_BRAND_CODES = [
     "ABA", "ALF", "AST", "AUD", "BMW", "BYD", "CAD", "CHE", "CHC", "CIR",
     "CIT", "CUP", "DAC", "DOD", "DR", "DS", "EVO", "FER", "FIA", "FOR",
@@ -33,7 +30,6 @@ KNOWN_BRAND_CODES = [
     "OPE", "PEU", "POL", "POR", "REN", "ROL", "SEA", "SKO", "SMA", "SUB",
     "SUZ", "TES", "TOY", "VLV", "VLK", "VOL"
 ]
-
 
 FUEL_CODE_BY_LABEL = {
     "elettrica": "E",
@@ -83,6 +79,9 @@ def parse_price(text: str) -> int | None:
 def full_url(url: str) -> str:
     return urllib.parse.urljoin(BASE, str(url or "").split("#")[0])
 
+def path_of(url: str) -> str:
+    return urllib.parse.urlparse(full_url(url)).path
+
 def can_fetch(robots: urllib.robotparser.RobotFileParser, url: str) -> bool:
     try:
         return robots.can_fetch(UA, url)
@@ -123,61 +122,135 @@ def normalise_fuel(raw: str) -> tuple[str, str]:
 def category_for_fuel(fuel: str) -> str:
     return "electric" if fuel in {"elettrica", "elettrica_idrogeno"} else "thermal"
 
-def extract_links(page, pattern: str) -> list[str]:
-    values = page.evaluate("""
-        () => {
-          const out = [];
+def collect_raw_values(page) -> list[str]:
+    try:
+        values = page.evaluate("""
+            () => {
+              const out = [];
+              document.querySelectorAll('a[href], option[value], [data-href], [data-url], [data-value], [href], [value]').forEach(el => {
+                ['href', 'value', 'data-href', 'data-url', 'data-value'].forEach(attr => {
+                  const value = el.getAttribute(attr);
+                  if (value) out.push(value);
+                });
+              });
+              document.querySelectorAll('option, li, button, a, [role="option"], [role="menuitem"]').forEach(el => {
+                const text = (el.innerText || el.textContent || '').trim();
+                if (text) out.push(text);
+              });
+              out.push(document.documentElement.innerHTML || '');
+              return out;
+            }
+        """)
+    except Exception:
+        values = []
+    return [str(v).strip() for v in values if str(v or "").strip()]
 
-          document.querySelectorAll('a[href], option[value], [data-href], [data-url], [data-value]').forEach(el => {
-            ['href', 'value', 'data-href', 'data-url', 'data-value'].forEach(attr => {
-              const value = el.getAttribute(attr);
-              if (value) out.push(value);
-            });
-          });
-
-          // Some menus keep brand codes as visible text rather than value attributes.
-          document.querySelectorAll('option, li, button, a').forEach(el => {
-            const text = (el.innerText || el.textContent || '').trim();
-            if (/^[A-Z0-9]{2,4}$/.test(text)) out.push(text);
-          });
-
-          // Also inspect rendered HTML for hidden URLs.
-          out.push(document.documentElement.innerHTML || '');
-
-          return out;
-        }
-    """)
-
-    links = []
+def links_from_values(values: list[str], pattern: str) -> list[str]:
+    links: list[str] = []
     rx = re.compile(pattern, re.I)
 
     for value in values:
-        if not value:
-            continue
-
-        value = str(value).strip()
-
-        # Raw brand code case: "ABA" => /auto/scheda-modello/ABA
         if re.fullmatch(r"[A-Z0-9]{2,4}", value):
             url = f"{BASE}/auto/scheda-modello/{value}"
-            path = urllib.parse.urlparse(url).path
-            if rx.search(path) and url not in links:
+            if rx.search(path_of(url)) and url not in links:
                 links.append(url)
             continue
 
-        # Hidden HTML may contain many URLs.
-        for match in re.findall(r"/auto/scheda-modello(?:/modello/\d+/allestimento/[A-Za-z0-9_-]+|/[A-Z0-9]{2,4})", value):
+        # Full/relative URLs in attributes or hidden rendered HTML.
+        for match in re.findall(r"/auto/scheda-modello(?:/modello/\d+(?:/allestimento/[A-Za-z0-9_-]+)?|/[A-Z0-9]{2,4})", value):
             url = full_url(match)
-            path = urllib.parse.urlparse(url).path
-            if rx.search(path) and url not in links:
+            if rx.search(path_of(url)) and url not in links:
+                links.append(url)
+
+        # Sometimes absolute URLs are embedded in JS strings.
+        for match in re.findall(r"https://www\.motornet\.it/auto/scheda-modello(?:/modello/\d+(?:/allestimento/[A-Za-z0-9_-]+)?|/[A-Z0-9]{2,4})", value):
+            url = full_url(match)
+            if rx.search(path_of(url)) and url not in links:
                 links.append(url)
 
         url = full_url(value)
-        path = urllib.parse.urlparse(url).path
-        if rx.search(path) and url not in links:
+        if rx.search(path_of(url)) and url not in links:
             links.append(url)
 
     return links
+
+def extract_links(page, pattern: str) -> list[str]:
+    return links_from_values(collect_raw_values(page), pattern)
+
+def open_possible_dropdowns(page) -> None:
+    selectors = [
+        "text=Seleziona il modello",
+        "text=Seleziona modello",
+        "text=Seleziona",
+        "[role='combobox']",
+        "[aria-haspopup='listbox']",
+        "button:has-text('Seleziona')",
+        "input[placeholder*='modello' i]",
+        "div[class*='control']",
+        "div[class*='select']",
+    ]
+
+    for selector in selectors:
+        try:
+            loc = page.locator(selector).first
+            if loc.count() > 0:
+                loc.click(timeout=2500, force=True)
+                page.wait_for_timeout(900)
+        except Exception:
+            pass
+
+def discover_links_after_clicking_menus(page, pattern: str) -> list[str]:
+    links = extract_links(page, pattern)
+    if links:
+        return links
+
+    # Motornet pages use client-side menus. Open the model/allestimento menus
+    # before inspecting DOM again.
+    open_possible_dropdowns(page)
+    links = extract_links(page, pattern)
+    if links:
+        return links
+
+    # Last resort: click visible dropdown-like items one by one and capture URL
+    # changes. This handles custom select components that do not expose hrefs.
+    captured: list[str] = []
+    current = page.url
+    option_selector = "[role='option'], [id*='option'], li, button, a"
+
+    try:
+        count = min(page.locator(option_selector).count(), 80)
+    except Exception:
+        count = 0
+
+    for index in range(count):
+        try:
+            open_possible_dropdowns(page)
+            loc = page.locator(option_selector).nth(index)
+            text = clean(loc.inner_text(timeout=1200))
+            if not text or text.lower() in {"seleziona", "scheda tecnica", "accessori", "confronta"}:
+                continue
+
+            before = page.url
+            loc.click(timeout=2500, force=True)
+            page.wait_for_timeout(1800)
+            after = page.url
+
+            for url in [after] + extract_links(page, pattern):
+                if re.search(pattern, path_of(url), re.I) and url not in captured:
+                    captured.append(full_url(url))
+
+            # Go back to the brand/model page so next option can be tested.
+            if after != before:
+                page.goto(current, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(1200)
+        except Exception:
+            try:
+                page.goto(current, wait_until="domcontentloaded", timeout=45000)
+                page.wait_for_timeout(1000)
+            except Exception:
+                pass
+
+    return captured
 
 def rendered_text(page) -> str:
     try:
@@ -217,12 +290,11 @@ def table_pairs(page) -> dict[str, str]:
     if pairs:
         return pairs
 
-    # Fallback per layout a div/griglia.
     nodes = page.evaluate("""
         () => Array.from(document.querySelectorAll('td,th,span,div,p'))
           .map(x => (x.innerText || '').trim())
           .filter(Boolean)
-          .slice(0, 2000)
+          .slice(0, 2500)
     """)
     compact = []
     for node in nodes:
@@ -377,7 +449,7 @@ def parse_detail(page, url: str, brand_hint: str | None = None) -> dict | None:
         "fuel": fuel,
         "fuel_code": fuel_code,
         "fuel_original": clean(fuel_raw),
-        "category": "electric" if fuel in {"elettrica", "elettrica_idrogeno"} else "thermal",
+        "category": category_for_fuel(fuel),
         "source_site": "motornet.it",
         "source_url": url,
         "motornet_detail_url": url,
@@ -445,6 +517,40 @@ def git_checkpoint(count: int, image_dir: Path) -> None:
     subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=False)
     subprocess.run(["git", "push"], check=False)
 
+def brand_name_from_page(page, brand_url: str) -> str:
+    brand_title = rendered_title(page)
+    brand_code = urllib.parse.urlparse(brand_url).path.rstrip("/").split("/")[-1]
+    brand_name = clean(re.sub(r".*modelli\s+", "", brand_title, flags=re.I))
+    if not brand_name or brand_name.lower() in {"motornet.it", "listino", "listini", "auto"}:
+        brand_name = brand_code
+    return brand_name
+
+def expand_model_links_to_details(page, model_links: list[str], args, robots, errors, requests_count: int) -> tuple[list[str], int]:
+    detail_links: list[str] = []
+    for model_url in model_links:
+        if "/allestimento/" in model_url:
+            if model_url not in detail_links:
+                detail_links.append(model_url)
+            continue
+
+        if not can_fetch(robots, model_url):
+            errors.append({"url": model_url, "error": "blocked_by_robots"})
+            continue
+
+        try:
+            time.sleep(max(1, args.delay / 2))
+            page.goto(model_url, wait_until="domcontentloaded", timeout=args.timeout)
+            page.wait_for_timeout(1800)
+            requests_count += 1
+            found = discover_links_after_clicking_menus(page, r"^/auto/scheda-modello/modello/\d+/allestimento/[^/]+$")
+            print("    allestimenti:", len(found), model_url)
+            for detail_url in found:
+                if detail_url not in detail_links:
+                    detail_links.append(detail_url)
+        except Exception as exc:
+            errors.append({"url": model_url, "error": f"model_expand: {exc}"})
+    return detail_links, requests_count
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=650)
@@ -489,7 +595,7 @@ def main() -> None:
                 page.goto(LIST_URL, wait_until="domcontentloaded", timeout=args.timeout)
                 page.wait_for_timeout(2500)
                 requests_count += 1
-                brand_urls = extract_links(page, r"^/auto/scheda-modello/[A-Z0-9]{2,4}$")
+                brand_urls = discover_links_after_clicking_menus(page, r"^/auto/scheda-modello/[A-Z0-9]{2,4}$")
                 if not brand_urls:
                     print("  automatic brand discovery returned 0 links; using known brand code fallback")
                     brand_urls = [f"{BASE}/auto/scheda-modello/{code}" for code in KNOWN_BRAND_CODES]
@@ -513,12 +619,16 @@ def main() -> None:
                 page.goto(brand_url, wait_until="domcontentloaded", timeout=args.timeout)
                 page.wait_for_timeout(2500)
                 requests_count += 1
-                brand_title = rendered_title(page)
-                brand_code = urllib.parse.urlparse(brand_url).path.rstrip("/").split("/")[-1]
-                brand_name = clean(re.sub(r".*modelli\s+", "", brand_title, flags=re.I))
-                if not brand_name or brand_name.lower() in {"motornet.it", "listino", "listini", "auto"}:
-                    brand_name = brand_code
-                detail_links = extract_links(page, r"^/auto/scheda-modello/modello/\d+/allestimento/[^/]+$")
+                brand_name = brand_name_from_page(page, brand_url)
+
+                detail_links = discover_links_after_clicking_menus(page, r"^/auto/scheda-modello/modello/\d+/allestimento/[^/]+$")
+                model_links = discover_links_after_clicking_menus(page, r"^/auto/scheda-modello/modello/\d+$")
+                if model_links:
+                    expanded, requests_count = expand_model_links_to_details(page, model_links, args, robots, errors, requests_count)
+                    for detail_url in expanded:
+                        if detail_url not in detail_links:
+                            detail_links.append(detail_url)
+
                 print("  detail links:", len(detail_links))
             except Exception as exc:
                 errors.append({"url": brand_url, "error": str(exc)})
