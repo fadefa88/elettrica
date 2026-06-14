@@ -1,9 +1,17 @@
 {
-  "updated_at": "2026-06-14T09:57:11.758738+00:00",
-  "status": "fallback_previous_values",
+  "updated_at": "2026-06-14T12:00:00+00:00",
+  "status": "seed_italy_fuel_prices",
   "fuel": {
     "benzina": 1.82,
-    "gasolio": 1.7
+    "gasolio": 1.70,
+    "gpl": 0.73,
+    "metano": 1.45,
+    "units": {
+      "benzina": "eur_l",
+      "gasolio": "eur_l",
+      "gpl": "eur_l",
+      "metano": "eur_kg"
+    }
   },
   "electricity": {
     "home": 0.3,
