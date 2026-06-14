@@ -6,6 +6,7 @@ import datetime as dt
 import hashlib
 import json
 import re
+import subprocess
 import time
 import urllib.parse
 import urllib.robotparser
@@ -142,19 +143,7 @@ def is_rejected_image_url(url: str) -> bool:
     parsed = urllib.parse.urlparse(url)
     path = urllib.parse.unquote(parsed.path).lower()
     filename = Path(path).name.lower()
-    rejected_markers = [
-        "logo",
-        "logos",
-        "marchio",
-        "marchi",
-        "brand",
-        "placeholder",
-        "default",
-        "no-image",
-        "no_image",
-        "spacer",
-        "blank",
-    ]
+    rejected_markers = ["logo", "logos", "marchio", "marchi", "brand", "placeholder", "default", "no-image", "no_image", "spacer", "blank"]
     return any(marker in path or marker in filename for marker in rejected_markers)
 
 
@@ -186,22 +175,14 @@ def image_ext_from_url_or_type(url: str, content_type: str) -> str:
 
 def collect_image_candidates(soup: BeautifulSoup, html: str) -> list[str]:
     candidates: list[str] = []
-
-    meta_selectors = [
-        {"property": "og:image"},
-        {"property": "og:image:secure_url"},
-        {"name": "twitter:image"},
-        {"name": "twitter:image:src"},
-    ]
+    meta_selectors = [{"property": "og:image"}, {"property": "og:image:secure_url"}, {"name": "twitter:image"}, {"name": "twitter:image:src"}]
     for selector in meta_selectors:
         tag = soup.find("meta", selector)
         if tag and tag.get("content"):
             candidates.append(str(tag["content"]))
-
     link = soup.find("link", rel=lambda value: value and "image_src" in value)
     if link and link.get("href"):
         candidates.append(str(link["href"]))
-
     for img in soup.find_all("img"):
         for attr in ["src", "data-src", "data-original", "data-lazy", "data-url"]:
             if img.get(attr):
@@ -211,14 +192,12 @@ def collect_image_candidates(soup: BeautifulSoup, html: str) -> list[str]:
                 src = part.strip().split(" ")[0]
                 if src:
                     candidates.append(src)
-
     regexes = [
         r"https?:\\?/\\?/[^\"'\s<>]+motornet\.it[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?",
         r"/img/modelli/auto/[^\"'\s<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\"'\s<>]*)?",
     ]
     for pattern in regexes:
         candidates.extend(re.findall(pattern, html, re.I))
-
     unique: list[str] = []
     for candidate in candidates:
         url = normalize_image_url(candidate)
@@ -241,14 +220,11 @@ def download_image(session: requests.Session, image_url: str, car_id: str, image
     image_url = normalize_image_url(image_url)
     if not is_model_image_url(image_url) or is_rejected_image_url(image_url):
         return None
-
     response = session.get(image_url, timeout=timeout, stream=True)
     response.raise_for_status()
-
     ext = image_ext_from_url_or_type(image_url, response.headers.get("content-type", ""))
     image_dir.mkdir(parents=True, exist_ok=True)
     local_path = image_dir / f"{car_id}{ext}"
-
     downloaded = 0
     with local_path.open("wb") as handle:
         for chunk in response.iter_content(chunk_size=16384):
@@ -259,7 +235,6 @@ def download_image(session: requests.Session, image_url: str, car_id: str, image
                 local_path.unlink(missing_ok=True)
                 raise RuntimeError("image_too_large")
             handle.write(chunk)
-
     return {
         "image_source_url": image_url,
         "image_source_host": urllib.parse.urlparse(image_url).netloc.lower(),
@@ -269,30 +244,43 @@ def download_image(session: requests.Session, image_url: str, car_id: str, image
     }
 
 
+def strip_brand(value: object, brand: str) -> str:
+    text = clean(value).replace("undefined", "")
+    text = re.sub(r"^Modelli\s+", "", text, flags=re.I).strip()
+    text = re.sub(r"^Modello\s+", "", text, flags=re.I).strip()
+    brand = clean(brand)
+    if brand:
+        pattern = re.compile(r"^" + re.escape(brand) + r"\s+", re.I)
+        while pattern.search(text):
+            text = pattern.sub("", text).strip()
+    return clean(text)
+
+
+def finalise_names(car: dict) -> dict:
+    brand = clean(car.get("brand"))
+    raw_model = strip_brand(car.get("model"), brand)
+    version_model = strip_brand(car.get("version"), brand)
+    powertrain_model = strip_brand(car.get("powertrain"), brand)
+    bad_model = not raw_model or raw_model.lower() == brand.lower() or raw_model.lower() == (brand + " " + brand).strip().lower() or "undefined" in raw_model.lower()
+    clean_model = version_model or powertrain_model or raw_model if bad_model else raw_model
+    if clean_model:
+        car["model"] = clean_model
+    if version_model:
+        car["version"] = version_model
+    if powertrain_model:
+        car["powertrain"] = powertrain_model
+    return car
+
+
 def parse_detail(html: str, url: str, code: str, label: str, category: str) -> tuple[dict | None, str | None]:
     soup = BeautifulSoup(html, "html.parser")
     text = soup.get_text(" ", strip=True)
     title = clean((soup.find("h1") or soup.find("title") or soup).get_text(" "))
-    car = {
-        "id": make_id(url, code),
-        "brand": "",
-        "model": title,
-        "version": title,
-        "powertrain": title,
-        "fuel": label,
-        "fuel_code": code,
-        "category": category,
-        "source_site": "auto.it",
-        "source_url": url,
-        "scraped_at": now(),
-        "price_source": "autoit_listino_nuovo",
-    }
-
+    car = {"id": make_id(url, code), "brand": "", "model": title, "version": title, "powertrain": title, "fuel": label, "fuel_code": code, "category": category, "source_site": "auto.it", "source_url": url, "scraped_at": now(), "price_source": "autoit_listino_nuovo"}
     image_url = extract_image_url(soup, html)
     if image_url:
         car["image_source_url"] = image_url
         car["image_source_host"] = urllib.parse.urlparse(image_url).netloc.lower()
-
     for block in json_blocks(soup):
         for item in walk(block):
             blob = json.dumps(item, ensure_ascii=False)[:3500]
@@ -315,24 +303,78 @@ def parse_detail(html: str, url: str, code: str, label: str, category: str) -> t
                     pass
             for key, value in specs(blob).items():
                 car.setdefault(key, value)
-
     for key, value in specs(text).items():
         car.setdefault(key, value)
-
     if not car.get("price_eur"):
         price = parse_price(text)
         if price:
             car["price_eur"] = price
-
     if not car["brand"]:
         parts = title.split()
         car["brand"] = parts[0] if parts else ""
-
+    car = finalise_names(car)
     return (car if car["brand"] and car["model"] else None), image_url
 
 
 def str_to_bool(value: str) -> bool:
     return str(value).strip().lower() in {"1", "true", "yes", "y", "si", "sì", "on"}
+
+
+def build_payload(cars, errors, args, requests_count, images_found, images_downloaded, image_errors, image_dir, should_download_images):
+    return {
+        "source": "auto.it",
+        "status": "ok" if cars else "empty",
+        "scraped_at": now(),
+        "schema": "cars_autoit_v1",
+        "request_policy": {
+            "delay_seconds": args.delay,
+            "backoff_seconds": args.backoff,
+            "limit": args.limit,
+            "pages_per_fuel": args.pages_per_fuel,
+            "requests_count": requests_count,
+            "download_images": should_download_images,
+            "image_delay_seconds": args.image_delay,
+            "image_dir": str(image_dir).replace("\\", "/"),
+            "max_image_mb": args.max_image_mb,
+            "model_image_path_marker": MODEL_IMAGE_PATH_MARKER,
+            "checkpoint_every": args.checkpoint_every,
+        },
+        "image_stats": {"found": images_found, "downloaded": images_downloaded, "errors": image_errors},
+        "cars": cars,
+        "errors": errors[-100:],
+    }
+
+
+def write_payload(payload: dict) -> None:
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def git_checkpoint(count: int, image_dir: Path) -> None:
+    try:
+        subprocess.run(["git", "add", str(OUT), str(image_dir)], check=False)
+        diff = subprocess.run(["git", "diff", "--cached", "--quiet"], check=False)
+        if diff.returncode == 0:
+            print(f"Checkpoint {count}: no changes")
+            return
+        subprocess.run(["git", "commit", "-m", f"Checkpoint Auto.it catalogue ({count} cars)"], check=False)
+        subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=False)
+        subprocess.run(["git", "push"], check=False)
+        print(f"Checkpoint committed at {count} cars")
+    except Exception as exc:
+        print(f"WARN checkpoint failed at {count} cars: {exc}")
+
+
+def maybe_checkpoint(cars, errors, args, requests_count, images_found, images_downloaded, image_errors, image_dir, should_download_images, last_checkpoint: int) -> int:
+    if not args.checkpoint_commit or args.checkpoint_every <= 0:
+        return last_checkpoint
+    count = len(cars)
+    if count and count % args.checkpoint_every == 0 and count != last_checkpoint:
+        payload = build_payload(cars, errors, args, requests_count, images_found, images_downloaded, image_errors, image_dir, should_download_images)
+        write_payload(payload)
+        git_checkpoint(count, image_dir)
+        return count
+    return last_checkpoint
 
 
 def main() -> None:
@@ -346,9 +388,12 @@ def main() -> None:
     parser.add_argument("--image-delay", type=float, default=5)
     parser.add_argument("--image-dir", default="assets/cars/autoit")
     parser.add_argument("--max-image-mb", type=float, default=6)
+    parser.add_argument("--checkpoint-every", type=int, default=25)
+    parser.add_argument("--checkpoint-commit", default="true", help="true/false")
     args = parser.parse_args()
 
     should_download_images = str_to_bool(args.download_images)
+    args.checkpoint_commit = str_to_bool(args.checkpoint_commit)
     image_dir = Path(args.image_dir)
     max_image_bytes = int(args.max_image_mb * 1024 * 1024)
 
@@ -360,10 +405,7 @@ def main() -> None:
         print("WARN robots non leggibile:", exc)
 
     session = requests.Session()
-    session.headers.update({
-        "User-Agent": UA,
-        "Accept-Language": "it-IT,it;q=0.9,en;q=0.6",
-    })
+    session.headers.update({"User-Agent": UA, "Accept-Language": "it-IT,it;q=0.9,en;q=0.6"})
 
     cars: list[dict] = []
     errors: list[dict] = []
@@ -372,6 +414,7 @@ def main() -> None:
     images_found = 0
     images_downloaded = 0
     image_errors = 0
+    last_checkpoint = 0
 
     for code, (label, category, list_url) in SOURCES.items():
         if len(cars) >= args.limit:
@@ -421,14 +464,7 @@ def main() -> None:
                     if should_download_images and image_url:
                         try:
                             time.sleep(args.image_delay)
-                            image_data = download_image(
-                                session=session,
-                                image_url=image_url,
-                                car_id=car["id"],
-                                image_dir=image_dir,
-                                timeout=args.timeout,
-                                max_bytes=max_image_bytes,
-                            )
+                            image_data = download_image(session=session, image_url=image_url, car_id=car["id"], image_dir=image_dir, timeout=args.timeout, max_bytes=max_image_bytes)
                             requests_count += 1
                             if image_data:
                                 car.update(image_data)
@@ -440,46 +476,15 @@ def main() -> None:
                     cars.append(car)
                     img_status = " image=local" if car.get("image_local_path") else (" image=url" if car.get("image_source_url") else " image=none")
                     print(f"  + {car.get('brand')} {car.get('model')} [{label}] price={car.get('price_eur')}{img_status}")
+                    last_checkpoint = maybe_checkpoint(cars, errors, args, requests_count, images_found, images_downloaded, image_errors, image_dir, should_download_images, last_checkpoint)
             except Exception as exc:
                 errors.append({"url": link, "error": str(exc)})
                 if "429" in str(exc):
                     break
 
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "source": "auto.it",
-        "status": "ok" if cars else "empty",
-        "scraped_at": now(),
-        "schema": "cars_autoit_v1",
-        "request_policy": {
-            "delay_seconds": args.delay,
-            "backoff_seconds": args.backoff,
-            "limit": args.limit,
-            "pages_per_fuel": args.pages_per_fuel,
-            "requests_count": requests_count,
-            "download_images": should_download_images,
-            "image_delay_seconds": args.image_delay,
-            "image_dir": str(image_dir).replace("\\", "/"),
-            "max_image_mb": args.max_image_mb,
-            "model_image_path_marker": MODEL_IMAGE_PATH_MARKER,
-        },
-        "image_stats": {
-            "found": images_found,
-            "downloaded": images_downloaded,
-            "errors": image_errors,
-        },
-        "cars": cars,
-        "errors": errors[-100:],
-    }
-    OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(
-        "Done cars=", len(cars),
-        "errors=", len(errors),
-        "requests=", requests_count,
-        "images_found=", images_found,
-        "images_downloaded=", images_downloaded,
-        "status=", payload["status"],
-    )
+    payload = build_payload(cars, errors, args, requests_count, images_found, images_downloaded, image_errors, image_dir, should_download_images)
+    write_payload(payload)
+    print("Done cars=", len(cars), "errors=", len(errors), "requests=", requests_count, "images_found=", images_found, "images_downloaded=", images_downloaded, "status=", payload["status"])
 
 
 if __name__ == "__main__":
