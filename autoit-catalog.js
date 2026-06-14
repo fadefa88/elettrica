@@ -114,11 +114,36 @@
     return badModel ? (versionModel || powertrainModel || strippedModel || 'Modello Auto.it') : strippedModel;
   }
 
+  function positiveNumber(value){
+    const n = Number(value);
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+  }
+
+  function estimateEvConsumption(car, fuel){
+    const direct = positiveNumber(car.consumption_kwh_100km);
+    if(direct) return direct;
+
+    const battery = positiveNumber(car.battery_kwh);
+    const range = positiveNumber(car.range_wltp_km);
+    if(battery && range) return Math.round((battery / range * 100) * 10) / 10;
+
+    const price = positiveNumber(car.price_eur) || 0;
+    const text = (String(car.brand || '')+' '+String(car.model || '')+' '+String(car.version || '')+' '+String(car.powertrain || '')).toLowerCase();
+
+    if(fuel === 'elettrica_idrogeno') return 18;
+    if(text.includes('suv') || text.includes('maybach') || text.includes('spectre') || (battery && battery >= 95) || price >= 100000) return 22;
+    if((battery && battery >= 75) || price >= 65000) return 19.5;
+    if(price && price <= 30000) return 15.5;
+    return 17.5;
+  }
+
   function normalizeCar(car){
     const fuel = normalizeFuel(car);
     const category = fuel === 'elettrica' || fuel === 'elettrica_idrogeno' ? 'electric' : 'thermal';
     const brand = cleanName(car.brand) || 'Auto.it';
     const model = resolveModel(car, brand);
+    const evConsumption = category === 'electric' ? estimateEvConsumption(car, fuel) : positiveNumber(car.consumption_kwh_100km);
+    const rawEvConsumption = positiveNumber(car.consumption_kwh_100km);
     return {
       ...car,
       brand,
@@ -131,6 +156,8 @@
       price_eur: Number(car.price_eur || car.price || 0) || 0,
       power_kw: Number(car.power_kw || 0) || undefined,
       power_cv: Number(car.power_cv || 0) || undefined,
+      consumption_kwh_100km: evConsumption,
+      consumption_kwh_100km_estimated: category === 'electric' && !rawEvConsumption,
       image_url: car.image_local_path || car.image_url || car.image_source_url || ''
     };
   }
