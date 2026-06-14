@@ -10,6 +10,7 @@ import subprocess
 import time
 import urllib.parse
 import urllib.robotparser
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 
 import requests
@@ -31,6 +32,65 @@ KNOWN_BRAND_CODES = [
     "SUZ", "TES", "TOY", "VLV", "VLK", "VOL"
 ]
 
+BRAND_NAME_BY_CODE = {
+    "ABA": "Abarth",
+    "ALF": "Alfa Romeo",
+    "AST": "Aston Martin",
+    "AUD": "Audi",
+    "BMW": "BMW",
+    "BYD": "BYD",
+    "CAD": "Cadillac",
+    "CHE": "Chevrolet",
+    "CHC": "Chrysler",
+    "CIR": "Citroen",
+    "CIT": "Citroen",
+    "CUP": "Cupra",
+    "DAC": "Dacia",
+    "DOD": "Dodge",
+    "DR": "DR",
+    "DS": "DS",
+    "EVO": "EVO",
+    "FER": "Ferrari",
+    "FIA": "Fiat",
+    "FOR": "Ford",
+    "GMC": "GMC",
+    "HON": "Honda",
+    "HYU": "Hyundai",
+    "INE": "INEOS",
+    "JAG": "Jaguar",
+    "JEE": "Jeep",
+    "KIA": "Kia",
+    "LAN": "Lancia",
+    "LND": "Land Rover",
+    "LEX": "Lexus",
+    "LOT": "Lotus",
+    "MAS": "Maserati",
+    "MAZ": "Mazda",
+    "MCL": "McLaren",
+    "MER": "Mercedes-Benz",
+    "MG": "MG",
+    "MIL": "Militem",
+    "MIN": "Mini",
+    "MIT": "Mitsubishi",
+    "NIS": "Nissan",
+    "OPE": "Opel",
+    "PEU": "Peugeot",
+    "POL": "Polestar",
+    "POR": "Porsche",
+    "REN": "Renault",
+    "ROL": "Rolls-Royce",
+    "SEA": "Seat",
+    "SKO": "Skoda",
+    "SMA": "Smart",
+    "SUB": "Subaru",
+    "SUZ": "Suzuki",
+    "TES": "Tesla",
+    "TOY": "Toyota",
+    "VLV": "Volvo",
+    "VLK": "Volkswagen",
+    "VOL": "Volvo",
+}
+
 FUEL_CODE_BY_LABEL = {
     "elettrica": "E",
     "elettrica_idrogeno": "EH",
@@ -44,11 +104,20 @@ FUEL_CODE_BY_LABEL = {
     "ibrida_metano": "IM",
 }
 
+PRICE_LABEL_RE = re.compile(r"\bprezzo\s+(?:di\s+)?listino\b|\blistino\b", re.I)
+MONEY_RE = re.compile(
+    r"(?<![\w/])(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d{5,7}(?:,\d{1,2})?)\s*(?:€|eur)",
+    re.I,
+)
+
+
 def now() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
 
+
 def clean(value: object) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip()
+
 
 def parse_decimal(value: object) -> float | None:
     text = clean(value).replace(".", "").replace(",", ".")
@@ -60,27 +129,86 @@ def parse_decimal(value: object) -> float | None:
     except ValueError:
         return None
 
+
 def parse_int(value: object) -> int | None:
     number = parse_decimal(value)
     return int(round(number)) if number is not None else None
 
-def parse_price(text: str) -> int | None:
-    matches = re.findall(r"(?:€\s*)?(\d{1,3}(?:[\. ]\d{3})+|\d{4,7})\s*(?:€|EUR)?", text or "", re.I)
-    candidates = []
-    for item in matches:
-        try:
-            value = int(re.sub(r"\D", "", item))
-            if 5000 <= value <= 1000000:
-                candidates.append(value)
-        except ValueError:
-            pass
-    return min(candidates) if candidates else None
+
+def parse_italian_money_to_int(text: object) -> int | None:
+    """Parse a Motornet euro amount like '269.252,52 €' into 269253.
+
+    Deliberately requires an explicit € / EUR marker. This prevents engine
+    displacement, RPM, power, CO2 or consumption numbers from becoming prices.
+    """
+    match = MONEY_RE.search(clean(text).replace("\xa0", " "))
+    if not match:
+        return None
+
+    raw = match.group(1)
+    normalized = raw.replace(" ", "").replace(".", "").replace(",", ".")
+    try:
+        amount = Decimal(normalized)
+    except InvalidOperation:
+        return None
+
+    # Conservative range for new-car Italian list prices.
+    if amount < Decimal("7000") or amount > Decimal("3000000"):
+        return None
+
+    return int(amount.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+
+def parse_price(text: str, pairs: dict[str, str] | None = None) -> int | None:
+    """Extract only the value tied to 'PREZZO DI LISTINO'.
+
+    There is intentionally no generic numeric fallback. Returning None is safer
+    than returning numbers such as 6000 RPM or 5204 cc.
+    """
+    pairs = pairs or {}
+
+    for key, value in pairs.items():
+        key_text = clean(key)
+        value_text = clean(value)
+        if PRICE_LABEL_RE.search(key_text):
+            price = parse_italian_money_to_int(f"{key_text} {value_text}")
+            if price:
+                return price
+
+    body = clean(text).replace("\xa0", " ")
+    anchored = re.search(
+        r"(?:prezzo\s+di\s+listino|prezzo\s+listino|listino).{0,220}?"
+        r"(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d{5,7}(?:,\d{1,2})?)\s*(?:€|eur)",
+        body,
+        flags=re.I | re.S,
+    )
+    if anchored:
+        price = parse_italian_money_to_int(anchored.group(0))
+        if price:
+            return price
+
+    # Handles layouts where the amount is just before the label.
+    reverse_anchored = re.search(
+        r"(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d{5,7}(?:,\d{1,2})?)\s*(?:€|eur)"
+        r".{0,120}?(?:prezzo\s+di\s+listino|prezzo\s+listino|listino)",
+        body,
+        flags=re.I | re.S,
+    )
+    if reverse_anchored:
+        price = parse_italian_money_to_int(reverse_anchored.group(0))
+        if price:
+            return price
+
+    return None
+
 
 def full_url(url: str) -> str:
     return urllib.parse.urljoin(BASE, str(url or "").split("#")[0])
 
+
 def path_of(url: str) -> str:
     return urllib.parse.urlparse(full_url(url)).path
+
 
 def can_fetch(robots: urllib.robotparser.RobotFileParser, url: str) -> bool:
     try:
@@ -88,8 +216,16 @@ def can_fetch(robots: urllib.robotparser.RobotFileParser, url: str) -> bool:
     except Exception:
         return True
 
+
 def make_id(url: str) -> str:
     return "motornet_" + hashlib.sha1(url.encode("utf-8")).hexdigest()[:14]
+
+
+def brand_code_from_url(url: str) -> str | None:
+    path = urllib.parse.urlparse(full_url(url)).path.rstrip("/")
+    code = path.split("/")[-1].upper()
+    return code if re.fullmatch(r"[A-Z0-9]{2,4}", code) else None
+
 
 def normalise_fuel(raw: str) -> tuple[str, str]:
     text = clean(raw).lower()
@@ -119,8 +255,10 @@ def normalise_fuel(raw: str) -> tuple[str, str]:
         fuel = "benzina"
     return fuel, FUEL_CODE_BY_LABEL.get(fuel, "B")
 
+
 def category_for_fuel(fuel: str) -> str:
     return "electric" if fuel in {"elettrica", "elettrica_idrogeno"} else "thermal"
+
 
 def collect_raw_values(page) -> list[str]:
     try:
@@ -145,6 +283,7 @@ def collect_raw_values(page) -> list[str]:
         values = []
     return [str(v).strip() for v in values if str(v or "").strip()]
 
+
 def links_from_values(values: list[str], pattern: str) -> list[str]:
     links: list[str] = []
     rx = re.compile(pattern, re.I)
@@ -156,13 +295,11 @@ def links_from_values(values: list[str], pattern: str) -> list[str]:
                 links.append(url)
             continue
 
-        # Full/relative URLs in attributes or hidden rendered HTML.
         for match in re.findall(r"/auto/scheda-modello(?:/modello/\d+(?:/allestimento/[A-Za-z0-9_-]+)?|/[A-Z0-9]{2,4})", value):
             url = full_url(match)
             if rx.search(path_of(url)) and url not in links:
                 links.append(url)
 
-        # Sometimes absolute URLs are embedded in JS strings.
         for match in re.findall(r"https://www\.motornet\.it/auto/scheda-modello(?:/modello/\d+(?:/allestimento/[A-Za-z0-9_-]+)?|/[A-Z0-9]{2,4})", value):
             url = full_url(match)
             if rx.search(path_of(url)) and url not in links:
@@ -174,8 +311,10 @@ def links_from_values(values: list[str], pattern: str) -> list[str]:
 
     return links
 
+
 def extract_links(page, pattern: str) -> list[str]:
     return links_from_values(collect_raw_values(page), pattern)
+
 
 def open_possible_dropdowns(page) -> None:
     selectors = [
@@ -199,20 +338,17 @@ def open_possible_dropdowns(page) -> None:
         except Exception:
             pass
 
+
 def discover_links_after_clicking_menus(page, pattern: str) -> list[str]:
     links = extract_links(page, pattern)
     if links:
         return links
 
-    # Motornet pages use client-side menus. Open the model/allestimento menus
-    # before inspecting DOM again.
     open_possible_dropdowns(page)
     links = extract_links(page, pattern)
     if links:
         return links
 
-    # Last resort: click visible dropdown-like items one by one and capture URL
-    # changes. This handles custom select components that do not expose hrefs.
     captured: list[str] = []
     current = page.url
     option_selector = "[role='option'], [id*='option'], li, button, a"
@@ -239,7 +375,6 @@ def discover_links_after_clicking_menus(page, pattern: str) -> list[str]:
                 if re.search(pattern, path_of(url), re.I) and url not in captured:
                     captured.append(full_url(url))
 
-            # Go back to the brand/model page so next option can be tested.
             if after != before:
                 page.goto(current, wait_until="domcontentloaded", timeout=45000)
                 page.wait_for_timeout(1200)
@@ -252,11 +387,13 @@ def discover_links_after_clicking_menus(page, pattern: str) -> list[str]:
 
     return captured
 
+
 def rendered_text(page) -> str:
     try:
         return clean(page.locator("body").inner_text(timeout=5000))
     except Exception:
         return clean(page.content())
+
 
 def rendered_title(page) -> str:
     data = page.evaluate("""
@@ -266,6 +403,7 @@ def rendered_title(page) -> str:
         }
     """)
     return clean(data.get("heading") or data.get("title"))
+
 
 def table_pairs(page) -> dict[str, str]:
     rows = page.evaluate("""
@@ -299,14 +437,15 @@ def table_pairs(page) -> dict[str, str]:
     compact = []
     for node in nodes:
         node = clean(node)
-        if node and len(node) < 90 and (not compact or compact[-1] != node):
+        if node and len(node) < 120 and (not compact or compact[-1] != node):
             compact.append(node)
 
-    label_words = ["Alimentazione", "kW", "Cv", "CV", "Prezzo", "Consumo", "Autonomia", "CO2", "Emissioni", "Cilindrata", "Cambio", "Batteria"]
+    label_words = ["Alimentazione", "kW", "Cv", "CV", "Prezzo", "Listino", "Consumo", "Autonomia", "CO2", "Emissioni", "Cilindrata", "Cambio", "Batteria"]
     for i, node in enumerate(compact[:-1]):
         if any(word.lower() in node.lower() for word in label_words):
             pairs.setdefault(node, compact[i + 1])
     return pairs
+
 
 def pair_value(pairs: dict[str, str], *needles: str) -> str | None:
     for key, value in pairs.items():
@@ -314,6 +453,7 @@ def pair_value(pairs: dict[str, str], *needles: str) -> str | None:
         if all(n.lower() in key_l for n in needles):
             return value
     return None
+
 
 def parse_kw_cv(value: str | None) -> tuple[float | None, float | None]:
     if not value:
@@ -324,6 +464,7 @@ def parse_kw_cv(value: str | None) -> tuple[float | None, float | None]:
     first = float(nums[0].replace(",", "."))
     second = float(nums[1].replace(",", ".")) if len(nums) > 1 else None
     return first, second
+
 
 def extract_image_url(page) -> str | None:
     candidates = page.evaluate("""
@@ -364,6 +505,7 @@ def extract_image_url(page) -> str | None:
     scored.sort(reverse=True)
     return scored[0][1]
 
+
 def image_ext(url: str, content_type: str) -> str:
     ct = (content_type or "").lower().split(";")[0].strip()
     if ct in {"image/jpeg", "image/jpg"}:
@@ -374,6 +516,7 @@ def image_ext(url: str, content_type: str) -> str:
         return ".webp"
     suffix = Path(urllib.parse.urlparse(url).path).suffix.lower()
     return ".jpg" if suffix == ".jpeg" else (suffix if suffix in {".jpg", ".png", ".webp"} else ".jpg")
+
 
 def download_image(session: requests.Session, url: str, car_id: str, image_dir: Path, timeout: int, max_bytes: int) -> dict | None:
     response = session.get(url, timeout=timeout, stream=True, headers={"User-Agent": UA})
@@ -399,6 +542,7 @@ def download_image(session: requests.Session, url: str, car_id: str, image_dir: 
         "image_downloaded_at": now(),
     }
 
+
 def parse_detail(page, url: str, brand_hint: str | None = None) -> dict | None:
     pairs = table_pairs(page)
     text = rendered_text(page)
@@ -412,7 +556,7 @@ def parse_detail(page, url: str, brand_hint: str | None = None) -> dict | None:
     power_kw, power_kw_max = parse_kw_cv(kw_raw)
     power_cv, power_cv_max = parse_kw_cv(cv_raw)
 
-    price = parse_price(text)
+    price = parse_price(text, pairs)
     consumption_kwh = parse_decimal(pair_value(pairs, "kWh", "100") or pair_value(pairs, "kWh/100"))
     consumption_l = parse_decimal(pair_value(pairs, "Consumo", "Combinato") or pair_value(pairs, "Consumo", "misto"))
     consumption_kg = None
@@ -425,14 +569,18 @@ def parse_detail(page, url: str, brand_hint: str | None = None) -> dict | None:
     battery = parse_decimal(pair_value(pairs, "Batteria") or pair_value(pairs, "Capacità", "batteria"))
 
     brand = clean(brand_hint or "")
-    if not brand:
-        m = re.search(r"\b([A-Z][A-Za-zÀ-ÿ-]+)\b", title)
+    if not brand or brand.lower() in {"e listini del nuovo", "listini del nuovo", "listino del nuovo", "motornet", "motornet.it"}:
+        m = re.search(r"\b([A-Z][A-Za-zÀ-ÿ-]+(?:\s+[A-Z][A-Za-zÀ-ÿ-]+)?)\b", title)
         brand = clean(m.group(1)) if m else "Motornet"
 
     version = clean(title)
     version = re.sub(r"Motornet\.it.*", "", version, flags=re.I).strip()
     version = re.sub(r"Scheda.*", "", version, flags=re.I).strip()
     version = version or clean(pair_value(pairs, "Versione") or pair_value(pairs, "Allestimento") or title)
+
+    # Strip common Motornet heading noise from version/model.
+    version = re.sub(r"^\s*(auto\s+)?e\s+listini\s+del\s+nuovo\s+", "", version, flags=re.I)
+    version = re.sub(r"\s*-\s*$", "", version).strip()
 
     model = version
     if brand and model.lower().startswith(brand.lower()):
@@ -454,7 +602,7 @@ def parse_detail(page, url: str, brand_hint: str | None = None) -> dict | None:
         "source_url": url,
         "motornet_detail_url": url,
         "scraped_at": now(),
-        "price_source": "motornet_listino_nuovo",
+        "price_source": "motornet_prezzo_di_listino",
         "consumption_source": "motornet_technical_sheet",
     }
 
@@ -483,6 +631,7 @@ def parse_detail(page, url: str, brand_hint: str | None = None) -> dict | None:
     car["specs_raw"] = pairs
     return car if car["brand"] and car["model"] else None
 
+
 def build_payload(cars, errors, args, requests_count, images_downloaded):
     return {
         "source": "motornet.it",
@@ -502,9 +651,11 @@ def build_payload(cars, errors, args, requests_count, images_downloaded):
         "errors": errors[-100:],
     }
 
+
 def write_payload(payload: dict) -> None:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
 
 def git_checkpoint(count: int, image_dir: Path) -> None:
     subprocess.run(["git", "config", "user.name", "github-actions"], check=False)
@@ -517,13 +668,31 @@ def git_checkpoint(count: int, image_dir: Path) -> None:
     subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=False)
     subprocess.run(["git", "push"], check=False)
 
+
 def brand_name_from_page(page, brand_url: str) -> str:
+    code = brand_code_from_url(brand_url)
+    fallback = BRAND_NAME_BY_CODE.get(code or "", code or "")
+
     brand_title = rendered_title(page)
-    brand_code = urllib.parse.urlparse(brand_url).path.rstrip("/").split("/")[-1]
-    brand_name = clean(re.sub(r".*modelli\s+", "", brand_title, flags=re.I))
-    if not brand_name or brand_name.lower() in {"motornet.it", "listino", "listini", "auto"}:
-        brand_name = brand_code
-    return brand_name
+    brand_name = clean(brand_title)
+    brand_name = re.sub(r"(?i)\b(auto|modelli|listino|listini|del|nuovo|e)\b", " ", brand_name)
+    brand_name = clean(brand_name)
+
+    if (
+        not brand_name
+        or brand_name.lower() in {"motornet.it", "listino", "listini", "auto"}
+        or "listin" in brand_name.lower()
+        or brand_name.lower() == "e"
+    ):
+        brand_name = fallback
+
+    # For known codes, prefer the canonical name. This avoids values like
+    # 'e listini del nuovo' when Motornet's heading is noisy.
+    if fallback:
+        return fallback
+
+    return brand_name or "Motornet"
+
 
 def expand_model_links_to_details(page, model_links: list[str], args, robots, errors, requests_count: int) -> tuple[list[str], int]:
     detail_links: list[str] = []
@@ -550,6 +719,7 @@ def expand_model_links_to_details(page, model_links: list[str], args, robots, er
         except Exception as exc:
             errors.append({"url": model_url, "error": f"model_expand: {exc}"})
     return detail_links, requests_count
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -686,6 +856,7 @@ def main() -> None:
     payload = build_payload(cars, errors, args, requests_count, images_downloaded)
     write_payload(payload)
     print("Done cars=", len(cars), "errors=", len(errors), "requests=", requests_count, "images_downloaded=", images_downloaded, "status=", payload["status"])
+
 
 if __name__ == "__main__":
     main()
