@@ -1,1 +1,23 @@
-{"updated_at":"2026-06-13","status":"seed","charging_efficiency":{"home":0.92,"mixed":0.90},"market_average":{"home":0.30,"ac":0.59,"dc":0.72,"hpc":0.85}}
+{
+  "updated_at": "2026-06-14",
+  "status": "indicative_italy_seed",
+  "charging_efficiency": {
+    "home": 0.92,
+    "mixed": 0.90,
+    "public": 0.94
+  },
+  "market_average": {
+    "home": 0.30,
+    "ac": 0.59,
+    "dc": 0.72,
+    "hpc": 0.85,
+    "public_mixed": 0.74,
+    "tesla_supercharger_owner": 0.50,
+    "tesla_supercharger_non_tesla": 0.62
+  },
+  "notes": {
+    "public_mixed": "stima media indicativa AC/DC/HPC Italia, non feed ufficiale unico",
+    "tesla_supercharger_owner": "stima indicativa proprietari Tesla; varia per stazione e orario",
+    "tesla_supercharger_non_tesla": "stima indicativa non Tesla; varia per stazione, orario e abbonamento"
+  }
+}
