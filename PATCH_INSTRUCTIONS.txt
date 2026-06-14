@@ -1,0 +1,15 @@
+1) Carica questi file nel repo:
+- scripts/import_autoit.py
+- .github/workflows/import-autoit.yml
+- external-catalog.js
+- data/cars_autoit.json
+
+2) In index.html, modifica la riga finale:
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="app.js"></script>
+
+in:
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script><script src="app.js"></script><script src="external-catalog.js"></script>
+
+3) In styles.css, aggiungi in fondo il contenuto di autoit-badge.css.
+
+4) Lancia GitHub Actions > Import Auto.it catalogue. Se cars_autoit.json contiene almeno una elettrica e una termica, il sito usa quel catalogo come fonte primaria. Se è vuoto, resta sui seed attuali.

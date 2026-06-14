@@ -1,1 +1,5 @@
-{"status":"empty","cars":[],"errors":[]}
+{
+  "status": "empty",
+  "cars": [],
+  "errors": []
+}
