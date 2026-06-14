@@ -17,25 +17,76 @@
     return Number.isFinite(n) && n > 0 ? n : undefined;
   }
 
-  function specNumber(car, matchers){
+  function toMoney(value){
+    if(value === null || value === undefined) return undefined;
+    let text = String(value).trim();
+    if(!text) return undefined;
+    const match = text.match(/\d{1,3}(?:[\.\s]\d{3})+(?:,\d+)?|\d{4,7}(?:,\d+)?/);
+    if(!match) return undefined;
+    let raw = match[0].replace(/\s+/g,'');
+    if(raw.includes(',')) raw = raw.split(',')[0];
+    raw = raw.replace(/\./g,'');
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 5000 && n <= 1000000 ? n : undefined;
+  }
+
+  function specValue(car, matchers){
     const raw = car && car.specs_raw;
     if(!raw || typeof raw !== 'object') return undefined;
     for(const [key, value] of Object.entries(raw)){
       const k = String(key || '').toLowerCase().replace(/\s+/g,' ');
       if(matchers.some(rx => rx.test(k))){
-        const n = toNumber(value);
-        if(n) return n;
+        const s = String(value || '').trim();
+        if(s) return s;
       }
     }
     return undefined;
   }
 
+  function specNumber(car, matchers){
+    const value = specValue(car, matchers);
+    return value ? toNumber(value) : undefined;
+  }
+
+  function specMoney(car, matchers){
+    const value = specValue(car, matchers);
+    return value ? toMoney(value) : undefined;
+  }
+
   function motornetKwh100(rawCar){
-    return toNumber(rawCar && rawCar.consumption_kwh_100km) || specNumber(rawCar, [
+    return specNumber(rawCar, [
       /kw\/?h\s*100\s*km/i,
       /kwh\s*\/\s*100\s*km/i,
       /kwh\s*100\s*km/i
+    ]) || toNumber(rawCar && rawCar.consumption_kwh_100km);
+  }
+
+  function motornetL100(rawCar){
+    const fromSpec = specNumber(rawCar, [
+      /^consumo\s+combinato$/i,
+      /consumo\s+misto/i,
+      /consumo\s+extraurb/i,
+      /consumo\s+urb/i
     ]);
+    if(fromSpec) return fromSpec;
+    return toNumber(rawCar && rawCar.consumption_l_100km);
+  }
+
+  function motornetKg100(rawCar){
+    return specNumber(rawCar, [
+      /^consumo\s+gas\s+combinato$/i,
+      /consumo\s+metano/i,
+      /kg\s*\/\s*100/i
+    ]) || toNumber(rawCar && rawCar.consumption_kg_100km);
+  }
+
+  function motornetPrice(rawCar){
+    return specMoney(rawCar, [
+      /^prezzo$/i,
+      /prezzo\s+listino/i,
+      /prezzo\s+di\s+listino/i,
+      /^listino$/i
+    ]) || toMoney(rawCar && rawCar.price_eur);
   }
 
   function motornetRange(rawCar){
@@ -47,10 +98,11 @@
   }
 
   function motornetCo2(rawCar){
-    return toNumber(rawCar && rawCar.emissions_g_km) || specNumber(rawCar, [
-      /co2\s*combinato/i,
+    return specNumber(rawCar, [
+      /^co2\s*combinato$/i,
+      /co2\s+gas\s+combinato/i,
       /emissioni.*co2/i
-    ]);
+    ]) || toNumber(rawCar && rawCar.emissions_g_km);
   }
 
   function formatNumber(n){
@@ -74,15 +126,34 @@
     const raw = rawById.get(car.id);
     if(!raw) return car;
 
-    const kwh = motornetKwh100(raw);
-    if(kwh){
-      car.consumption_kwh_100km = kwh;
-      car.consumption_kwh_100km_estimated = false;
-      car.consumption_source = 'motornet_technical_sheet';
+    const fuel = String(car.fuel || raw.fuel || '').toLowerCase();
+    const isElectric = fuel.includes('elettr');
+
+    const price = motornetPrice(raw);
+    if(price){
+      car.price_eur = price;
+      car.price_source = 'motornet_technical_sheet';
     }
 
-    const range = motornetRange(raw);
-    if(range) car.range_wltp_km = range;
+    if(isElectric){
+      const kwh = motornetKwh100(raw);
+      if(kwh){
+        car.consumption_kwh_100km = kwh;
+        car.consumption_kwh_100km_estimated = false;
+        car.consumption_source = 'motornet_technical_sheet';
+      }
+      const range = motornetRange(raw);
+      if(range) car.range_wltp_km = range;
+    } else {
+      const kg100 = motornetKg100(raw);
+      const l100 = motornetL100(raw);
+      if(kg100 && (fuel.includes('metano') || fuel.includes('gas'))){
+        car.consumption_kg_100km = kg100;
+        delete car.consumption_l_100km;
+      } else if(l100){
+        car.consumption_l_100km = l100;
+      }
+    }
 
     const co2 = motornetCo2(raw);
     if(co2) car.emissions_g_km = co2;
