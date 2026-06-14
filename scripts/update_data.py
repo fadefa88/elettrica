@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import csv, io, json, re, statistics
+import csv, html, io, json, re, statistics
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import unquote
@@ -8,10 +8,13 @@ from openpyxl import load_workbook
 
 ROOT = Path(__file__).resolve().parents[1]
 PRICES = ROOT / 'data' / 'prices.json'
+REGION_PAGE = 'https://www.mimit.gov.it/it/prezzo-medio-carburanti/regioni'
 MIMIT_URLS = ['https://www.mimit.gov.it/images/exportCSV/prezzo_alle_8.csv','https://www.mise.gov.it/images/exportCSV/prezzo_alle_8.csv']
 EU_PAGE = 'https://energy.ec.europa.eu/data-and-analysis/weekly-oil-bulletin_en'
+REGIONS = ['Abruzzo','Basilicata','Calabria','Campania','Emilia Romagna','Friuli Venezia Giulia','Lazio','Liguria','Lombardia','Marche','Molise','Piemonte','Puglia','Sardegna','Sicilia','Toscana','Umbria',"Valle d'Aosta",'Veneto','Bolzano','Trento']
 KEYS = {'benzina':['benzina'], 'gasolio':['gasolio','diesel'], 'gpl':['gpl'], 'metano':['metano']}
 UNITS = {'benzina':'eur_l','gasolio':'eur_l','gpl':'eur_l','metano':'eur_kg'}
+LABELS = {'benzina':'Benzina','gasolio':'Gasolio','gpl':'GPL','metano':'Metano'}
 
 def load(p): return json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
 def save(p,o): p.write_text(json.dumps(o, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
@@ -20,6 +23,48 @@ def norm(x): return cell(x).lower().replace(' ','').replace('_','')
 def val(x):
     try: return float(cell(x).replace(',','.'))
     except Exception: return None
+
+def text_lines(markup):
+    markup = re.sub(r'(?is)<script.*?</script>|<style.*?</style>', ' ', markup)
+    markup = re.sub(r'(?i)</?(h\d|p|div|li|tr|td|th|br|section|article)[^>]*>', '\n', markup)
+    markup = re.sub(r'<[^>]+>', ' ', markup)
+    txt = html.unescape(markup)
+    return [re.sub(r'\s+', ' ', x).strip() for x in txt.splitlines() if re.sub(r'\s+', ' ', x).strip()]
+
+def mimit_regions():
+    try:
+        r = requests.get(REGION_PAGE, timeout=(6,20), headers={'User-Agent':'Mozilla/5.0 elettrica-tco'})
+        r.raise_for_status()
+        lines = text_lines(r.text)
+        regions = {}
+        current = None
+        update = None
+        for line in lines:
+            mdate = re.search(r'Aggiornamento\s+(\d{2}-\d{2}-\d{4})', line)
+            if mdate: update = mdate.group(1)
+            if line in REGIONS:
+                current = line
+                regions.setdefault(current, {})
+                continue
+            if current:
+                m = re.match(r'^(Gasolio|Benzina|GPL|Metano)\s+(SELF|SERVITO)\s+([0-9]+[\.,][0-9]+)', line, re.I)
+                if m:
+                    label = m.group(1).lower()
+                    key = {'benzina':'benzina','gasolio':'gasolio','gpl':'gpl','metano':'metano'}[label]
+                    regions[current][key] = val(m.group(3))
+        regions = {k:v for k,v in regions.items() if any(v.get(f) for f in KEYS)}
+        data = {}
+        for k in KEYS:
+            nums = [v[k] for v in regions.values() if v.get(k)]
+            if nums: data[k] = round(statistics.fmean(nums), 3)
+        if data.get('benzina') and data.get('gasolio'):
+            data.update({'source':REGION_PAGE,'frequency':'daily_region_average','regions':regions,'samples':{k:len([v for v in regions.values() if v.get(k)]) for k in KEYS},'mimit_region_update':update,'average_method':'simple_mean_of_region_averages'})
+            print('MIMIT regions parsed', {'regions':len(regions),'samples':data['samples'],'update':update})
+            return data
+        print('MIMIT regions failed: insufficient fuel values', {'regions':len(regions),'data':data})
+    except Exception as e:
+        print('MIMIT regions source failed', e)
+    return {}
 
 def find_col(cols, wants):
     for c in cols:
@@ -50,7 +95,7 @@ def fuel_key(label):
         if any(a in t for a in aliases): return k
     return None
 
-def mimit():
+def mimit_csv():
     for url in MIMIT_URLS:
         try:
             r = requests.get(url, timeout=(6,20), headers={'User-Agent':'Mozilla/5.0 elettrica-tco'})
@@ -64,32 +109,28 @@ def mimit():
                 if sc and str(row.get(sc,'')).lower() in ['0','false','servito'] and k in ['benzina','gasolio']: continue
                 buckets[k].append(price)
             data = {k:round(statistics.fmean(v),3) for k,v in buckets.items() if v}
-            print('MIMIT parsed', {'url':url,'skipped_rows':skipped,'samples':{k:len(v) for k,v in buckets.items()}})
+            print('MIMIT CSV parsed', {'url':url,'skipped_rows':skipped,'samples':{k:len(v) for k,v in buckets.items()}})
             if data.get('benzina') and data.get('gasolio'):
-                data.update({'source':url,'frequency':'daily','samples':{k:len(v) for k,v in buckets.items()}})
+                data.update({'source':url,'frequency':'daily_csv_raw','samples':{k:len(v) for k,v in buckets.items()},'average_method':'raw_station_mean'})
                 return data
         except Exception as e:
-            print('MIMIT source failed', url, e)
+            print('MIMIT CSV source failed', url, e)
     return {}
 
-def pick_eu_link(html):
-    links = re.findall(r'href=["\']([^"\']+)["\']', html)
-    links = [l.replace('&amp;','&') for l in links]
+def pick_eu_link(markup):
+    links = re.findall(r'href=["\']([^"\']+)["\']', markup)
     candidates = []
-    for l in links:
-        decoded = unquote(l).lower()
-        if 'document/download' in decoded and ('xlsx' in decoded or 'spreadsheet' in decoded):
-            candidates.append(l)
-        elif '.xlsx' in decoded:
+    for l in [x.replace('&amp;','&') for x in links]:
+        d = unquote(l).lower()
+        if ('document/download' in d and ('xlsx' in d or 'spreadsheet' in d)) or '.xlsx' in d:
             candidates.append(l)
     def score(l):
-        d = unquote(l).lower()
-        s = 0
+        d = unquote(l).lower(); s=0
         if 'with+taxes' in d or 'with taxes' in d: s += 100
         if 'without+taxes' in d or 'without taxes' in d: s -= 100
-        if 'duties' in d or 'taxes+-' in d or 'taxes -' in d: s -= 25
+        if 'duties' in d: s -= 25
         if 'latest' in d or 'weekly' in d: s += 10
-        if 'price' in d or 'prices' in d: s += 5
+        if 'price' in d: s += 5
         return s
     candidates = sorted(candidates, key=score, reverse=True)
     print('EU candidate links', len(candidates), candidates[:3])
@@ -119,7 +160,7 @@ def eu_weekly():
             print('EU source failed: no Italy numeric row')
             return {}
         nums=candidates[0]
-        data={'benzina':round(max(nums[:3]),3),'gasolio':round(sorted(nums[:4])[1] if len(nums)>=4 else nums[1],3),'source':url,'frequency':'weekly_eu','samples':{'italy_rows':italy}}
+        data={'benzina':round(max(nums[:3]),3),'gasolio':round(sorted(nums[:4])[1] if len(nums)>=4 else nums[1],3),'source':url,'frequency':'weekly_eu','samples':{'italy_rows':italy},'average_method':'eu_italy_row'}
         print('EU weekly parsed', data)
         return data
     except Exception as e:
@@ -128,13 +169,17 @@ def eu_weekly():
 def main():
     prices = load(PRICES) or {'fuel':{}, 'electricity':{'home':.30,'solar':.08}}
     prices.setdefault('fuel', {}).setdefault('units', UNITS)
-    data = mimit(); status='updated_mimit_daily'
+    data = mimit_regions(); status='updated_mimit_regions_daily'
+    if not data:
+        data = mimit_csv(); status='updated_mimit_csv_daily'
     if not data:
         data = eu_weekly(); status='updated_eu_weekly_partial_keep_gpl_metano_previous'
     if data:
         for k in KEYS:
             if data.get(k): prices['fuel'][k]=data[k]
-        prices['fuel'].update({'source':data.get('source'), 'frequency':data.get('frequency'), 'samples':data.get('samples',{}), 'units':UNITS})
+        prices['fuel'].update({'source':data.get('source'), 'frequency':data.get('frequency'), 'samples':data.get('samples',{}), 'units':UNITS, 'average_method':data.get('average_method')})
+        if data.get('regions'): prices['fuel']['regions']=data['regions']
+        if data.get('mimit_region_update'): prices['fuel']['mimit_region_update']=data['mimit_region_update']
         prices['status']=status
     else:
         prices['fuel']['units']=UNITS; prices['status']='fallback_previous_values'
