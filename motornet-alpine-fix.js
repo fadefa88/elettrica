@@ -11,6 +11,12 @@
     ibrida_gpl: 'Ibrida GPL',
     ibrida_metano: 'Ibrida metano'
   };
+  const BRAND_BY_CODE = {
+    ALN: 'Alpine',
+    ALP: 'Alpine',
+    BEN: 'Bentley',
+    BES: 'Bestune'
+  };
 
   function byId(id){ return document.getElementById(id); }
   function clean(value){ return String(value || '').replace(/\bundefined\b/gi, '').replace(/\s+/g, ' ').trim(); }
@@ -41,11 +47,12 @@
     if(!car) return;
     const code = carCode(car);
     const rawBrand = clean(car.brand).toUpperCase();
-    if(code === 'ALN' || code === 'ALP' || rawBrand === 'ALN' || rawBrand === 'ALP'){
-      car.brand = 'Alpine';
-      car.model = stripLeadingBrand(car.model || car.version || car.powertrain, 'Alpine') || 'Modello';
-      car.version = stripLeadingBrand(car.version || car.model, 'Alpine') || car.model;
-      car.powertrain = stripLeadingBrand(car.powertrain || car.version || car.model, 'Alpine') || car.model;
+    const normalizedBrand = BRAND_BY_CODE[code] || BRAND_BY_CODE[rawBrand];
+    if(normalizedBrand){
+      car.brand = normalizedBrand;
+      car.model = stripLeadingBrand(car.model || car.version || car.powertrain, normalizedBrand) || 'Modello';
+      car.version = stripLeadingBrand(car.version || car.model, normalizedBrand) || car.model;
+      car.powertrain = stripLeadingBrand(car.powertrain || car.version || car.model, normalizedBrand) || car.model;
     }
   }
   function optionLabel(car){
