@@ -6,7 +6,7 @@ on:
       limit:
         description: 'Numero massimo auto totali nel JSON. Usa 0 per nessun limite'
         required: false
-        default: '650'
+        default: '0'
       brand_codes:
         description: 'Test su marche specifiche, es. ABA,ROL. Vuoto = tutte'
         required: false
