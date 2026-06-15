@@ -23,6 +23,10 @@ on:
 permissions:
   contents: write
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   import-motornet:
     runs-on: ubuntu-latest
@@ -51,12 +55,30 @@ jobs:
             --download-images "${{ github.event.inputs.download_images }}" \
             --checkpoint-commit "false"
 
+      - name: Validate generated catalogue
+        run: |
+          test -f data/cars_motornet.json
+          python -m json.tool data/cars_motornet.json > /dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('data/cars_motornet.json')
+          data = json.loads(p.read_text(encoding='utf-8'))
+          cars = data.get('cars') or []
+          ev = [c for c in cars if c.get('category') == 'electric']
+          ice = [c for c in cars if c.get('category') != 'electric']
+          print(f"Motornet JSON generated: status={data.get('status')} cars={len(cars)} electric={len(ev)} thermal={len(ice)}")
+          print(f"File size: {p.stat().st_size} bytes")
+          PY
+
       - name: Postprocess Motornet catalogue
         run: |
           python scripts/postprocess_motornet_catalog.py
+          python -m json.tool data/cars_motornet.json > /dev/null
 
       - name: Commit imported catalogue
         run: |
+          set -e
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           mkdir -p assets/cars/motornet
@@ -66,5 +88,24 @@ jobs:
             exit 0
           fi
           git commit -m "Import Motornet catalogue"
-          git pull --rebase origin main || true
-          git push
+          for attempt in 1 2 3; do
+            echo "Push attempt $attempt"
+            if git pull --rebase --autostash origin main && git push; then
+              echo "Motornet catalogue committed and pushed."
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep 5
+          done
+          echo "Unable to push Motornet catalogue after retries."
+          exit 1
+
+      - name: Upload Motornet catalogue artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: motornet-catalogue
+          path: |
+            data/cars_motornet.json
+            assets/cars/motornet
+          if-no-files-found: warn
