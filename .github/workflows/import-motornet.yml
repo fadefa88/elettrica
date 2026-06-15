@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Numero massimo auto da importare'
+        description: 'Numero massimo auto totali nel JSON. Usa 0 per nessun limite'
         required: false
         default: '650'
       brand_codes:
@@ -48,7 +48,7 @@ jobs:
 
       - name: Import Motornet catalogue
         run: |
-          python scripts/import_motornet.py \
+          python scripts/import_motornet_resume.py \
             --limit "${{ github.event.inputs.limit }}" \
             --brand-codes "${{ github.event.inputs.brand_codes }}" \
             --delay "${{ github.event.inputs.delay }}" \
