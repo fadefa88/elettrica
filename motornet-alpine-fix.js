@@ -1,5 +1,7 @@
 (function(){
   const FUEL_LABELS = {
+    elettrica: 'Elettrica',
+    elettrica_idrogeno: 'Elettrica a idrogeno',
     benzina: 'Benzina',
     diesel: 'Diesel',
     gpl: 'GPL',
@@ -52,32 +54,33 @@
     if(model.toLowerCase().startsWith(brand.toLowerCase() + ' ')) return model;
     return clean(brand + ' ' + model);
   }
-  function selectedIceCar(){
-    const id = byId('iceSelect') ? byId('iceSelect').value : '';
-    if(!id || !Array.isArray(IC)) return null;
-    return IC.find(c => c.id === id) || null;
+
+  function selectedCar(selectId, list){
+    const id = byId(selectId) ? byId(selectId).value : '';
+    if(!id || !Array.isArray(list)) return null;
+    return list.find(c => c.id === id) || null;
   }
-  function availableFuelsForCurrentSelection(){
-    if(!Array.isArray(IC)) return [];
-    const selected = selectedIceCar();
+  function availableFuels(list, brandSelectId, modelSelectId){
+    if(!Array.isArray(list)) return [];
+    const selected = selectedCar(modelSelectId, list);
     if(selected && selected.fuel) return [selected.fuel];
 
-    const brand = byId('iceBrandPick') ? byId('iceBrandPick').value : 'all';
-    const list = brand && brand !== 'all' ? IC.filter(c => c.brand === brand) : IC;
-    return uniq(list.map(c => c.fuel));
+    const brand = byId(brandSelectId) ? byId(brandSelectId).value : 'all';
+    const scoped = brand && brand !== 'all' ? list.filter(c => c.brand === brand) : list;
+    return uniq(scoped.map(c => c.fuel));
   }
-  function refillFuelOptions(){
-    const fuelPick = byId('iceFuelPick');
-    if(!fuelPick || !Array.isArray(IC)) return 'all';
+  function refillFuelOptions(cfg){
+    const fuelPick = byId(cfg.fuelSelectId);
+    if(!fuelPick || !Array.isArray(cfg.list)) return 'all';
 
-    const selected = selectedIceCar();
-    const current = fuelPick.value || 'all';
-    const fuels = availableFuelsForCurrentSelection();
-    const forcedSingle = selected || fuels.length === 1;
+    const selected = selectedCar(cfg.modelSelectId, cfg.list);
+    const current = fuelPick.value || cfg.defaultFuel || 'all';
+    const fuels = availableFuels(cfg.list, cfg.brandSelectId, cfg.modelSelectId);
+    const forcedSingle = selected || fuels.length === 1 || cfg.noAll;
 
     let nextValue = current;
     if(forcedSingle){
-      nextValue = fuels[0] || 'all';
+      nextValue = fuels.includes(current) ? current : (fuels[0] || cfg.defaultFuel || 'all');
       fuelPick.innerHTML = fuels.map(f => '<option value="'+esc(f)+'">'+fuelLabel(f)+'</option>').join('');
     }else{
       fuelPick.innerHTML = '<option value="all">Tutti</option>' + fuels.map(f => '<option value="'+esc(f)+'">'+fuelLabel(f)+'</option>').join('');
@@ -85,74 +88,113 @@
     }
 
     fuelPick.value = nextValue;
-    fuelPick.disabled = forcedSingle && fuels.length === 1 && !byId('manualIceMode')?.checked;
+    fuelPick.disabled = forcedSingle && fuels.length === 1 && !byId(cfg.manualModeId)?.checked;
     return nextValue;
   }
-  function refillBrandOptions(){
-    const iceBrand = byId('iceBrandPick');
-    if(!iceBrand || !Array.isArray(IC)) return;
-    const current = iceBrand.value || 'all';
-    const brands = uniq(IC.map(c => c.brand));
-    iceBrand.innerHTML = '<option value="all">Tutte</option>' + brands.map(b => '<option value="'+esc(b)+'">'+b+'</option>').join('');
-    iceBrand.value = brands.includes(current) ? current : 'all';
+  function refillBrandOptions(cfg){
+    const brandPick = byId(cfg.brandSelectId);
+    if(!brandPick || !Array.isArray(cfg.list)) return;
+    const current = brandPick.value || 'all';
+    const fuel = byId(cfg.fuelSelectId) ? byId(cfg.fuelSelectId).value : 'all';
+    const fuelScoped = fuel && fuel !== 'all' ? cfg.list.filter(c => c.fuel === fuel) : cfg.list;
+    const brands = uniq(fuelScoped.map(c => c.brand));
+    brandPick.innerHTML = '<option value="all">Tutte</option>' + brands.map(b => '<option value="'+esc(b)+'">'+b+'</option>').join('');
+    brandPick.value = brands.includes(current) ? current : 'all';
   }
-  function refillModelOptions(){
-    const iceSelect = byId('iceSelect');
-    if(!iceSelect || !Array.isArray(IC)) return;
+  function refillModelOptions(cfg){
+    const modelPick = byId(cfg.modelSelectId);
+    if(!modelPick || !Array.isArray(cfg.list)) return;
 
-    const current = iceSelect.value || '';
-    const selected = selectedIceCar();
-    const brand = byId('iceBrandPick') ? byId('iceBrandPick').value : 'all';
-    const fuel = byId('iceFuelPick') ? byId('iceFuelPick').value : 'all';
+    const current = modelPick.value || '';
+    const brand = byId(cfg.brandSelectId) ? byId(cfg.brandSelectId).value : 'all';
+    const fuel = byId(cfg.fuelSelectId) ? byId(cfg.fuelSelectId).value : 'all';
 
-    const list = IC.filter(c => {
+    const list = cfg.list.filter(c => {
       const brandOk = brand === 'all' || c.brand === brand;
-      const fuelOk = selected ? true : (fuel === 'all' || c.fuel === fuel);
+      const fuelOk = fuel === 'all' || c.fuel === fuel;
       return brandOk && fuelOk;
     });
 
-    iceSelect.innerHTML = '<option value="">Seleziona modello termico</option>' + list.map(c => '<option value="'+esc(c.id)+'">'+optionLabel(c)+' '+(c.year || '')+'</option>').join('');
-    iceSelect.value = list.some(c => c.id === current) ? current : '';
+    modelPick.innerHTML = '<option value="">'+cfg.modelPlaceholder+'</option>' + list.map(c => '<option value="'+esc(c.id)+'">'+optionLabel(c)+' '+(c.year || '')+'</option>').join('');
+    modelPick.value = list.some(c => c.id === current) ? current : '';
   }
-  function refreshDependentFilters(origin){
+
+  function fixAllCars(){
     try{
       if(Array.isArray(EV)) EV.forEach(fixCar);
       if(Array.isArray(IC)) IC.forEach(fixCar);
-    }catch(e){ return; }
-
+    }catch(e){ return false; }
+    return true;
+  }
+  function refreshEvFilters(origin){
     try{
-      refillBrandOptions();
-      if(origin === 'brand'){
+      if(!Array.isArray(EV)) return;
+      const cfg = {
+        list: EV,
+        fuelSelectId: 'evFuelPick',
+        brandSelectId: 'evBrandPick',
+        modelSelectId: 'evSelect',
+        manualModeId: 'manualEvMode',
+        modelPlaceholder: 'Seleziona modello elettrico',
+        defaultFuel: 'elettrica',
+        noAll: false
+      };
+      if(origin === 'evBrand'){
+        if(byId('evSelect')) byId('evSelect').value = '';
+      }
+      refillFuelOptions(cfg);
+      refillBrandOptions(cfg);
+      refillModelOptions(cfg);
+      refillFuelOptions(cfg);
+    }catch(e){}
+  }
+  function refreshIceFilters(origin){
+    try{
+      if(!Array.isArray(IC)) return;
+      const cfg = {
+        list: IC,
+        fuelSelectId: 'iceFuelPick',
+        brandSelectId: 'iceBrandPick',
+        modelSelectId: 'iceSelect',
+        manualModeId: 'manualIceMode',
+        modelPlaceholder: 'Seleziona modello termico',
+        defaultFuel: 'all',
+        noAll: false
+      };
+      if(origin === 'iceBrand'){
         if(byId('iceSelect')) byId('iceSelect').value = '';
       }
-      refillFuelOptions();
-      refillModelOptions();
-      refillFuelOptions();
+      refillFuelOptions(cfg);
+      refillBrandOptions(cfg);
+      refillModelOptions(cfg);
+      refillFuelOptions(cfg);
+    }catch(e){}
+  }
+  function refreshDependentFilters(origin){
+    if(!fixAllCars()) return;
+    refreshEvFilters(origin);
+    refreshIceFilters(origin);
 
+    try{
       if(typeof setAutoFields === 'function') setAutoFields();
       if(typeof calculate === 'function') calculate();
       if(typeof updateNavigation === 'function') updateNavigation();
     }catch(e){}
   }
+  function wireOne(id, origin){
+    const el = byId(id);
+    if(!el || el.dataset.dependentFuelWired) return;
+    el.dataset.dependentFuelWired = '1';
+    el.addEventListener('change', function(){ refreshDependentFilters(origin); });
+    el.addEventListener('input', function(){ refreshDependentFilters(origin); });
+  }
   function wire(){
-    const fuelPick = byId('iceFuelPick');
-    const brandPick = byId('iceBrandPick');
-    const modelPick = byId('iceSelect');
-    if(fuelPick && !fuelPick.dataset.dependentFuelWired){
-      fuelPick.dataset.dependentFuelWired = '1';
-      fuelPick.addEventListener('change', function(){ refreshDependentFilters('fuel'); });
-      fuelPick.addEventListener('input', function(){ refreshDependentFilters('fuel'); });
-    }
-    if(brandPick && !brandPick.dataset.dependentFuelWired){
-      brandPick.dataset.dependentFuelWired = '1';
-      brandPick.addEventListener('change', function(){ refreshDependentFilters('brand'); });
-      brandPick.addEventListener('input', function(){ refreshDependentFilters('brand'); });
-    }
-    if(modelPick && !modelPick.dataset.dependentFuelWired){
-      modelPick.dataset.dependentFuelWired = '1';
-      modelPick.addEventListener('change', function(){ refreshDependentFilters('model'); });
-      modelPick.addEventListener('input', function(){ refreshDependentFilters('model'); });
-    }
+    wireOne('evFuelPick', 'evFuel');
+    wireOne('evBrandPick', 'evBrand');
+    wireOne('evSelect', 'evModel');
+    wireOne('iceFuelPick', 'iceFuel');
+    wireOne('iceBrandPick', 'iceBrand');
+    wireOne('iceSelect', 'iceModel');
   }
 
   window.addEventListener('load', function(){
