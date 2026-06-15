@@ -27,12 +27,18 @@
     Caterham: [/^erham\b\s*/i],
     Changan: [/^ngan\b\s*/i]
   };
+  let lastTimerSignature = '';
 
   function byId(id){ return document.getElementById(id); }
   function clean(value){ return String(value || '').replace(/\bundefined\b/gi, '').replace(/\s+/g, ' ').trim(); }
   function esc(value){ return String(value || '').replace(/"/g, '&quot;'); }
   function uniq(values){ return Array.from(new Set(values.filter(Boolean))).sort(); }
   function fuelLabel(fuel){ return FUEL_LABELS[fuel] || clean(fuel) || '-'; }
+  function catalogSignature(){
+    const ev = Array.isArray(EV) ? EV : [];
+    const ic = Array.isArray(IC) ? IC : [];
+    return [ev.length, ic.length, ev[0]?.id || '', ev[ev.length - 1]?.id || '', ic[0]?.id || '', ic[ic.length - 1]?.id || ''].join('|');
+  }
 
   function codeFromUrl(text){
     const s = String(text || '');
@@ -84,6 +90,7 @@
   function optionLabel(car){
     const model = clean(car && car.model);
     const brand = clean(car && car.brand);
+    if(model.toLowerCase() === brand.toLowerCase()) return brand;
     if(model.toLowerCase().startsWith(brand.toLowerCase() + ' ')) return model;
     return clean(brand + ' ' + model);
   }
@@ -205,6 +212,9 @@
   }
   function refreshDependentFilters(origin){
     if(!fixAllCars()) return;
+    const signature = catalogSignature();
+    if(origin === 'timer' && signature === lastTimerSignature) return;
+    if(origin === 'timer') lastTimerSignature = signature;
     refreshEvFilters(origin);
     refreshIceFilters(origin);
 
