@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import time
 import urllib.robotparser
@@ -13,7 +14,7 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 
 import import_motornet as base
 
-EXTRA_BRAND_CODES = ["ALN", "ALP", "BEN", "BES", "CAT", "CHA"]
+EXTRA_BRAND_CODES = ["ALN", "ALP", "BEN", "BES", "CAT", "CHA", "DEN", "COR", "DFS"]
 
 
 def bool_arg(value: object) -> bool:
@@ -32,6 +33,30 @@ def extended_brand_codes() -> list[str]:
 def canonical_url(value: object) -> str:
     text = base.clean(value)
     return base.full_url(text) if text else ""
+
+
+def brand_code_from_detail_url(url: object) -> str | None:
+    text = canonical_url(url)
+    match = re.search(r"/allestimento/([A-Za-z0-9_-]+)", text)
+    if not match:
+        return None
+    token = match.group(1).upper()
+    for code in sorted(extended_brand_codes(), key=len, reverse=True):
+        if token.startswith(code):
+            return code
+    fallback = re.match(r"[A-Z0-9]{2,4}", token)
+    return fallback.group(0) if fallback else None
+
+
+def last_imported_brand_code(cars: list[dict]) -> str | None:
+    for car in reversed(cars):
+        if not isinstance(car, dict):
+            continue
+        for key in ("motornet_detail_url", "source_url"):
+            code = brand_code_from_detail_url(car.get(key))
+            if code:
+                return code
+    return None
 
 
 def load_existing_catalog() -> tuple[list[dict], list[dict], set[str], set[str]]:
@@ -116,7 +141,7 @@ def robust_git_checkpoint(count: int, image_dir: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--limit", type=int, default=650, help="Maximum total cars in data/cars_motornet.json. Use 0 for no total limit.")
+    parser.add_argument("--limit", type=int, default=0, help="Maximum total cars in data/cars_motornet.json. Use 0 for no total limit.")
     parser.add_argument("--delay", type=float, default=8)
     parser.add_argument("--timeout", type=int, default=45000)
     parser.add_argument("--brand-codes", default="", help="CSV brand codes for test runs, e.g. ABA,ROL")
@@ -125,16 +150,19 @@ def main() -> None:
     parser.add_argument("--download-images", default="true")
     parser.add_argument("--image-dir", default="assets/cars/motornet")
     parser.add_argument("--max-image-mb", type=float, default=6)
+    parser.add_argument("--resume-from-last-brand", default="true", help="Skip whole brand pages before the last imported brand when brand_codes is empty.")
     args = parser.parse_args()
 
     args.checkpoint_commit = bool_arg(args.checkpoint_commit)
     args.download_images = bool_arg(args.download_images)
+    args.resume_from_last_brand = bool_arg(args.resume_from_last_brand)
     image_dir = Path(args.image_dir)
     max_image_bytes = int(args.max_image_mb * 1024 * 1024)
 
     cars, errors, seen_urls, seen_ids = load_existing_catalog()
     initial_count = len(cars)
     last_checkpoint = initial_count
+    resume_brand_code = last_imported_brand_code(cars) if args.resume_from_last_brand and not args.brand_codes.strip() else None
 
     if args.limit > 0 and len(cars) >= args.limit:
         print(f"Existing catalog already has {len(cars)} cars, limit={args.limit}. Nothing to import.")
@@ -154,6 +182,7 @@ def main() -> None:
     requests_count = 0
     images_downloaded = 0
     skipped_existing = 0
+    skipped_brand_pages = 0
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -177,9 +206,27 @@ def main() -> None:
                 errors.append({"url": base.LIST_URL, "error": "blocked_by_robots"})
 
         print("brand links:", len(brand_urls))
+        brand_codes_in_run = {base.brand_code_from_url(url) for url in brand_urls}
+        if resume_brand_code and resume_brand_code not in brand_codes_in_run:
+            print(f"WARN resume brand {resume_brand_code} not found in this run; falling back to URL-level skip")
+            resume_brand_code = None
+        elif resume_brand_code:
+            print(f"RESUME fast brand skip enabled. Starting at last imported brand: {resume_brand_code}")
+
+        reached_resume_brand = not bool(resume_brand_code)
         run_seen_details: set[str] = set()
 
         for brand_url in brand_urls:
+            brand_code = base.brand_code_from_url(brand_url)
+            if not reached_resume_brand:
+                if brand_code == resume_brand_code:
+                    reached_resume_brand = True
+                    print("RESUME reached brand", brand_code, brand_url)
+                else:
+                    skipped_brand_pages += 1
+                    print("SKIP BRAND before resume", brand_code, brand_url)
+                    continue
+
             if args.limit > 0 and len(cars) >= args.limit:
                 break
             if not base.can_fetch(robots, brand_url):
@@ -273,6 +320,7 @@ def main() -> None:
         "Done cars=", len(cars),
         "new=", len(cars) - initial_count,
         "skipped_existing=", skipped_existing,
+        "skipped_brand_pages=", skipped_brand_pages,
         "errors=", len(errors),
         "requests=", requests_count,
         "images_downloaded=", images_downloaded,
