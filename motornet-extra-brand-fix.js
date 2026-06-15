@@ -1,11 +1,17 @@
 (function(){
   const codeMap = JSON.parse(atob('eyJERU4iOiJEZW56YSIsIkNPUiI6IkNvcnZldHRlIiwiREZTIjoiREZTSyIsIkRPRyI6IkRvbmdmZW5nIiwiRlRIIjoiRm9ydGhpbmciLCJHUlciOiJHcmVhdCBXYWxsIiwiR0VOIjoiR2VuZXNpcyIsIkdFRSI6IkdlZWx5IiwiRk9UIjoiRm90b24iLCJHVlQiOiJHaW90dGkgVmljdG9yaWEifQ=='));
   const fragmentMap = JSON.parse(atob('eyJEZW56YSI6WyJERU4gemEiLCJERU56YSIsInphIl0sIkNvcnZldHRlIjpbIkNPUiB2ZXR0ZSIsIkNPUnZldHRlIiwidmV0dGUiXSwiREZTSyI6WyJERlMgSyIsIkRGU0siLCJLIl0sIkRvbmdmZW5nIjpbIkRPRyBEb25nZmVuZyIsIkRPR0RvbmdmZW5nIl0sIkZvcnRoaW5nIjpbIkZUSCBGb3J0aGluZyIsIkZUSEZvcnRoaW5nIl0sIkdyZWF0IFdhbGwiOlsiR1JXIEdyZWF0IFdhbGwiLCJHUldHcmVhdCBXYWxsIiwiR1JXR3JlYXRXYWxsIl0sIkdlbmVzaXMiOlsiR0VOIGVzaXMiLCJHRU5lc2lzIiwiZXNpcyJdLCJHZWVseSI6WyJHRUUgbHkiLCJHRUVseSIsImx5Il0sIkZvdG9uIjpbIkZPVCBvbiIsIkZPVG9uIiwib24iXSwiR2lvdHRpIFZpY3RvcmlhIjpbIkdWVCBHaW90dGkgVmljdG9yaWEiLCJHVlRHaW90dGkgVmljdG9yaWEiLCJHVlRHaW90dGlWaWN0b3JpYSJdfQ=='));
+  let lastSignature = '';
 
   function byId(id){ return document.getElementById(id); }
   function clean(value){ return String(value || '').replace(/\bundefined\b/gi, '').replace(/\s+/g, ' ').trim(); }
   function esc(value){ return String(value || '').replace(/"/g, '&quot;'); }
   function uniq(values){ return Array.from(new Set(values.filter(Boolean))).sort(); }
+  function dataSignature(){
+    const ev = Array.isArray(EV) ? EV : [];
+    const ic = Array.isArray(IC) ? IC : [];
+    return [ev.length, ic.length, ev[0]?.id || '', ev[ev.length - 1]?.id || '', ic[0]?.id || '', ic[ic.length - 1]?.id || ''].join('|');
+  }
   function codeFromUrl(text){
     const s = String(text || '');
     let m = s.match(/allestimento\/([A-Z0-9]{3})/i);
@@ -77,6 +83,9 @@
   }
   function refresh(){
     try{
+      const signature = dataSignature();
+      if(signature === lastSignature) return;
+      lastSignature = signature;
       if(Array.isArray(EV)) EV.forEach(fixCar);
       if(Array.isArray(IC)) IC.forEach(fixCar);
       fillBrands(EV, 'evBrandPick');
