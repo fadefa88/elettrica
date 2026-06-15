@@ -21,6 +21,9 @@
   const BROKEN_BRAND_TEXT = {
     Caterham: [/^CAT\s*erham\b/i, /^CATerham\b/i]
   };
+  const RESIDUAL_BROKEN_BRAND_TEXT = {
+    Caterham: [/^erham\b\s*/i]
+  };
 
   function byId(id){ return document.getElementById(id); }
   function clean(value){ return String(value || '').replace(/\bundefined\b/gi, '').replace(/\s+/g, ' ').trim(); }
@@ -44,6 +47,12 @@
     rules.forEach(rx => { text = clean(text.replace(rx, brand)); });
     return text;
   }
+  function stripResidualBrokenBrandText(value, brand){
+    let text = clean(value);
+    const rules = RESIDUAL_BROKEN_BRAND_TEXT[brand] || [];
+    rules.forEach(rx => { text = clean(text.replace(rx, '')); });
+    return text;
+  }
   function stripLeadingBrand(value, brand){
     let text = normalizeBrokenBrandText(value, brand);
     const b = clean(brand);
@@ -51,6 +60,7 @@
     const escaped = b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const rx = new RegExp('^' + escaped + '\\s+', 'i');
     while(rx.test(text)) text = clean(text.replace(rx, ''));
+    text = stripResidualBrokenBrandText(text, brand);
     return text;
   }
   function fixCar(car){
