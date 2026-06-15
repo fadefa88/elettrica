@@ -1,6 +1,6 @@
 (function(){
-  const codeMap = JSON.parse(atob('eyJERU4iOiJEZW56YSIsIkNPUiI6IkNvcnZldHRlIiwiREZTIjoiREZTSyJ9'));
-  const fragmentMap = JSON.parse(atob('eyJEZW56YSI6WyJERU4gemEiLCJERU56YSIsInphIl0sIkNvcnZldHRlIjpbIkNPUiB2ZXR0ZSIsIkNPUnZldHRlIiwidmV0dGUiXSwiREZTSyI6WyJERlMgSyIsIkRGU0siLCJLIl19'));
+  const codeMap = JSON.parse(atob('eyJERU4iOiJEZW56YSIsIkNPUiI6IkNvcnZldHRlIiwiREZTIjoiREZTSyIsIkRPRyI6IkRvbmdmZW5nIn0='));
+  const fragmentMap = JSON.parse(atob('eyJEZW56YSI6WyJERU4gemEiLCJERU56YSIsInphIl0sIkNvcnZldHRlIjpbIkNPUiB2ZXR0ZSIsIkNPUnZldHRlIiwidmV0dGUiXSwiREZTSyI6WyJERlMgSyIsIkRGU0siLCJLIl0sIkRvbmdmZW5nIjpbIkRPRyBEb25nZmVuZyIsIkRPR0RvbmdmZW5nIl19'));
 
   function byId(id){ return document.getElementById(id); }
   function clean(value){ return String(value || '').replace(/\bundefined\b/gi, '').replace(/\s+/g, ' ').trim(); }
@@ -30,10 +30,17 @@
     for(const fragment of fragments){ text = removePrefix(text, fragment); }
     return text;
   }
+  function fixDrModel(car, code, raw){
+    if(code !== 'DR' && raw !== 'DR') return;
+    car.model = removePrefix(car.model || car.version || car.powertrain, 'DR') || car.model;
+    car.version = removePrefix(car.version || car.model, 'DR') || car.version;
+    car.powertrain = removePrefix(car.powertrain || car.version || car.model, 'DR') || car.powertrain;
+  }
   function fixCar(car){
     if(!car) return;
     const code = carCode(car);
     const raw = clean(car.brand).toUpperCase();
+    fixDrModel(car, code, raw);
     const brand = codeMap[code] || codeMap[raw];
     if(!brand) return;
     car.brand = brand;
@@ -47,6 +54,7 @@
   function label(car){
     const brand = clean(car && car.brand);
     const model = clean(car && car.model);
+    if(model.toLowerCase() === brand.toLowerCase()) return brand;
     if(model.toLowerCase().startsWith(brand.toLowerCase() + ' ')) return model;
     return clean(brand + ' ' + model);
   }
