@@ -16,13 +16,16 @@
     ALP: 'Alpine',
     BEN: 'Bentley',
     BES: 'Bestune',
-    CAT: 'Caterham'
+    CAT: 'Caterham',
+    CHA: 'Changan'
   };
   const BROKEN_BRAND_TEXT = {
-    Caterham: [/^CAT\s*erham\b/i, /^CATerham\b/i]
+    Caterham: [/^CAT\s*erham\b/i, /^CATerham\b/i],
+    Changan: [/^CHA\s*ngan\b/i, /^CHAngan\b/i]
   };
   const RESIDUAL_BROKEN_BRAND_TEXT = {
-    Caterham: [/^erham\b\s*/i]
+    Caterham: [/^erham\b\s*/i],
+    Changan: [/^ngan\b\s*/i]
   };
 
   function byId(id){ return document.getElementById(id); }
