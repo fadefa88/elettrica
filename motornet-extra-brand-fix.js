@@ -42,10 +42,19 @@
     car.version = removePrefix(car.version || car.model, 'DR') || car.version;
     car.powertrain = removePrefix(car.powertrain || car.version || car.model, 'DR') || car.powertrain;
   }
+  function fixKnownBrandModel(car){
+    const brand = clean(car && car.brand);
+    if(brand.toLowerCase() === 'mercedes-benz'){
+      ['model','version','powertrain'].forEach(function(key){
+        if(clean(car[key]).toLowerCase() === 'mercedes') car[key] = brand;
+      });
+    }
+  }
   function fixCar(car){
     if(!car) return;
     const code = carCode(car);
     const raw = clean(car.brand).toUpperCase();
+    fixKnownBrandModel(car);
     fixDrModel(car, code, raw);
     const brand = codeMap[code] || codeMap[raw];
     if(!brand) return;
