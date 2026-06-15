@@ -15,7 +15,11 @@
     ALN: 'Alpine',
     ALP: 'Alpine',
     BEN: 'Bentley',
-    BES: 'Bestune'
+    BES: 'Bestune',
+    CAT: 'Caterham'
+  };
+  const BROKEN_BRAND_TEXT = {
+    Caterham: [/^CAT\s*erham\b/i, /^CATerham\b/i]
   };
 
   function byId(id){ return document.getElementById(id); }
@@ -34,8 +38,14 @@
   function carCode(car){
     return codeFromUrl([car && car.source_url, car && car.motornet_detail_url, car && car.image_source_url, car && car.image_local_path].join(' '));
   }
-  function stripLeadingBrand(value, brand){
+  function normalizeBrokenBrandText(value, brand){
     let text = clean(value);
+    const rules = BROKEN_BRAND_TEXT[brand] || [];
+    rules.forEach(rx => { text = clean(text.replace(rx, brand)); });
+    return text;
+  }
+  function stripLeadingBrand(value, brand){
+    let text = normalizeBrokenBrandText(value, brand);
     const b = clean(brand);
     if(!text || !b) return text;
     const escaped = b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -50,9 +60,12 @@
     const normalizedBrand = BRAND_BY_CODE[code] || BRAND_BY_CODE[rawBrand];
     if(normalizedBrand){
       car.brand = normalizedBrand;
-      car.model = stripLeadingBrand(car.model || car.version || car.powertrain, normalizedBrand) || 'Modello';
-      car.version = stripLeadingBrand(car.version || car.model, normalizedBrand) || car.model;
-      car.powertrain = stripLeadingBrand(car.powertrain || car.version || car.model, normalizedBrand) || car.model;
+      const model = stripLeadingBrand(car.model || car.version || car.powertrain, normalizedBrand);
+      const version = stripLeadingBrand(car.version || car.model, normalizedBrand);
+      const powertrain = stripLeadingBrand(car.powertrain || car.version || car.model, normalizedBrand);
+      car.model = model || normalizedBrand;
+      car.version = version || car.model;
+      car.powertrain = powertrain || car.model;
     }
   }
   function optionLabel(car){
