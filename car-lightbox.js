@@ -36,11 +36,10 @@
     document.body.style.overflow = '';
   }
   document.addEventListener('click', function(event){
-    const visual = event.target.closest('.car-visual, .mini-car-card');
-    if(!visual) return;
-    const img = visual.querySelector('.car-photo');
+    const img = event.target.closest('img.car-photo');
     if(!img) return;
     event.preventDefault();
+    event.stopPropagation();
     openLightbox(img);
   });
 })();
