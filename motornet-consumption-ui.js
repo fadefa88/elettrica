@@ -5,10 +5,8 @@
   let enrichedOnce = false;
 
   function byId(id){ return document.getElementById(id); }
-
-  function normalizeKey(value){
-    return String(value || '').toLowerCase().replace(/\s+/g,' ').trim();
-  }
+  function normalizeKey(value){ return String(value || '').toLowerCase().replace(/\s+/g,' ').trim(); }
+  function toText(value){ return String(value === null || value === undefined ? '' : value).replace(/\s+/g,' ').trim(); }
 
   function toNumber(value){
     if(value === null || value === undefined) return undefined;
@@ -26,6 +24,16 @@
   function validBatteryKwh(value){
     const n = toNumber(value);
     return n && n >= 5 && n <= 250 ? round1(n) : undefined;
+  }
+
+  function validRangeKm(value){
+    const n = toNumber(value);
+    return n && n >= 30 && n <= 1500 ? Math.round(n) : undefined;
+  }
+
+  function validKwh100(value){
+    const n = toNumber(value);
+    return n && n >= 5 && n <= 60 ? round1(n) : undefined;
   }
 
   function batteryFromText(){
@@ -64,11 +72,64 @@
     ];
   }
 
-  function specValue(car, matchers){
+  function rawSpecs(car){
     const raw = car && car.specs_raw;
-    if(!raw || typeof raw !== 'object') return undefined;
-    for(const [key, value] of Object.entries(raw)){
+    return raw && typeof raw === 'object' ? raw : {};
+  }
+
+  function specEntries(car){
+    const out = [];
+    const seen = new Set();
+
+    function add(key, value){
+      const k = toText(key);
+      const v = toText(value);
+      if(!k || !v || v === '[object Object]') return;
+      const sig = k + '\u0000' + v;
+      if(seen.has(sig)) return;
+      seen.add(sig);
+      out.push([k, v]);
+    }
+
+    function walk(node, path){
+      if(node === null || node === undefined) return;
+      if(typeof node !== 'object'){
+        add(path.join(' '), node);
+        return;
+      }
+      if(Array.isArray(node)){
+        node.forEach(item => walk(item, path));
+        return;
+      }
+
+      // Common shapes: {label, value}, {name, value}, {key, value}.
+      const label = node.label || node.name || node.key || node.title;
+      const value = node.value || node.val || node.text;
+      if(label !== undefined && value !== undefined){
+        add(path.concat([label]).join(' '), value);
+      }
+
+      Object.entries(node).forEach(([key, value]) => {
+        if(['label','name','key','title','value','val','text'].includes(key) && typeof value !== 'object') return;
+        if(value && typeof value === 'object'){
+          walk(value, path.concat([key]));
+        } else {
+          add(path.concat([key]).join(' '), value);
+          add(key, value);
+        }
+      });
+    }
+
+    walk(rawSpecs(car), []);
+    return out;
+  }
+
+  function specValue(car, matchers, opts){
+    opts = opts || {};
+    const entries = specEntries(car);
+    for(const [key, value] of entries){
       const k = normalizeKey(key);
+      if(opts.exclude && opts.exclude.some(rx => rx.test(k))) continue;
       if(matchers.some(rx => rx.test(k))){
         const s = String(value || '').trim();
         if(s) return s;
@@ -78,10 +139,8 @@
   }
 
   function specExactValue(car, wantedKey){
-    const raw = car && car.specs_raw;
-    if(!raw || typeof raw !== 'object') return {found:false, value:undefined};
     const wanted = normalizeKey(wantedKey);
-    for(const [key, value] of Object.entries(raw)){
+    for(const [key, value] of specEntries(car)){
       if(normalizeKey(key) === wanted){
         const s = String(value || '').trim();
         return {found:true, value:s || undefined};
@@ -90,8 +149,8 @@
     return {found:false, value:undefined};
   }
 
-  function specNumber(car, matchers){
-    const value = specValue(car, matchers);
+  function specNumber(car, matchers, opts){
+    const value = specValue(car, matchers, opts);
     return value ? toNumber(value) : undefined;
   }
 
@@ -119,11 +178,13 @@
   }
 
   function motornetKwh100(rawCar, visualCar){
-    return specNumber(rawCar, [
+    return validKwh100(rawCar && rawCar.consumption_kwh_100km) || validKwh100(visualCar && visualCar.consumption_kwh_100km) || specNumber(rawCar, [
       /kw\/?h\s*100\s*km/i,
       /kwh\s*\/\s*100\s*km/i,
-      /kwh\s*100\s*km/i
-    ]) || toNumber(rawCar && rawCar.consumption_kwh_100km) || toNumber(visualCar && visualCar.consumption_kwh_100km);
+      /kwh\s*100\s*km/i,
+      /consumo.*elettric.*combinato/i,
+      /consumo.*combinato/i
+    ], {exclude:[/max/i]});
   }
 
   function motornetL100(rawCar){
@@ -150,12 +211,18 @@
   }
 
   function motornetRange(rawCar, visualCar){
-    return toNumber(rawCar && rawCar.range_wltp_km) || toNumber(visualCar && visualCar.range_wltp_km) || specNumber(rawCar, [
-      /auto(?:no|mo)mia.*elettrico.*combinato/i,
-      /autonomia.*elettrico.*combinato/i,
+    const direct = validRangeKm(rawCar && rawCar.range_wltp_km) || validRangeKm(visualCar && visualCar.range_wltp_km);
+    if(direct) return direct;
+    return specNumber(rawCar, [
+      /autonomia.*solo.*elettric.*combinato/i,
+      /autonomia.*elettric.*combinato/i,
+      /autonomia.*wltp.*combinato/i,
       /autonomia.*combinato/i,
-      /^autonomia\s+wltp/i
-    ]);
+      /^autonomia\s+wltp/i,
+      /autonomia.*solo.*elettric/i,
+      /autonomia.*elettric/i,
+      /^autonomia\b/i
+    ], {exclude:[/urbano/i, /max/i]});
   }
 
   function estimatedBatteryFromRange(rawCar, visualCar){
@@ -277,17 +344,17 @@
     const raw = c.id ? (rawById.get(c.id) || c) : c;
     const chips = [];
     if(type === 'ev'){
-      const kwh = toNumber(c.consumption_kwh_100km) || motornetKwh100(raw, c);
+      const kwh = motornetKwh100(raw, c);
       if(kwh){
         c.consumption_kwh_100km = kwh;
         chips.push('<span><i class="fa-solid fa-bolt"></i> '+formatNumber(kwh)+' kWh/100 km</span>');
       }
-      const range = toNumber(c.range_wltp_km) || motornetRange(raw, c);
+      const range = motornetRange(raw, c);
       if(range){
         c.range_wltp_km = range;
         chips.push('<span><i class="fa-solid fa-road"></i> '+formatNumber(range)+' km WLTP</span>');
       }
-      const battery = validBatteryKwh(c.battery_kwh) || motornetBattery(raw, c);
+      const battery = motornetBattery(raw, c);
       if(battery){
         c.battery_kwh = battery;
         chips.push('<span><i class="fa-solid fa-car-battery"></i> '+formatNumber(battery)+' kWh batteria</span>');
@@ -315,6 +382,7 @@
   function patchRender(){
     if(patched || typeof renderCarVisual !== 'function') return;
     patched = true;
+    window.__motornetSpecChipsPatched = true;
     const original = renderCarVisual;
     renderCarVisual = function(id, car, type){
       if(car) enrichCar(car);
