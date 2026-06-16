@@ -122,6 +122,21 @@
     ]);
   }
 
+  function motornetBattery(rawCar){
+    const direct = toNumber(rawCar && rawCar.battery_kwh);
+    if(direct) return direct;
+    return specNumber(rawCar, [
+      /capac.*batter/i,
+      /batter.*capac/i,
+      /^batteria$/i,
+      /batteria.*kwh/i,
+      /accumulatore/i,
+      /capac.*accumulator/i,
+      /energia.*batter/i,
+      /battery.*capacity/i
+    ]);
+  }
+
   function motornetCo2(rawCar){
     return specNumber(rawCar, [
       /^co2\s*combinato$/i,
@@ -167,6 +182,8 @@
         car.consumption_kwh_100km_estimated = false;
         car.consumption_source = 'motornet_technical_sheet';
       }
+      const battery = motornetBattery(raw);
+      if(battery) car.battery_kwh = battery;
       const range = motornetRange(raw);
       if(range) car.range_wltp_km = range;
     } else {
@@ -204,10 +221,10 @@
       if(kwh){
         chips.push('<span><i class="fa-solid fa-bolt"></i> '+formatNumber(kwh)+' kWh/100 km'+(c.consumption_kwh_100km_estimated ? ' stimati' : '')+'</span>');
       }
-      const range = toNumber(c.range_wltp_km);
-      if(range) chips.push('<span><i class="fa-solid fa-road"></i> '+formatNumber(range)+' km WLTP</span>');
       const battery = toNumber(c.battery_kwh);
       if(battery) chips.push('<span><i class="fa-solid fa-car-battery"></i> '+formatNumber(battery)+' kWh batteria</span>');
+      const range = toNumber(c.range_wltp_km);
+      if(range) chips.push('<span><i class="fa-solid fa-road"></i> '+formatNumber(range)+' km WLTP</span>');
     } else {
       const l100 = toNumber(c.consumption_l_100km);
       const kg100 = toNumber(c.consumption_kg_100km);
