@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "500",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/500",
+  "last_completed_brand_code": "1000",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/1000",
   "cars_count_at_completion": 5672,
-  "requests_count_at_completion": 647,
-  "updated_at": "2026-06-16T10:07:09+00:00"
+  "requests_count_at_completion": 648,
+  "updated_at": "2026-06-16T10:12:03+00:00"
 }
