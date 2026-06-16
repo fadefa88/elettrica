@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "TOY",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/TOY",
-  "cars_count_at_completion": 5294,
-  "requests_count_at_completion": 219,
-  "updated_at": "2026-06-16T08:58:43+00:00"
+  "last_completed_brand_code": "VLK",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/VLK",
+  "cars_count_at_completion": 5536,
+  "requests_count_at_completion": 485,
+  "updated_at": "2026-06-16T09:31:12+00:00"
 }
