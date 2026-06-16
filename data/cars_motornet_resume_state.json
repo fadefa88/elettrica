@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "VOL",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/VOL",
-  "cars_count_at_completion": 5648,
-  "requests_count_at_completion": 610,
-  "updated_at": "2026-06-16T09:47:41+00:00"
+  "last_completed_brand_code": "VOY",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/VOY",
+  "cars_count_at_completion": 5652,
+  "requests_count_at_completion": 617,
+  "updated_at": "2026-06-16T09:50:27+00:00"
 }
