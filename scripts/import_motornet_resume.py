@@ -285,6 +285,7 @@ def main() -> None:
         print("brand links:", len(brand_urls))
         brand_codes_in_run = {base.brand_code_from_url(url) for url in brand_urls}
         brand_codes_in_run = {code for code in brand_codes_in_run if code}
+        brand_order = {base.brand_code_from_url(url): i for i, url in enumerate(brand_urls) if base.brand_code_from_url(url)}
 
         last_brand_code = last_imported_brand_code(cars, brand_codes_in_run) if not explicit_brand_run else None
         completed_brand_raw = base.clean(resume_state.get("last_completed_brand_code")).upper() if resume_state else ""
@@ -299,9 +300,18 @@ def main() -> None:
 
         resume_after_brand_code = None
         resume_at_brand_code = None
-        if completed_brand_code and completed_brand_code in brand_codes_in_run:
+
+        completed_idx = brand_order.get(completed_brand_code) if completed_brand_code else None
+        last_idx = brand_order.get(last_brand_code) if last_brand_code else None
+
+        # Use completed-brand state only if it is not behind the last imported brand.
+        # If state says AUD but the JSON already contains SPO, the completed state is stale
+        # and would make the importer replay hundreds of existing links.
+        if completed_brand_code and completed_brand_code in brand_codes_in_run and (last_idx is None or completed_idx is None or completed_idx >= last_idx):
             resume_after_brand_code = completed_brand_code
             print(f"RESUME completed-brand skip enabled. Starting after completed brand: {completed_brand_code}")
+        elif completed_brand_code and completed_brand_code in brand_codes_in_run and last_brand_code and last_brand_code in brand_codes_in_run:
+            print(f"RESUME completed-brand state {completed_brand_code} is behind last imported brand {last_brand_code}; ignoring stale state")
         elif completed_brand_raw:
             print(f"WARN completed resume brand {completed_brand_raw} not found in this run; ignoring state")
 
