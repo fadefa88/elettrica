@@ -2,6 +2,11 @@ name: Postprocess Motornet catalogue
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/postprocess-motornet.yml'
+      - 'scripts/postprocess_motornet_catalog.py'
+      - 'scripts/derive_ev_battery_fields.py'
 
 permissions:
   contents: write
