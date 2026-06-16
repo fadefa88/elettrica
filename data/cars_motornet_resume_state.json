@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "AUD",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/AUD",
+  "last_completed_brand_code": "BEN",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/BEN",
   "cars_count_at_completion": 5125,
-  "requests_count_at_completion": 70,
-  "updated_at": "2026-06-16T07:54:10+00:00"
+  "requests_count_at_completion": 7,
+  "updated_at": "2026-06-16T08:01:28+00:00"
 }
