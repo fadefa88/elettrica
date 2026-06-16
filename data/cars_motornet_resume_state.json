@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "SWM",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/SWM",
-  "cars_count_at_completion": 5204,
-  "requests_count_at_completion": 106,
-  "updated_at": "2026-06-16T08:39:34+00:00"
+  "last_completed_brand_code": "TES",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/TES",
+  "cars_count_at_completion": 5213,
+  "requests_count_at_completion": 118,
+  "updated_at": "2026-06-16T08:42:58+00:00"
 }
