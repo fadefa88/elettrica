@@ -163,3 +163,173 @@
   document.addEventListener('click', function(){ setTimeout(run, 0); }, true);
   document.addEventListener('change', function(){ setTimeout(run, 0); }, true);
 })();
+
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function numeric(id){ return Number(byId(id)?.value || 0); }
+  function checked(id){ return !!byId(id)?.checked; }
+  function activeStep(){
+    const active = document.querySelector('.screen.active[data-step]');
+    return active ? Number(active.dataset.step) : -1;
+  }
+
+  function selectedElectricCar(){
+    try{
+      return typeof window.selectedEv === 'function' ? window.selectedEv() : null;
+    }catch(e){
+      return null;
+    }
+  }
+
+  function setTaxLabel(){
+    const checkbox = byId('overrideEvTax');
+    if(!checkbox) return;
+    const span = checkbox.closest('span');
+    if(!span) return;
+    span.childNodes.forEach(function(node){
+      if(node.nodeType === Node.TEXT_NODE){
+        node.nodeValue = ' Override bollo elettrica';
+      }
+    });
+  }
+
+  function applyEvTaxPolicy(){
+    const years = numeric('years');
+    const input = byId('evTaxAfter5');
+    const checkbox = byId('overrideEvTax');
+    if(!input || !checkbox) return;
+
+    setTaxLabel();
+
+    if(years <= 5){
+      checkbox.checked = false;
+      checkbox.disabled = true;
+      input.value = '0';
+      input.readOnly = true;
+      input.classList.add('readonly');
+      input.title = 'Il bollo elettrico è considerato 0 fino a 5 anni di possesso.';
+      return;
+    }
+
+    checkbox.disabled = false;
+    input.title = '';
+    const ev = selectedElectricCar();
+    if(!checkbox.checked){
+      if(ev && typeof window.estimateEvTax === 'function'){
+        const tax = window.estimateEvTax(ev);
+        if(Number.isFinite(tax)) input.value = String(tax);
+      }
+      input.readOnly = true;
+      input.classList.add('readonly');
+    }else{
+      input.readOnly = false;
+      input.classList.remove('readonly');
+    }
+  }
+
+  function photovoltaicValid(){
+    return checked('noPv') || numeric('solarShare') > 0;
+  }
+
+  function ensurePvHint(){
+    let hint = byId('pvRequiredHint');
+    if(hint) return hint;
+    const pvScreen = document.querySelector('.screen[data-step="5"]');
+    if(!pvScreen) return null;
+    hint = document.createElement('p');
+    hint.id = 'pvRequiredHint';
+    hint.className = 'source-note';
+    hint.style.marginTop = '10px';
+    hint.style.color = '#8a4b00';
+    hint.textContent = 'Per proseguire seleziona “Non ho impianto fotovoltaico” oppure indica una quota fotovoltaico maggiore di 0%.';
+    const card = pvScreen.querySelector('.card.soft') || pvScreen;
+    card.appendChild(hint);
+    return hint;
+  }
+
+  function updatePvValidationUi(){
+    const hint = ensurePvHint();
+    if(hint) hint.hidden = photovoltaicValid();
+  }
+
+  function runPolicy(){
+    applyEvTaxPolicy();
+    updatePvValidationUi();
+  }
+
+  if(typeof window.setAutoFields === 'function'){
+    const originalSetAutoFields = window.setAutoFields;
+    window.setAutoFields = function(){
+      const result = originalSetAutoFields.apply(this, arguments);
+      runPolicy();
+      return result;
+    };
+  }
+
+  if(typeof window.calculate === 'function'){
+    const originalCalculate = window.calculate;
+    window.calculate = function(){
+      applyEvTaxPolicy();
+      const result = originalCalculate.apply(this, arguments);
+      applyEvTaxPolicy();
+      return result;
+    };
+  }
+
+  if(typeof window.drawSummary === 'function'){
+    const originalDrawSummary = window.drawSummary;
+    window.drawSummary = function(){
+      applyEvTaxPolicy();
+      return originalDrawSummary.apply(this, arguments);
+    };
+  }
+
+  if(typeof window.canProceed === 'function'){
+    const originalCanProceed = window.canProceed;
+    window.canProceed = function(){
+      const base = originalCanProceed.apply(this, arguments);
+      if(!base) return false;
+      if(activeStep() === 5) return photovoltaicValid();
+      return true;
+    };
+  }
+
+  if(typeof window.updateNavigation === 'function'){
+    const originalUpdateNavigation = window.updateNavigation;
+    window.updateNavigation = function(){
+      runPolicy();
+      return originalUpdateNavigation.apply(this, arguments);
+    };
+  }
+
+  document.addEventListener('input', function(event){
+    if(['years','solarShare','noPv','unknownPv','overrideEvTax','evTaxAfter5'].includes(event.target && event.target.id)){
+      setTimeout(function(){
+        runPolicy();
+        if(typeof window.updateNavigation === 'function') window.updateNavigation();
+        if(typeof window.calculate === 'function') window.calculate();
+      }, 0);
+    }
+  }, true);
+
+  document.addEventListener('change', function(event){
+    if(['years','solarShare','noPv','unknownPv','overrideEvTax','evTaxAfter5'].includes(event.target && event.target.id)){
+      setTimeout(function(){
+        runPolicy();
+        if(typeof window.updateNavigation === 'function') window.updateNavigation();
+        if(typeof window.calculate === 'function') window.calculate();
+      }, 0);
+    }
+  }, true);
+
+  document.addEventListener('DOMContentLoaded', runPolicy);
+  window.addEventListener('load', function(){
+    runPolicy();
+    let count = 0;
+    const timer = setInterval(function(){
+      runPolicy();
+      count += 1;
+      if(count >= 20) clearInterval(timer);
+    }, 250);
+  });
+})();
