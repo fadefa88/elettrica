@@ -1,16 +1,13 @@
 (function(){
-  const RAW_URL = 'data/cars_motornet.json';
-  const MAX_ATTEMPTS = 20;
+  const MAX_ATTEMPTS = 24;
   let rawById = new Map();
   let patched = false;
+  let enrichedOnce = false;
 
   function byId(id){ return document.getElementById(id); }
 
   function normalizeKey(value){
-    return String(value || '')
-      .toLowerCase()
-      .replace(/\s+/g,' ')
-      .trim();
+    return String(value || '').toLowerCase().replace(/\s+/g,' ').trim();
   }
 
   function toNumber(value){
@@ -24,9 +21,11 @@
     return Number.isFinite(n) && n > 0 ? n : undefined;
   }
 
+  function round1(n){ return Math.round(Number(n) * 10) / 10; }
+
   function validBatteryKwh(value){
     const n = toNumber(value);
-    return n && n >= 5 && n <= 250 ? n : undefined;
+    return n && n >= 5 && n <= 250 ? round1(n) : undefined;
   }
 
   function batteryFromText(){
@@ -50,13 +49,15 @@
   function textFields(car){
     if(!car || typeof car !== 'object') return [];
     return [
-      car.battery_kwh,
+      car.display_name,
+      car.title,
+      car.name,
+      car.brand,
       car.model,
       car.version,
       car.powertrain,
       car.motor,
-      car.title,
-      car.name,
+      car.battery_kwh,
       car.fuel_original,
       car.source_url,
       car.motornet_detail_url
@@ -117,23 +118,18 @@
     return Number.isFinite(n) && n >= 5000 && n <= 1000000 ? n : undefined;
   }
 
-  function motornetKwh100(rawCar){
+  function motornetKwh100(rawCar, visualCar){
     return specNumber(rawCar, [
       /kw\/?h\s*100\s*km/i,
       /kwh\s*\/\s*100\s*km/i,
       /kwh\s*100\s*km/i
-    ]) || toNumber(rawCar && rawCar.consumption_kwh_100km);
+    ]) || toNumber(rawCar && rawCar.consumption_kwh_100km) || toNumber(visualCar && visualCar.consumption_kwh_100km);
   }
 
   function motornetL100(rawCar){
     const combined = specExactNumber(rawCar, 'Consumo Combinato');
     if(combined.number) return combined.number;
-
-    // If the Motornet JSON has the exact key but the value is a placeholder
-    // such as "Consumo Combinato Max", do not fall back to extraurbano/urbano
-    // or to old imported values. The frontend must reflect the combined field.
     if(combined.found) return undefined;
-
     return toNumber(rawCar && rawCar.consumption_l_100km);
   }
 
@@ -153,12 +149,20 @@
     ]) || toMoney(rawCar && rawCar.price_eur);
   }
 
-  function motornetRange(rawCar){
-    return toNumber(rawCar && rawCar.range_wltp_km) || specNumber(rawCar, [
+  function motornetRange(rawCar, visualCar){
+    return toNumber(rawCar && rawCar.range_wltp_km) || toNumber(visualCar && visualCar.range_wltp_km) || specNumber(rawCar, [
       /auto(?:no|mo)mia.*elettrico.*combinato/i,
       /autonomia.*elettrico.*combinato/i,
-      /autonomia.*combinato/i
+      /autonomia.*combinato/i,
+      /^autonomia\s+wltp/i
     ]);
+  }
+
+  function estimatedBatteryFromRange(rawCar, visualCar){
+    const range = motornetRange(rawCar, visualCar);
+    const kwh100 = motornetKwh100(rawCar, visualCar);
+    if(!range || !kwh100) return undefined;
+    return validBatteryKwh((range * kwh100) / 100);
   }
 
   function motornetBattery(rawCar, visualCar){
@@ -182,9 +186,10 @@
     const validSpec = validBatteryKwh(fromSpecs);
     if(validSpec) return validSpec;
 
-    // Many Motornet electric trims expose the pack size only in the model/trim
-    // label, e.g. "500e 42 kWh Turismo". Use that as a frontend fallback.
-    return batteryFromText(textFields(visualCar), textFields(rawCar));
+    const fromText = batteryFromText(textFields(visualCar), textFields(rawCar));
+    if(fromText) return fromText;
+
+    return estimatedBatteryFromRange(rawCar, visualCar);
   }
 
   function motornetCo2(rawCar){
@@ -199,23 +204,21 @@
     return Number(n).toLocaleString('it-IT', { maximumFractionDigits: 1 });
   }
 
-  function loadRawCatalog(){
-    return fetch(RAW_URL + '?v=' + Date.now())
-      .then(r => r.ok ? r.json() : null)
-      .then(payload => {
-        rawById = new Map();
-        (payload && payload.cars || []).forEach(car => {
-          if(car && car.id) rawById.set(car.id, car);
-        });
-      })
-      .catch(() => {});
+  function loadedCars(){
+    const out = [];
+    try { if(Array.isArray(EV)) out.push(...EV); } catch(e) {}
+    try { if(Array.isArray(IC)) out.push(...IC); } catch(e) {}
+    return out;
+  }
+
+  function rebuildRawById(){
+    rawById = new Map();
+    loadedCars().forEach(car => { if(car && car.id) rawById.set(car.id, car); });
   }
 
   function enrichCar(car){
     if(!car || !car.id) return car;
-    const raw = rawById.get(car.id);
-    if(!raw) return car;
-
+    const raw = rawById.get(car.id) || car;
     const fuel = String(car.fuel || raw.fuel || '').toLowerCase();
     const isElectric = fuel.includes('elettr');
 
@@ -226,19 +229,19 @@
     }
 
     if(isElectric){
-      const kwh = motornetKwh100(raw);
+      const kwh = motornetKwh100(raw, car);
       if(kwh){
         car.consumption_kwh_100km = kwh;
         car.consumption_kwh_100km_estimated = false;
         car.consumption_source = 'motornet_technical_sheet';
       }
+      const range = motornetRange(raw, car);
+      if(range) car.range_wltp_km = range;
       const battery = motornetBattery(raw, car);
       if(battery){
         car.battery_kwh = battery;
-        car.battery_source = raw && raw.battery_kwh ? 'motornet_technical_sheet' : 'motornet_label_fallback';
+        car.battery_source = raw && raw.battery_kwh ? 'motornet_technical_sheet' : 'motornet_derived';
       }
-      const range = motornetRange(raw);
-      if(range) car.range_wltp_km = range;
     } else {
       const kg100 = motornetKg100(raw);
       const l100 = motornetL100(raw);
@@ -260,28 +263,35 @@
   }
 
   function enrichLoadedCatalog(){
+    if(enrichedOnce) return;
+    rebuildRawById();
     try{
       if(Array.isArray(EV)) EV.forEach(enrichCar);
       if(Array.isArray(IC)) IC.forEach(enrichCar);
+      enrichedOnce = true;
     }catch(e){}
   }
 
   function chipsFor(c, type){
     if(!c) return '';
+    const raw = c.id ? (rawById.get(c.id) || c) : c;
     const chips = [];
     if(type === 'ev'){
-      const kwh = toNumber(c.consumption_kwh_100km);
+      const kwh = toNumber(c.consumption_kwh_100km) || motornetKwh100(raw, c);
       if(kwh){
-        chips.push('<span><i class="fa-solid fa-bolt"></i> '+formatNumber(kwh)+' kWh/100 km'+(c.consumption_kwh_100km_estimated ? ' stimati' : '')+'</span>');
+        c.consumption_kwh_100km = kwh;
+        chips.push('<span><i class="fa-solid fa-bolt"></i> '+formatNumber(kwh)+' kWh/100 km</span>');
       }
-      const raw = c.id ? rawById.get(c.id) : null;
+      const range = toNumber(c.range_wltp_km) || motornetRange(raw, c);
+      if(range){
+        c.range_wltp_km = range;
+        chips.push('<span><i class="fa-solid fa-road"></i> '+formatNumber(range)+' km WLTP</span>');
+      }
       const battery = validBatteryKwh(c.battery_kwh) || motornetBattery(raw, c);
       if(battery){
         c.battery_kwh = battery;
         chips.push('<span><i class="fa-solid fa-car-battery"></i> '+formatNumber(battery)+' kWh batteria</span>');
       }
-      const range = toNumber(c.range_wltp_km);
-      if(range) chips.push('<span><i class="fa-solid fa-road"></i> '+formatNumber(range)+' km WLTP</span>');
     } else {
       const l100 = toNumber(c.consumption_l_100km);
       const kg100 = toNumber(c.consumption_kg_100km);
@@ -318,8 +328,7 @@
     };
   }
 
-  function refresh(attempt){
-    attempt = attempt || 1;
+  function runOnce(){
     injectStyles();
     patchRender();
     enrichLoadedCatalog();
@@ -328,10 +337,17 @@
       if(typeof calculate === 'function') calculate();
       if(typeof updateNavigation === 'function') updateNavigation();
     }catch(e){}
-    if(attempt < MAX_ATTEMPTS) setTimeout(() => refresh(attempt + 1), 500);
   }
 
-  window.addEventListener('load', () => {
-    loadRawCatalog().then(() => setTimeout(() => refresh(1), 900));
-  });
+  function waitForCatalog(attempt){
+    attempt = attempt || 1;
+    const cars = loadedCars();
+    if(cars.length || attempt >= MAX_ATTEMPTS){
+      runOnce();
+      return;
+    }
+    setTimeout(() => waitForCatalog(attempt + 1), 250);
+  }
+
+  window.addEventListener('load', () => setTimeout(() => waitForCatalog(1), 900));
 })();
