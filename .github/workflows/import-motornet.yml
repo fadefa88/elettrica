@@ -80,6 +80,7 @@ jobs:
       - name: Postprocess Motornet catalogue
         run: |
           python scripts/postprocess_motornet_catalog.py
+          python scripts/derive_ev_battery_fields.py
           python -m json.tool data/cars_motornet.json > /dev/null
 
       - name: Commit imported catalogue
