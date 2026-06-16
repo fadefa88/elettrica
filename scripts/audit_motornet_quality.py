@@ -4,6 +4,7 @@
 Checks:
 - Electric cars: missing/out-of-range consumption kWh/100 km, battery kWh, WLTP range.
 - Thermal cars: missing/out-of-range fuel consumption and CO2 emissions.
+- All cars: missing image reference/path/URL.
 
 Outputs CSV reports plus summary JSON/Markdown.
 """
@@ -86,6 +87,29 @@ EMISSIONS_SPEC_KEYS = [
     "Emissioni CO2 WLTP",
     "Emissioni CO2",
 ]
+
+IMAGE_KEYS = [
+    "image_local_path",
+    "image_source_url",
+    "image_url",
+    "image",
+    "photo_url",
+    "photo",
+    "thumbnail_url",
+    "thumbnail",
+    "img_url",
+    "img",
+]
+IMAGE_EMPTY_MARKERS = {
+    "",
+    "-",
+    "null",
+    "none",
+    "n/a",
+    "na",
+    "undefined",
+    "about:blank",
+}
 
 FUEL_LABELS = {
     "E": "elettrica",
@@ -233,6 +257,34 @@ def motornet_trim_code(car: dict[str, Any]) -> str:
     return match.group(1).upper() if match else ""
 
 
+def image_value(car: dict[str, Any]) -> str:
+    """Return the first usable image path/URL stored in a car record."""
+    for key in IMAGE_KEYS:
+        value = car.get(key)
+        if isinstance(value, str):
+            text = clean_text(value)
+            if text and text.lower() not in IMAGE_EMPTY_MARKERS:
+                return text
+        elif isinstance(value, dict):
+            for nested_key in IMAGE_KEYS:
+                nested = clean_text(value.get(nested_key) if isinstance(value, dict) else "")
+                if nested and nested.lower() not in IMAGE_EMPTY_MARKERS:
+                    return nested
+    return ""
+
+
+def has_image(car: dict[str, Any]) -> bool:
+    value = image_value(car)
+    if not value:
+        return False
+    lower = value.lower()
+    if lower in IMAGE_EMPTY_MARKERS:
+        return False
+    if lower.startswith(("http://", "https://", "assets/", "images/", "data/", "/")):
+        return True
+    return bool(re.search(r"\.(?:jpg|jpeg|png|webp|avif)(?:\?|$)", lower))
+
+
 def add_issue(issues: list[str], metric: str, value: float | None, unit: str, min_value: float, max_value: float) -> None:
     if value is None:
         issues.append(f"missing {metric}")
@@ -256,18 +308,25 @@ def common_row(car: dict[str, Any], issues: list[str]) -> dict[str, Any]:
         "price_eur": parse_number(car.get("price_eur")) or "",
         "motornet_model_id": motornet_model_id(car),
         "motornet_trim_code": motornet_trim_code(car),
+        "image_value": image_value(car),
         "source_url": clean_text(car.get("motornet_detail_url") or car.get("source_url")),
     }
 
 
-def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     ev_rows: list[dict[str, Any]] = []
     thermal_rows: list[dict[str, Any]] = []
+    missing_image_rows: list[dict[str, Any]] = []
     counts = Counter()
 
     for car in cars:
         if not isinstance(car, dict):
             continue
+
+        if not has_image(car):
+            missing_image_rows.append(common_row(car, ["missing image"] ))
+            counts["missing_images"] += 1
+
         if is_electric(car):
             counts["electric_total"] += 1
             consumption = get_ev_consumption(car)
@@ -313,6 +372,7 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
         "electric_with_issues": counts["electric_with_issues"],
         "thermal_total": counts["thermal_total"],
         "thermal_with_issues": counts["thermal_with_issues"],
+        "missing_images": counts["missing_images"],
         "thresholds": {
             "ev_consumption_kwh_100km": [args.ev_consumption_min, args.ev_consumption_max],
             "ev_battery_kwh": [args.ev_battery_min, args.ev_battery_max],
@@ -322,7 +382,7 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
             "thermal_emissions_g_km": [args.emissions_min, args.emissions_max],
         },
     }
-    return ev_rows, thermal_rows, summary
+    return ev_rows, thermal_rows, missing_image_rows, summary
 
 
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -336,7 +396,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writerows(rows)
 
 
-def write_markdown(path: Path, ev_rows: list[dict[str, Any]], thermal_rows: list[dict[str, Any]], summary: dict[str, Any], max_preview: int) -> None:
+def write_markdown(path: Path, ev_rows: list[dict[str, Any]], thermal_rows: list[dict[str, Any]], missing_image_rows: list[dict[str, Any]], summary: dict[str, Any], max_preview: int) -> None:
     def preview(rows: list[dict[str, Any]]) -> str:
         if not rows:
             return "Nessuna anomalia trovata.\n"
@@ -356,6 +416,7 @@ def write_markdown(path: Path, ev_rows: list[dict[str, Any]], thermal_rows: list
 - Elettriche con anomalie: {summary['electric_with_issues']}
 - Termiche totali: {summary['thermal_total']}
 - Termiche con anomalie: {summary['thermal_with_issues']}
+- Auto senza immagine: {summary['missing_images']}
 
 ## Soglie usate
 
@@ -369,6 +430,9 @@ def write_markdown(path: Path, ev_rows: list[dict[str, Any]], thermal_rows: list
 ## Termiche — anteprima anomalie
 
 {preview(thermal_rows)}
+## Immagini — auto senza immagine associata
+
+{preview(missing_image_rows)}
 """
     path.write_text(text, encoding="utf-8")
 
@@ -404,19 +468,20 @@ def main() -> int:
     if not isinstance(cars, list):
         raise SystemExit("Invalid catalog: expected top-level object with cars[]")
 
-    ev_rows, thermal_rows, summary = audit(cars, args)
+    ev_rows, thermal_rows, missing_image_rows, summary = audit(cars, args)
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     write_csv(out_dir / "ev_quality_issues.csv", ev_rows)
     write_csv(out_dir / "thermal_quality_issues.csv", thermal_rows)
+    write_csv(out_dir / "missing_images.csv", missing_image_rows)
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
-    write_markdown(out_dir / "quality_report.md", ev_rows, thermal_rows, summary, args.preview)
+    write_markdown(out_dir / "quality_report.md", ev_rows, thermal_rows, missing_image_rows, summary, args.preview)
 
     print(json.dumps(summary, indent=2, ensure_ascii=False))
     print(f"Reports written to: {out_dir}")
 
-    if args.fail_on_issues and (ev_rows or thermal_rows):
+    if args.fail_on_issues and (ev_rows or thermal_rows or missing_image_rows):
         return 2
     return 0
 
