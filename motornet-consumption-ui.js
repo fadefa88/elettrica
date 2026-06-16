@@ -24,17 +24,43 @@
     return Number.isFinite(n) && n > 0 ? n : undefined;
   }
 
-  function toMoney(value){
-    if(value === null || value === undefined) return undefined;
-    let text = String(value).trim();
+  function validBatteryKwh(value){
+    const n = toNumber(value);
+    return n && n >= 5 && n <= 250 ? n : undefined;
+  }
+
+  function batteryFromText(){
+    const text = Array.from(arguments)
+      .flat()
+      .filter(v => v !== null && v !== undefined)
+      .map(v => String(v))
+      .join(' · ');
     if(!text) return undefined;
-    const match = text.match(/\d{1,3}(?:[\.\s]\d{3})+(?:,\d+)?|\d{4,7}(?:,\d+)?/);
-    if(!match) return undefined;
-    let raw = match[0].replace(/\s+/g,'');
-    if(raw.includes(',')) raw = raw.split(',')[0];
-    raw = raw.replace(/\./g,'');
-    const n = Number(raw);
-    return Number.isFinite(n) && n >= 5000 && n <= 1000000 ? n : undefined;
+
+    // Do not parse consumption values such as "15 kWh/100 km" as battery size.
+    const cleaned = text.replace(/\d+(?:[\.,]\d+)?\s*k\s*w\s*h\s*\/?\s*100\s*km/gi, ' ');
+    const matches = cleaned.matchAll(/(?:^|[^\d])([1-9]\d{0,2}(?:[\.,]\d{1,2})?)\s*k\s*w\s*h\b/gi);
+    for(const match of matches){
+      const n = validBatteryKwh(match[1]);
+      if(n) return n;
+    }
+    return undefined;
+  }
+
+  function textFields(car){
+    if(!car || typeof car !== 'object') return [];
+    return [
+      car.battery_kwh,
+      car.model,
+      car.version,
+      car.powertrain,
+      car.motor,
+      car.title,
+      car.name,
+      car.fuel_original,
+      car.source_url,
+      car.motornet_detail_url
+    ];
   }
 
   function specValue(car, matchers){
@@ -76,6 +102,19 @@
   function specMoney(car, matchers){
     const value = specValue(car, matchers);
     return value ? toMoney(value) : undefined;
+  }
+
+  function toMoney(value){
+    if(value === null || value === undefined) return undefined;
+    let text = String(value).trim();
+    if(!text) return undefined;
+    const match = text.match(/\d{1,3}(?:[\.\s]\d{3})+(?:,\d+)?|\d{4,7}(?:,\d+)?/);
+    if(!match) return undefined;
+    let raw = match[0].replace(/\s+/g,'');
+    if(raw.includes(',')) raw = raw.split(',')[0];
+    raw = raw.replace(/\./g,'');
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 5000 && n <= 1000000 ? n : undefined;
   }
 
   function motornetKwh100(rawCar){
@@ -122,19 +161,30 @@
     ]);
   }
 
-  function motornetBattery(rawCar){
-    const direct = toNumber(rawCar && rawCar.battery_kwh);
+  function motornetBattery(rawCar, visualCar){
+    const direct = validBatteryKwh(rawCar && rawCar.battery_kwh) || validBatteryKwh(visualCar && visualCar.battery_kwh);
     if(direct) return direct;
-    return specNumber(rawCar, [
+
+    const fromSpecs = specNumber(rawCar, [
       /capac.*batter/i,
+      /cap\.?\s*batter/i,
       /batter.*capac/i,
       /^batteria$/i,
       /batteria.*kwh/i,
+      /batteria.*utile/i,
+      /batteria.*netta/i,
+      /batteria.*lorda/i,
       /accumulatore/i,
       /capac.*accumulator/i,
       /energia.*batter/i,
       /battery.*capacity/i
     ]);
+    const validSpec = validBatteryKwh(fromSpecs);
+    if(validSpec) return validSpec;
+
+    // Many Motornet electric trims expose the pack size only in the model/trim
+    // label, e.g. "500e 42 kWh Turismo". Use that as a frontend fallback.
+    return batteryFromText(textFields(visualCar), textFields(rawCar));
   }
 
   function motornetCo2(rawCar){
@@ -182,8 +232,11 @@
         car.consumption_kwh_100km_estimated = false;
         car.consumption_source = 'motornet_technical_sheet';
       }
-      const battery = motornetBattery(raw);
-      if(battery) car.battery_kwh = battery;
+      const battery = motornetBattery(raw, car);
+      if(battery){
+        car.battery_kwh = battery;
+        car.battery_source = raw && raw.battery_kwh ? 'motornet_technical_sheet' : 'motornet_label_fallback';
+      }
       const range = motornetRange(raw);
       if(range) car.range_wltp_km = range;
     } else {
@@ -221,8 +274,12 @@
       if(kwh){
         chips.push('<span><i class="fa-solid fa-bolt"></i> '+formatNumber(kwh)+' kWh/100 km'+(c.consumption_kwh_100km_estimated ? ' stimati' : '')+'</span>');
       }
-      const battery = toNumber(c.battery_kwh);
-      if(battery) chips.push('<span><i class="fa-solid fa-car-battery"></i> '+formatNumber(battery)+' kWh batteria</span>');
+      const raw = c.id ? rawById.get(c.id) : null;
+      const battery = validBatteryKwh(c.battery_kwh) || motornetBattery(raw, c);
+      if(battery){
+        c.battery_kwh = battery;
+        chips.push('<span><i class="fa-solid fa-car-battery"></i> '+formatNumber(battery)+' kWh batteria</span>');
+      }
       const range = toNumber(c.range_wltp_km);
       if(range) chips.push('<span><i class="fa-solid fa-road"></i> '+formatNumber(range)+' km WLTP</span>');
     } else {
