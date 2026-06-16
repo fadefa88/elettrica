@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "BMW",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/BMW",
-  "cars_count_at_completion": 5125,
-  "requests_count_at_completion": 63,
-  "updated_at": "2026-06-16T08:14:01+00:00"
+  "last_completed_brand_code": "SPO",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/SPO",
+  "cars_count_at_completion": 5129,
+  "requests_count_at_completion": 11,
+  "updated_at": "2026-06-16T08:22:31+00:00"
 }
