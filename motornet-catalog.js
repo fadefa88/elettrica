@@ -34,20 +34,174 @@
   function positiveNumber(value){ const n = Number(value); return Number.isFinite(n) && n > 0 ? n : undefined; }
   function parseNumber(value){
     if(value === null || value === undefined) return undefined;
-    const match = String(value).replace(/\s+/g,'').replace(',','.').match(/-?\d+(?:\.\d+)?/);
+    const text = String(value).replace(/\s+/g,'').replace(',', '.');
+    const match = text.match(/-?\d+(?:\.\d+)?/);
     if(!match) return undefined;
     const n = Number(match[0]);
     return Number.isFinite(n) && n > 0 ? n : undefined;
   }
-  function specExact(car, wanted){
+  function round1(n){ return Math.round(Number(n) * 10) / 10; }
+  function validKwh100(value){ const n = parseNumber(value); return n && n >= 5 && n <= 60 ? round1(n) : undefined; }
+  function validRangeKm(value){ const n = parseNumber(value); return n && n >= 30 && n <= 1500 ? Math.round(n) : undefined; }
+  function validBatteryKwh(value){ const n = parseNumber(value); return n && n >= 5 && n <= 250 ? round1(n) : undefined; }
+
+  function specEntries(car){
     const raw = car && car.specs_raw;
-    if(!raw || typeof raw !== 'object') return undefined;
-    const key = String(wanted).toLowerCase().replace(/\s+/g,' ').trim();
-    for(const [k,v] of Object.entries(raw)){
-      if(String(k || '').toLowerCase().replace(/\s+/g,' ').trim() === key) return v;
+    const out = [];
+    const seen = new Set();
+    function text(v){ return String(v === null || v === undefined ? '' : v).replace(/\s+/g,' ').trim(); }
+    function add(key, value){
+      const k = text(key);
+      const v = text(value);
+      if(!k || !v || v === '[object Object]') return;
+      const sig = k + '\u0000' + v;
+      if(seen.has(sig)) return;
+      seen.add(sig);
+      out.push([k, v]);
+    }
+    function walk(node, path){
+      if(node === null || node === undefined) return;
+      if(typeof node !== 'object'){
+        add(path.join(' '), node);
+        if(path.length) add(path[path.length - 1], node);
+        return;
+      }
+      if(Array.isArray(node)){
+        node.forEach(item => walk(item, path));
+        return;
+      }
+      const label = node.label || node.name || node.key || node.title;
+      const value = node.value || node.val || node.text;
+      if(label !== undefined && value !== undefined){
+        add(path.concat([label]).join(' '), value);
+        add(label, value);
+      }
+      Object.entries(node).forEach(([key, value]) => {
+        if(['label','name','key','title','value','val','text'].includes(key) && typeof value !== 'object') return;
+        if(value && typeof value === 'object') walk(value, path.concat([key]));
+        else {
+          add(path.concat([key]).join(' '), value);
+          add(key, value);
+        }
+      });
+    }
+    if(raw && typeof raw === 'object') walk(raw, []);
+    return out;
+  }
+  function normKey(value){ return String(value || '').toLowerCase().replace(/\s+/g,' ').trim(); }
+  function specValue(car, matchers, opts){
+    opts = opts || {};
+    for(const [key, value] of specEntries(car)){
+      const k = normKey(key);
+      if(opts.exclude && opts.exclude.some(rx => rx.test(k))) continue;
+      if(matchers.some(rx => rx.test(k))) return value;
     }
     return undefined;
   }
+  function specNumber(car, matchers, opts){ return parseNumber(specValue(car, matchers, opts)); }
+  function specExact(car, wanted){
+    const key = normKey(wanted);
+    for(const [k,v] of specEntries(car)){
+      if(normKey(k) === key) return v;
+    }
+    return undefined;
+  }
+  function specMoney(car, matchers){
+    const value = specValue(car, matchers);
+    return value ? toMoney(value) : undefined;
+  }
+  function textFields(car){
+    if(!car || typeof car !== 'object') return [];
+    return [car.display_name, car.title, car.name, car.brand, car.model, car.version, car.powertrain, car.motor, car.fuel_original, car.source_url, car.motornet_detail_url];
+  }
+  function batteryFromText(){
+    const text = Array.from(arguments).flat().filter(v => v !== null && v !== undefined).map(v => String(v)).join(' · ');
+    if(!text) return undefined;
+    const cleaned = text.replace(/\d+(?:[\.,]\d+)?\s*k\s*w\s*h\s*\/?\s*100\s*km/gi, ' ');
+    const matches = cleaned.matchAll(/(?:^|[^\d])([1-9]\d{0,2}(?:[\.,]\d{1,2})?)\s*k\s*w\s*h\b/gi);
+    for(const match of matches){
+      const n = validBatteryKwh(match[1]);
+      if(n) return n;
+    }
+    return undefined;
+  }
+  function toMoney(value){
+    if(value === null || value === undefined) return undefined;
+    let text = String(value).trim();
+    if(!text) return undefined;
+    const match = text.match(/\d{1,3}(?:[\.\s]\d{3})+(?:,\d+)?|\d{4,7}(?:,\d+)?/);
+    if(!match) return undefined;
+    let raw = match[0].replace(/\s+/g,'');
+    if(raw.includes(',')) raw = raw.split(',')[0];
+    raw = raw.replace(/\./g,'');
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 5000 && n <= 1000000 ? n : undefined;
+  }
+
+  function motornetKwh100(car){
+    const direct = validKwh100(car && car.consumption_kwh_100km);
+    if(direct) return direct;
+    const fromSpecs = specNumber(car, [
+      /kw\/?h\s*100\s*km/i,
+      /kwh\s*\/\s*100\s*km/i,
+      /kwh\s*100\s*km/i,
+      /consumo.*elettric.*combinato/i,
+      /consumo.*combinato/i
+    ], {exclude:[/max/i]});
+    const validSpec = validKwh100(fromSpecs);
+    if(validSpec) return validSpec;
+    for(const [key, value] of specEntries(car)){
+      const text = key + ' ' + value;
+      if(/k\s*w\s*h\s*\/?\s*100\s*km/i.test(text) && !/max/i.test(text)){
+        const n = validKwh100(value) || validKwh100(text);
+        if(n) return n;
+      }
+    }
+    return undefined;
+  }
+  function motornetRange(car){
+    const direct = validRangeKm(car && car.range_wltp_km);
+    if(direct) return direct;
+    return validRangeKm(specNumber(car, [
+      /autonomia.*solo.*elettric.*combinato/i,
+      /autonomia.*elettric.*combinato/i,
+      /autonomia.*wltp.*combinato/i,
+      /autonomia.*combinato/i,
+      /^autonomia\s+wltp/i,
+      /autonomia.*solo.*elettric/i,
+      /autonomia.*elettric/i,
+      /^autonomia\b/i
+    ], {exclude:[/urbano/i, /max/i]}));
+  }
+  function motornetBattery(car){
+    const direct = validBatteryKwh(car && car.battery_kwh);
+    if(direct) return direct;
+    const fromSpecs = validBatteryKwh(specNumber(car, [
+      /capac.*batter/i,
+      /cap\.?\s*batter/i,
+      /batter.*capac/i,
+      /^batteria$/i,
+      /batteria.*kwh/i,
+      /batteria.*utile/i,
+      /batteria.*netta/i,
+      /batteria.*lorda/i,
+      /accumulatore/i,
+      /capac.*accumulator/i,
+      /energia.*batter/i,
+      /battery.*capacity/i
+    ]));
+    if(fromSpecs) return fromSpecs;
+    const fromText = batteryFromText(textFields(car), specEntries(car).flat());
+    if(fromText) return fromText;
+    const range = motornetRange(car);
+    const kwh100 = motornetKwh100(car);
+    if(range && kwh100) return validBatteryKwh(range * kwh100 / 100);
+    return undefined;
+  }
+  function motornetConsumptionL(car){ return parseNumber(specExact(car, 'Consumo Combinato')) || parseNumber(car && car.consumption_l_100km); }
+  function motornetConsumptionKg(car){ return parseNumber(specExact(car, 'Consumo Gas Combinato')) || parseNumber(car && car.consumption_kg_100km); }
+  function motornetPrice(car){ return specMoney(car, [/^prezzo$/i,/prezzo\s+listino/i,/prezzo\s+di\s+listino/i,/^listino$/i]) || toMoney(car && (car.price_eur || car.price)); }
+
   function codeFromUrl(text){
     const s = String(text || '');
     let m = s.match(/allestimento\/([A-Z0-9]{3})/i);
@@ -108,28 +262,12 @@
     }
     return 'Modello Motornet';
   }
-  function motornetConsumptionL(car){
-    const combined = parseNumber(specExact(car, 'Consumo Combinato'));
-    return combined || positiveNumber(car.consumption_l_100km);
-  }
-  function motornetConsumptionKg(car){
-    const combined = parseNumber(specExact(car, 'Consumo Gas Combinato'));
-    return combined || positiveNumber(car.consumption_kg_100km);
-  }
-  function estimateEvConsumption(car, fuel){
-    const direct = positiveNumber(car.consumption_kwh_100km);
-    if(direct) return direct;
-    const battery = positiveNumber(car.battery_kwh);
-    const range = positiveNumber(car.range_wltp_km);
-    if(battery && range) return Math.round((battery / range * 100) * 10) / 10;
-    if(fuel === 'elettrica_idrogeno') return 18;
-    return undefined;
-  }
   function normalizeCar(car){
     const fuel = normalizeFuel(car);
     const category = fuel === 'elettrica' || fuel === 'elettrica_idrogeno' ? 'electric' : 'thermal';
     const brand = normalizeBrand(car);
     const model = modelFromCar(car, brand);
+    const price = motornetPrice(car) || Number(car.price_eur || car.price || 0) || 0;
     const normalized = {
       ...car,
       brand,
@@ -139,16 +277,29 @@
       fuel_original: car.fuel,
       fuel_cost_key: costFuel(fuel),
       powertrain: stripBrand(car.powertrain, brand) || stripBrand(car.version, brand) || FUEL_LABELS[fuel] || fuel,
-      price_eur: Number(car.price_eur || car.price || 0) || 0,
+      price_eur: price,
       power_kw: Number(car.power_kw || 0) || undefined,
       power_cv: Number(car.power_cv || 0) || undefined,
       image_url: car.image_local_path || car.image_url || car.image_source_url || ''
     };
     if(category === 'electric'){
-      const rawEv = positiveNumber(car.consumption_kwh_100km);
-      normalized.consumption_kwh_100km = estimateEvConsumption(car, fuel);
-      normalized.consumption_kwh_100km_estimated = false;
-      if(!rawEv && !normalized.consumption_kwh_100km) delete normalized.consumption_kwh_100km;
+      const kwh100 = motornetKwh100(car);
+      const range = motornetRange(car);
+      const battery = motornetBattery(car);
+      if(kwh100){
+        normalized.consumption_kwh_100km = kwh100;
+        normalized.consumption_kwh_100km_estimated = false;
+        normalized.consumption_source = 'motornet_catalog_specs';
+      }
+      if(range) normalized.range_wltp_km = range;
+      if(battery){
+        normalized.battery_kwh = battery;
+        normalized.battery_source = car.battery_kwh ? 'motornet_catalog' : 'motornet_catalog_derived';
+      }
+      if(!normalized.consumption_kwh_100km && battery && range){
+        normalized.consumption_kwh_100km = round1(battery / range * 100);
+        normalized.consumption_kwh_100km_estimated = true;
+      }
     } else if(fuel.includes('metano')){
       const kg = motornetConsumptionKg(car);
       if(kg) normalized.consumption_kg_100km = kg;
@@ -274,7 +425,6 @@
     const autoEv = imported.filter(c=>c.category === 'electric').sort((a,b)=>(a.price_eur||0)-(b.price_eur||0));
     const autoIc = imported.filter(c=>c.category !== 'electric').sort((a,b)=>(a.price_eur||0)-(b.price_eur||0));
 
-    // No fallback: Motornet is the only catalogue source used by the UI.
     EV = autoEv;
     IC = autoIc;
     IMG = {};
