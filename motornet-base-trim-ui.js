@@ -5,6 +5,7 @@
   let installed = false;
   let lastEvGroupKey = '';
   let lastIceGroupKey = '';
+  const groupCache = {ev: new Map(), ice: new Map()};
 
   function byId(id){ return document.getElementById(id); }
   function clean(value){ return String(value || '').replace(/\bundefined\b/gi, '').replace(/\s+/g, ' ').trim(); }
@@ -26,6 +27,10 @@
   }
   function carArray(kind){
     return kind === 'ev' ? (Array.isArray(EV) ? EV : []) : (Array.isArray(IC) ? IC : []);
+  }
+  function clearGroupCache(kind){
+    if(kind) groupCache[kind].clear();
+    else { groupCache.ev.clear(); groupCache.ice.clear(); }
   }
   function modelId(car){
     const text = [car && car.source_url, car && car.motornet_detail_url].join(' ');
@@ -115,7 +120,19 @@
     groups.sort((a,b) => (a.brand + ' ' + a.label).localeCompare((b.brand + ' ' + b.label), 'it'));
     return groups;
   }
-  function getGroups(kind){ return buildGroups(filteredCars(kind)); }
+  function cacheKey(kind){
+    const f = currentFilter(kind);
+    const arr = carArray(kind);
+    const last = arr.length ? arr[arr.length - 1].id : '';
+    return [kind, f.fuel, f.brand, arr.length, last].join('|');
+  }
+  function getGroups(kind){
+    const key = cacheKey(kind);
+    if(groupCache[kind].has(key)) return groupCache[kind].get(key);
+    const groups = buildGroups(filteredCars(kind));
+    groupCache[kind].set(key, groups);
+    return groups;
+  }
   function selectedGroupKey(kind){ return kind === 'ev' ? lastEvGroupKey : lastIceGroupKey; }
   function setSelectedGroupKey(kind, value){ if(kind === 'ev') lastEvGroupKey = value || ''; else lastIceGroupKey = value || ''; }
   function hiddenId(kind){ return kind === 'ev' ? 'evSelect' : 'iceSelect'; }
@@ -169,7 +186,7 @@
     hidden.innerHTML = carId ? '<option value="'+esc(carId)+'" selected>'+esc(carId)+'</option>' : '<option value=""></option>';
     hidden.value = carId || '';
   }
-  function clearSelection(kind, keepInput){
+  function clearSelection(kind, keepInput, runCalc){
     const input = byId(inputId(kind));
     const results = byId(resultId(kind));
     const trim = byId(trimId(kind));
@@ -180,7 +197,7 @@
     if(results){ results.innerHTML = ''; results.hidden = true; }
     if(trim) trim.innerHTML = '<option value="">Prima scegli il modello</option>';
     if(wrap) wrap.style.display = 'none';
-    runAfterSelection();
+    if(runCalc !== false) runAfterSelection();
   }
   function renderResults(kind){
     const input = byId(inputId(kind));
@@ -244,6 +261,7 @@
     runAfterSelection();
   }
   function refreshSmart(kind){
+    clearGroupCache(kind);
     const groups = getGroups(kind);
     const currentId = byId(hiddenId(kind))?.value || '';
     const currentGroup = groups.find(g => g.cars.some(c => c.id === currentId));
@@ -303,7 +321,6 @@
           const wrap = byId(trimWrapId(kind));
           if(wrap) wrap.style.display = 'none';
           renderResults(kind);
-          runAfterSelection();
         });
         input.addEventListener('focus', function(){ renderResults(kind); });
         input.__motornetSmartBound = true;
@@ -355,8 +372,7 @@
     let n = 0;
     const timer = setInterval(function(){
       n += 1;
-      init();
-      if(installed && n > 5) clearInterval(timer);
+      if(init()) clearInterval(timer);
       if(n >= MAX_POLLS) clearInterval(timer);
     }, POLL_MS);
   });
