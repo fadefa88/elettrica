@@ -172,6 +172,7 @@
     const active = document.querySelector('.screen.active[data-step]');
     return active ? Number(active.dataset.step) : -1;
   }
+  const euro0 = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
 
   function selectedElectricCar(){
     try{
@@ -227,6 +228,40 @@
     }
   }
 
+  function evTaxSummaryText(){
+    const years = numeric('years');
+    if(years <= 5) return euro0.format(0);
+    return euro0.format(numeric('evTaxAfter5')) + ' all’anno (dal sesto anno)';
+  }
+
+  function iceTaxSummaryText(){
+    return euro0.format(numeric('iceTax')) + ' all’anno';
+  }
+
+  function updateSummaryTaxText(){
+    const grid = byId('summaryGrid');
+    if(!grid) return;
+    grid.querySelectorAll('div').forEach(function(row){
+      const label = row.querySelector('small');
+      const value = row.querySelector('b');
+      if(!label || !value) return;
+      if(/bollo\s+elettrica/i.test(label.textContent || '')){
+        value.textContent = evTaxSummaryText() + ' / ' + iceTaxSummaryText();
+      }
+    });
+  }
+
+  function removeMotornetBadge(){
+    const direct = byId('motornetCatalogBadge') || byId('autoitCatalogBadge');
+    if(direct) direct.remove();
+    document.querySelectorAll('.app-shell > div').forEach(function(node){
+      const text = node.textContent || '';
+      if(/Catalogo\s+Motornet\s+attivo/i.test(text) || /Catalogo\s+Motornet\s+vuoto/i.test(text)){
+        node.remove();
+      }
+    });
+  }
+
   function photovoltaicValid(){
     return checked('noPv') || numeric('solarShare') > 0;
   }
@@ -254,7 +289,9 @@
 
   function runPolicy(){
     applyEvTaxPolicy();
+    updateSummaryTaxText();
     updatePvValidationUi();
+    removeMotornetBadge();
   }
 
   if(typeof window.setAutoFields === 'function'){
@@ -272,6 +309,8 @@
       applyEvTaxPolicy();
       const result = originalCalculate.apply(this, arguments);
       applyEvTaxPolicy();
+      updateSummaryTaxText();
+      removeMotornetBadge();
       return result;
     };
   }
@@ -280,7 +319,10 @@
     const originalDrawSummary = window.drawSummary;
     window.drawSummary = function(){
       applyEvTaxPolicy();
-      return originalDrawSummary.apply(this, arguments);
+      const result = originalDrawSummary.apply(this, arguments);
+      updateSummaryTaxText();
+      removeMotornetBadge();
+      return result;
     };
   }
 
@@ -329,7 +371,14 @@
     const timer = setInterval(function(){
       runPolicy();
       count += 1;
-      if(count >= 20) clearInterval(timer);
+      if(count >= 40) clearInterval(timer);
     }, 250);
+
+    if(window.MutationObserver){
+      const shell = document.querySelector('.app-shell') || document.body;
+      const observer = new MutationObserver(removeMotornetBadge);
+      observer.observe(shell, {childList: true, subtree: false});
+      setTimeout(function(){ observer.disconnect(); }, 15000);
+    }
   });
 })();
