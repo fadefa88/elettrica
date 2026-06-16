@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "2500",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/2500",
+  "last_completed_brand_code": "3000",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/3000",
   "cars_count_at_completion": 5672,
-  "requests_count_at_completion": 651,
-  "updated_at": "2026-06-16T10:26:44+00:00"
+  "requests_count_at_completion": 652,
+  "updated_at": "2026-06-16T10:31:37+00:00"
 }
