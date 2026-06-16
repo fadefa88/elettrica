@@ -14,7 +14,11 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 
 import import_motornet as base
 
-EXTRA_BRAND_CODES = ["ALN", "ALP", "BEN", "BES", "CAT", "CHA", "DEN", "COR", "DFS"]
+EXTRA_BRAND_CODES = [
+    "ALN", "ALP", "BEN", "BES", "CAT", "CHA", "DEN", "COR", "DFS",
+    "DOG", "FTH", "GVT", "GRW", "ICH", "ISU", "JAE", "LAM", "LEA", "LEE", "LEP",
+    "LYN", "MAH", "MAX", "MHE", "MOR", "OMO", "SER", "SPO",
+]
 RESUME_STATE = Path("data/cars_motornet_resume_state.json")
 
 
@@ -36,25 +40,61 @@ def canonical_url(value: object) -> str:
     return base.full_url(text) if text else ""
 
 
-def brand_code_from_detail_url(url: object) -> str | None:
+def normalize_resume_brand_code(value: object, valid_codes: set[str] | None = None) -> str | None:
+    """Return a real Motornet brand code.
+
+    Older resume logic could accidentally store values such as SPO0, derived from
+    an allestimento code. When we know the brand codes available in the current
+    run, prefer those codes and collapse SPO0 -> SPO, MOR0 -> MOR, etc.
+    """
+    raw = base.clean(value).upper()
+    if not raw:
+        return None
+
+    codes = sorted((valid_codes or set(extended_brand_codes())), key=len, reverse=True)
+    if raw in codes:
+        return raw
+
+    for code in codes:
+        if raw.startswith(code):
+            return code
+
+    letters_before_digit = re.match(r"^([A-Z]{2,4})(?=\d)", raw)
+    if letters_before_digit:
+        candidate = letters_before_digit.group(1)
+        if not valid_codes or candidate in valid_codes:
+            return candidate
+
+    letters = re.match(r"^([A-Z]{2,4})", raw)
+    if letters:
+        candidate = letters.group(1)
+        if not valid_codes or candidate in valid_codes:
+            return candidate
+
+    return None
+
+
+def brand_code_from_detail_url(url: object, valid_codes: set[str] | None = None) -> str | None:
     text = canonical_url(url)
     match = re.search(r"/allestimento/([A-Za-z0-9_-]+)", text)
     if not match:
         return None
     token = match.group(1).upper()
-    for code in sorted(extended_brand_codes(), key=len, reverse=True):
+
+    codes = sorted((valid_codes or set(extended_brand_codes())), key=len, reverse=True)
+    for code in codes:
         if token.startswith(code):
             return code
-    fallback = re.match(r"[A-Z0-9]{2,4}", token)
-    return fallback.group(0) if fallback else None
+
+    return normalize_resume_brand_code(token, valid_codes)
 
 
-def last_imported_brand_code(cars: list[dict]) -> str | None:
+def last_imported_brand_code(cars: list[dict], valid_codes: set[str] | None = None) -> str | None:
     for car in reversed(cars):
         if not isinstance(car, dict):
             continue
         for key in ("motornet_detail_url", "source_url"):
-            code = brand_code_from_detail_url(car.get(key))
+            code = brand_code_from_detail_url(car.get(key), valid_codes)
             if code:
                 return code
     return None
@@ -200,10 +240,6 @@ def main() -> None:
     initial_count = len(cars)
     last_checkpoint = initial_count
     explicit_brand_run = bool(args.brand_codes.strip())
-    last_brand_code = last_imported_brand_code(cars) if not explicit_brand_run else None
-    completed_brand_code = None
-    if args.resume_from_completed_brand and not explicit_brand_run:
-        completed_brand_code = base.clean(resume_state.get("last_completed_brand_code")).upper() or None
 
     if args.limit > 0 and len(cars) >= args.limit:
         print(f"Existing catalog already has {len(cars)} cars, limit={args.limit}. Nothing to import.")
@@ -248,14 +284,26 @@ def main() -> None:
 
         print("brand links:", len(brand_urls))
         brand_codes_in_run = {base.brand_code_from_url(url) for url in brand_urls}
+        brand_codes_in_run = {code for code in brand_codes_in_run if code}
+
+        last_brand_code = last_imported_brand_code(cars, brand_codes_in_run) if not explicit_brand_run else None
+        completed_brand_raw = base.clean(resume_state.get("last_completed_brand_code")).upper() if resume_state else ""
+        completed_brand_code = None
+        if args.resume_from_completed_brand and not explicit_brand_run:
+            completed_brand_code = normalize_resume_brand_code(completed_brand_raw, brand_codes_in_run)
+            if completed_brand_raw and completed_brand_code and completed_brand_code != completed_brand_raw:
+                print(f"RESUME normalized completed brand state {completed_brand_raw} -> {completed_brand_code}")
+
+        if last_brand_code:
+            print(f"RESUME last imported brand resolved: {last_brand_code}")
 
         resume_after_brand_code = None
         resume_at_brand_code = None
         if completed_brand_code and completed_brand_code in brand_codes_in_run:
             resume_after_brand_code = completed_brand_code
             print(f"RESUME completed-brand skip enabled. Starting after completed brand: {completed_brand_code}")
-        elif completed_brand_code:
-            print(f"WARN completed resume brand {completed_brand_code} not found in this run; ignoring state")
+        elif completed_brand_raw:
+            print(f"WARN completed resume brand {completed_brand_raw} not found in this run; ignoring state")
 
         if not resume_after_brand_code and args.resume_after_last_imported_brand and last_brand_code and last_brand_code in brand_codes_in_run:
             resume_after_brand_code = last_brand_code
@@ -329,7 +377,6 @@ def main() -> None:
                     skipped_existing += 1
                     print("  = skip existing", detail_url)
                     continue
-
                 if not base.can_fetch(robots, detail_url):
                     errors.append({"url": detail_url, "error": "blocked_by_robots"})
                     continue
