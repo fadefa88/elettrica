@@ -19,6 +19,10 @@ on:
         description: 'Scarica immagini Motornet nel repo'
         required: false
         default: 'true'
+      resume_after_last_imported_brand:
+        description: 'Salta anche ultimo brand importato. Usa true solo se sai che quel brand era completo'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -53,6 +57,7 @@ jobs:
             --brand-codes "${{ github.event.inputs.brand_codes }}" \
             --delay "${{ github.event.inputs.delay }}" \
             --download-images "${{ github.event.inputs.download_images }}" \
+            --resume-after-last-imported-brand "${{ github.event.inputs.resume_after_last_imported_brand }}" \
             --checkpoint-every "25" \
             --checkpoint-commit "true"
 
@@ -84,6 +89,9 @@ jobs:
           git config user.email "github-actions@github.com"
           mkdir -p assets/cars/motornet
           git add data/cars_motornet.json assets/cars/motornet
+          if [ -f data/cars_motornet_resume_state.json ]; then
+            git add data/cars_motornet_resume_state.json
+          fi
           if git diff --cached --quiet; then
             echo "No Motornet catalogue changes to commit."
             exit 0
@@ -108,5 +116,6 @@ jobs:
           name: motornet-catalogue
           path: |
             data/cars_motornet.json
+            data/cars_motornet_resume_state.json
             assets/cars/motornet
           if-no-files-found: warn
