@@ -17,8 +17,12 @@
     'data/car_images.json'
   ]);
 
+  function rawUrl(resource){
+    return typeof resource === 'string' ? resource : (resource && resource.url) || '';
+  }
+
   function normalizeUrl(resource){
-    const raw = typeof resource === 'string' ? resource : (resource && resource.url) || '';
+    const raw = rawUrl(resource);
     if(!raw) return '';
     try{
       const u = new URL(raw, window.location.href);
@@ -36,6 +40,11 @@
         status: 200,
         headers: { 'Content-Type': 'application/json; charset=utf-8' }
       }));
+    }
+    if(path === 'data/cars_motornet.json'){
+      // Strip timestamp cache-busters added by older scripts. The catalogue is large;
+      // allowing normal browser/HTTP cache makes repeated visits much faster.
+      return originalFetch('data/cars_motornet.json', init);
     }
     return originalFetch(resource, init);
   };
