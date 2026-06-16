@@ -39,4 +39,28 @@
     }
     return originalFetch(resource, init);
   };
+
+  // Prevent the Motornet catalogue loader from rendering thousands of legacy
+  // <option> nodes into evSelect/iceSelect before the smart autocomplete UI runs.
+  // motornet-base-trim-ui.js later replaces these lightweight functions with
+  // the real autocomplete-backed selector logic.
+  window.__motornetSelectorPatched = true;
+
+  function byId(id){ return document.getElementById(id); }
+  function lightweightFill(selectId, hintId){
+    const select = byId(selectId);
+    if(select && !select.value){
+      select.innerHTML = '<option value=""></option>';
+    }
+    const hint = byId(hintId);
+    if(hint) hint.textContent = '';
+    try { if(typeof setAutoFields === 'function') setAutoFields(); } catch(e) {}
+    try { if(typeof calculate === 'function') calculate(); } catch(e) {}
+    try { if(typeof updateNavigation === 'function') updateNavigation(); } catch(e) {}
+  }
+
+  try {
+    window.fillEvSelect = function(){ lightweightFill('evSelect', 'evChoiceHint'); };
+    window.fillIceSelect = function(){ lightweightFill('iceSelect', 'iceChoiceHint'); };
+  } catch(e) {}
 })();
