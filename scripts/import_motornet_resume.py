@@ -15,6 +15,7 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 import import_motornet as base
 
 EXTRA_BRAND_CODES = ["ALN", "ALP", "BEN", "BES", "CAT", "CHA", "DEN", "COR", "DFS"]
+RESUME_STATE = Path("data/cars_motornet_resume_state.json")
 
 
 def bool_arg(value: object) -> bool:
@@ -57,6 +58,32 @@ def last_imported_brand_code(cars: list[dict]) -> str | None:
             if code:
                 return code
     return None
+
+
+def load_resume_state() -> dict:
+    if not RESUME_STATE.exists():
+        return {}
+    try:
+        payload = json.loads(RESUME_STATE.read_text(encoding="utf-8"))
+        return payload if isinstance(payload, dict) else {}
+    except Exception as exc:
+        print(f"WARN resume state not readable, ignoring: {exc}")
+        return {}
+
+
+def write_resume_state(brand_code: str | None, brand_url: str, cars_count: int, requests_count: int) -> None:
+    if not brand_code:
+        return
+    RESUME_STATE.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema": "cars_motornet_resume_state_v1",
+        "last_completed_brand_code": brand_code,
+        "last_completed_brand_url": canonical_url(brand_url),
+        "cars_count_at_completion": cars_count,
+        "requests_count_at_completion": requests_count,
+        "updated_at": base.now(),
+    }
+    RESUME_STATE.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def load_existing_catalog() -> tuple[list[dict], list[dict], set[str], set[str]]:
@@ -118,7 +145,10 @@ def write_payload(cars: list[dict], errors: list[dict], args, requests_count: in
 def robust_git_checkpoint(count: int, image_dir: Path) -> None:
     subprocess.run(["git", "config", "user.name", "github-actions"], check=False)
     subprocess.run(["git", "config", "user.email", "github-actions@github.com"], check=False)
-    subprocess.run(["git", "add", str(base.OUT), str(image_dir)], check=False)
+    add_paths = [str(base.OUT), str(image_dir)]
+    if RESUME_STATE.exists():
+        add_paths.append(str(RESUME_STATE))
+    subprocess.run(["git", "add", *add_paths], check=False)
     diff = subprocess.run(["git", "diff", "--cached", "--quiet"], check=False)
     if diff.returncode == 0:
         return
@@ -151,18 +181,29 @@ def main() -> None:
     parser.add_argument("--image-dir", default="assets/cars/motornet")
     parser.add_argument("--max-image-mb", type=float, default=6)
     parser.add_argument("--resume-from-last-brand", default="true", help="Skip whole brand pages before the last imported brand when brand_codes is empty.")
+    parser.add_argument("--resume-from-completed-brand", default="true", help="Skip whole brand pages through the last completed brand saved in data/cars_motornet_resume_state.json.")
+    parser.add_argument("--resume-after-last-imported-brand", default="false", help="Aggressive resume: skip the last imported brand too. Use only if that brand is known complete.")
+    parser.add_argument("--checkpoint-completed-brand", default="true", help="Commit resume state after each completed brand, even if no new cars were imported.")
     args = parser.parse_args()
 
     args.checkpoint_commit = bool_arg(args.checkpoint_commit)
     args.download_images = bool_arg(args.download_images)
     args.resume_from_last_brand = bool_arg(args.resume_from_last_brand)
+    args.resume_from_completed_brand = bool_arg(args.resume_from_completed_brand)
+    args.resume_after_last_imported_brand = bool_arg(args.resume_after_last_imported_brand)
+    args.checkpoint_completed_brand = bool_arg(args.checkpoint_completed_brand)
     image_dir = Path(args.image_dir)
     max_image_bytes = int(args.max_image_mb * 1024 * 1024)
 
     cars, errors, seen_urls, seen_ids = load_existing_catalog()
+    resume_state = load_resume_state()
     initial_count = len(cars)
     last_checkpoint = initial_count
-    resume_brand_code = last_imported_brand_code(cars) if args.resume_from_last_brand and not args.brand_codes.strip() else None
+    explicit_brand_run = bool(args.brand_codes.strip())
+    last_brand_code = last_imported_brand_code(cars) if not explicit_brand_run else None
+    completed_brand_code = None
+    if args.resume_from_completed_brand and not explicit_brand_run:
+        completed_brand_code = base.clean(resume_state.get("last_completed_brand_code")).upper() or None
 
     if args.limit > 0 and len(cars) >= args.limit:
         print(f"Existing catalog already has {len(cars)} cars, limit={args.limit}. Nothing to import.")
@@ -207,20 +248,42 @@ def main() -> None:
 
         print("brand links:", len(brand_urls))
         brand_codes_in_run = {base.brand_code_from_url(url) for url in brand_urls}
-        if resume_brand_code and resume_brand_code not in brand_codes_in_run:
-            print(f"WARN resume brand {resume_brand_code} not found in this run; falling back to URL-level skip")
-            resume_brand_code = None
-        elif resume_brand_code:
-            print(f"RESUME fast brand skip enabled. Starting at last imported brand: {resume_brand_code}")
 
-        reached_resume_brand = not bool(resume_brand_code)
+        resume_after_brand_code = None
+        resume_at_brand_code = None
+        if completed_brand_code and completed_brand_code in brand_codes_in_run:
+            resume_after_brand_code = completed_brand_code
+            print(f"RESUME completed-brand skip enabled. Starting after completed brand: {completed_brand_code}")
+        elif completed_brand_code:
+            print(f"WARN completed resume brand {completed_brand_code} not found in this run; ignoring state")
+
+        if not resume_after_brand_code and args.resume_after_last_imported_brand and last_brand_code and last_brand_code in brand_codes_in_run:
+            resume_after_brand_code = last_brand_code
+            print(f"RESUME aggressive skip enabled. Starting after last imported brand: {last_brand_code}")
+        elif not resume_after_brand_code and args.resume_from_last_brand and last_brand_code and last_brand_code in brand_codes_in_run:
+            resume_at_brand_code = last_brand_code
+            print(f"RESUME fast brand skip enabled. Starting at last imported brand: {last_brand_code}")
+        elif last_brand_code and last_brand_code not in brand_codes_in_run:
+            print(f"WARN resume brand {last_brand_code} not found in this run; falling back to URL-level skip")
+
+        reached_after_resume = not bool(resume_after_brand_code)
+        reached_at_resume = not bool(resume_at_brand_code)
         run_seen_details: set[str] = set()
 
         for brand_url in brand_urls:
             brand_code = base.brand_code_from_url(brand_url)
-            if not reached_resume_brand:
-                if brand_code == resume_brand_code:
-                    reached_resume_brand = True
+            if not reached_after_resume:
+                skipped_brand_pages += 1
+                if brand_code == resume_after_brand_code:
+                    reached_after_resume = True
+                    print("SKIP BRAND completed/aggressive resume", brand_code, brand_url)
+                else:
+                    print("SKIP BRAND before completed/aggressive resume", brand_code, brand_url)
+                continue
+
+            if not reached_at_resume:
+                if brand_code == resume_at_brand_code:
+                    reached_at_resume = True
                     print("RESUME reached brand", brand_code, brand_url)
                 else:
                     skipped_brand_pages += 1
@@ -311,6 +374,12 @@ def main() -> None:
 
                 except Exception as exc:
                     errors.append({"url": detail_url, "error": str(exc)})
+
+            if brand_code:
+                write_resume_state(brand_code, brand_url, len(cars), requests_count)
+                print("RESUME completed brand", brand_code, brand_url)
+                if args.checkpoint_commit and args.checkpoint_completed_brand:
+                    robust_git_checkpoint(len(cars), image_dir)
 
         context.close()
         browser.close()
