@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "ZEE",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/ZEE",
+  "last_completed_brand_code": "5000",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/5000",
   "cars_count_at_completion": 5672,
-  "requests_count_at_completion": 645,
-  "updated_at": "2026-06-16T09:57:22+00:00"
+  "requests_count_at_completion": 646,
+  "updated_at": "2026-06-16T10:02:15+00:00"
 }
