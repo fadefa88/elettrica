@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "ALN",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/ALN",
+  "last_completed_brand_code": "AST",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/AST",
   "cars_count_at_completion": 5125,
-  "requests_count_at_completion": 14,
-  "updated_at": "2026-06-16T07:39:34+00:00"
+  "requests_count_at_completion": 24,
+  "updated_at": "2026-06-16T07:43:27+00:00"
 }
