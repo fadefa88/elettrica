@@ -1,8 +1,8 @@
 {
   "schema": "cars_motornet_resume_state_v1",
-  "last_completed_brand_code": "SUZ",
-  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/SUZ",
-  "cars_count_at_completion": 5186,
-  "requests_count_at_completion": 81,
-  "updated_at": "2026-06-16T08:34:30+00:00"
+  "last_completed_brand_code": "SWM",
+  "last_completed_brand_url": "https://www.motornet.it/auto/scheda-modello/SWM",
+  "cars_count_at_completion": 5204,
+  "requests_count_at_completion": 106,
+  "updated_at": "2026-06-16T08:39:34+00:00"
 }
