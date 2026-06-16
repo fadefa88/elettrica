@@ -124,6 +124,13 @@ FUEL_LABELS = {
     "IM": "ibrida_metano",
 }
 
+# Case-insensitive and tolerant of all spellings such as kwh, KWH, KwH, Kwh.
+# It intentionally ignores kWh/100 km values because those are consumption, not battery capacity.
+DISPLAY_NAME_BATTERY_RE = re.compile(
+    r"(?<![\w])(?P<value>\d{1,3}(?:[\.,]\d{1,2})?)\s*kwh(?!\s*/?\s*100)",
+    flags=re.I,
+)
+
 
 def clean_text(value: Any) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip()
@@ -202,8 +209,39 @@ def get_ev_consumption(car: dict[str, Any]) -> float | None:
     return first_number_from_fields(car, EV_CONSUMPTION_KEYS) or spec_number_exact(car, EV_CONSUMPTION_SPEC_KEYS)
 
 
+def display_name(car: dict[str, Any]) -> str:
+    brand = clean_text(car.get("brand"))
+    model = clean_text(car.get("model"))
+    version = clean_text(car.get("version"))
+    if version and version.lower() != model.lower() and not version.lower().startswith((brand + " " + model).lower()):
+        return clean_text(f"{brand} {model} · {version}")
+    return clean_text(f"{brand} {model}")
+
+
+def battery_from_display_name(car: dict[str, Any]) -> float | None:
+    """Read battery capacity from the visible car name, e.g. '500e 42 kWh Turismo'.
+
+    If Motornet embeds the pack size in the model/version label, the audit should treat
+    that as valid battery data and avoid reporting a false 'missing Batteria kWh'.
+    The regex is case-insensitive and accepts kwh/KWH/KwH/Kwh.
+    """
+    text = " ".join(
+        clean_text(car.get(key))
+        for key in ["display_name", "name", "title", "brand", "model", "version", "powertrain"]
+    )
+    for match in DISPLAY_NAME_BATTERY_RE.finditer(text):
+        value = parse_number(match.group("value"))
+        if value is not None:
+            return value
+    return None
+
+
 def get_battery_kwh(car: dict[str, Any]) -> float | None:
-    return first_number_from_fields(car, BATTERY_KEYS) or spec_number_by_pattern(car, BATTERY_SPEC_KEY_PATTERNS)
+    return (
+        first_number_from_fields(car, BATTERY_KEYS)
+        or spec_number_by_pattern(car, BATTERY_SPEC_KEY_PATTERNS)
+        or battery_from_display_name(car)
+    )
 
 
 def get_range_km(car: dict[str, Any]) -> float | None:
@@ -234,15 +272,6 @@ def is_electric(car: dict[str, Any]) -> bool:
     fuel = fuel_of(car)
     code = clean_text(car.get("fuel_code")).upper()
     return category == "electric" or code in {"E", "EH"} or "elettr" in fuel
-
-
-def display_name(car: dict[str, Any]) -> str:
-    brand = clean_text(car.get("brand"))
-    model = clean_text(car.get("model"))
-    version = clean_text(car.get("version"))
-    if version and version.lower() != model.lower() and not version.lower().startswith((brand + " " + model).lower()):
-        return clean_text(f"{brand} {model} · {version}")
-    return clean_text(f"{brand} {model}")
 
 
 def motornet_model_id(car: dict[str, Any]) -> str:
@@ -324,7 +353,7 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
             continue
 
         if not has_image(car):
-            missing_image_rows.append(common_row(car, ["missing image"] ))
+            missing_image_rows.append(common_row(car, ["missing image"]))
             counts["missing_images"] += 1
 
         if is_electric(car):
