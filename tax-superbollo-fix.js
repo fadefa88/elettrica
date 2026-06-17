@@ -10,6 +10,42 @@
   function valueNumber(id){ return Number(byId(id)?.value || 0); }
   function checked(id){ return !!byId(id)?.checked; }
 
+  function cleanMotornetImageCaptionText(value){
+    return String(value || '')
+      .replace(/\s*Immagine:\s*motornet\.it\s*[·•\-]\s*Motornet/gi, '')
+      .replace(/\s*Immagine:\s*motornet\.it/gi, '')
+      .replace(/\s*[·•\-]\s*Motornet\s*$/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function removeMotornetImageCaptions(){
+    if(!document.body) return;
+
+    try{
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      let node;
+      while((node = walker.nextNode())) nodes.push(node);
+      nodes.forEach(function(textNode){
+        const before = textNode.nodeValue || '';
+        if(!/Immagine:\s*motornet\.it|Motornet/i.test(before)) return;
+        const after = cleanMotornetImageCaptionText(before);
+        if(after !== before) textNode.nodeValue = after;
+      });
+    }catch(e){}
+
+    document.querySelectorAll('[title],[alt],[aria-label]').forEach(function(el){
+      ['title','alt','aria-label'].forEach(function(attr){
+        const before = el.getAttribute(attr);
+        if(!before || !/Immagine:\s*motornet\.it|Motornet/i.test(before)) return;
+        const after = cleanMotornetImageCaptionText(before);
+        if(after) el.setAttribute(attr, after);
+        else el.removeAttribute(attr);
+      });
+    });
+  }
+
   function readPowerKw(car){
     const direct = Number(car && car.power_kw);
     if(Number.isFinite(direct) && direct > 0) return Math.floor(direct);
@@ -148,6 +184,7 @@
     updateIceTaxField();
     updateSummaryText();
     updateFootnote();
+    removeMotornetImageCaptions();
   }
 
   if(typeof setAutoFields === 'function'){
