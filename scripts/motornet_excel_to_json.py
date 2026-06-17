@@ -4,9 +4,9 @@
 Default behavior is conservative:
 - Load the original JSON as base.
 - Match Excel rows by `id`.
-- Update only known editable columns.
+- Update only curated fields exported by audit_motornet_quality.py.
 - Ignore empty Excel cells unless --clear-empty is passed.
-- Preserve all fields not present in the Excel file.
+- Preserve all raw/debug fields not present in the Excel file, including specs_raw.
 """
 from __future__ import annotations
 
@@ -20,24 +20,54 @@ from typing import Any
 from openpyxl import load_workbook
 
 
-TEXT_FIELDS = {
+# Keep this list aligned with audit_motornet_quality.py.
+CURATED_COLUMNS = [
+    "issues",
+    "status",
+    "notes",
+    "id",
+    "category",
     "brand",
     "model",
     "version",
     "powertrain",
     "fuel",
-    "fuel_code",
-    "category",
+    "year",
+    "price_eur",
+    "price_source",
+    "power_kw",
+    "power_cv",
+    "consumption_l_100km",
+    "consumption_kg_100km",
+    "consumption_kwh_100km",
+    "battery_kwh",
+    "range_wltp_km",
+    "emissions_g_km",
+    "image_url",
     "source_url",
     "motornet_detail_url",
-    "image_local_path",
-    "image_source_url",
+]
+
+TEXT_FIELDS = {
+    "category",
+    "brand",
+    "model",
+    "version",
+    "powertrain",
+    "fuel",
+    "price_source",
+    "image_url",
+    "source_url",
+    "motornet_detail_url",
 }
 
 NUMERIC_FIELDS = {
+    "year",
     "price_eur",
     "power_kw",
     "power_cv",
+    "consumption_l_100km",
+    "consumption_kg_100km",
     "consumption_kwh_100km",
     "battery_kwh",
     "range_wltp_km",
@@ -46,12 +76,9 @@ NUMERIC_FIELDS = {
 
 IGNORED_FIELDS = {
     "issues",
-    "row_type",
-    "motornet_model_id",
-    "motornet_trim_code",
-    "consumption_value",
-    "consumption_unit",
+    "status",
     "notes",
+    "id",
 }
 
 
@@ -112,6 +139,13 @@ def load_base_json(path: Path | None) -> dict[str, Any]:
 
 
 def apply_row(car: dict[str, Any], row: dict[str, Any], clear_empty: bool) -> None:
+    editable_fields = TEXT_FIELDS | NUMERIC_FIELDS
+    unknown_fields = sorted(set(row.keys()) - set(CURATED_COLUMNS))
+    if unknown_fields:
+        # Unknown columns are intentionally ignored to avoid accidentally writing
+        # helper spreadsheet data back into frontend JSON.
+        pass
+
     for field in TEXT_FIELDS:
         if field not in row:
             continue
@@ -128,26 +162,23 @@ def apply_row(car: dict[str, Any], row: dict[str, Any], clear_empty: bool) -> No
         elif clear_empty:
             car.pop(field, None)
 
-    if "consumption_value" in row and "consumption_unit" in row:
-        consumption = parse_number(row.get("consumption_value"))
-        unit = clean(row.get("consumption_unit")).lower()
-        if consumption is not None:
-            if unit.startswith("kg"):
-                car["consumption_kg_100km"] = consumption
-                car.pop("consumption_l_100km", None)
-            elif unit.startswith("l"):
-                car["consumption_l_100km"] = consumption
-                car.pop("consumption_kg_100km", None)
-        elif clear_empty:
-            car.pop("consumption_kg_100km", None)
-            car.pop("consumption_l_100km", None)
-
-    # Keep a note for traceability but do not put this into frontend calculations.
+    # Keep manual notes for traceability only; not used by frontend calculations.
     note = clean(row.get("notes"))
+    status = clean(row.get("status"))
     if note:
         car["_excel_note"] = note
     elif clear_empty:
         car.pop("_excel_note", None)
+    if status:
+        car["_excel_status"] = status
+    elif clear_empty:
+        car.pop("_excel_status", None)
+
+    # Do not allow stale alternative consumption units to survive an explicit edit.
+    if "consumption_l_100km" in row and parse_number(row.get("consumption_l_100km")) is not None:
+        car.pop("consumption_kg_100km", None)
+    if "consumption_kg_100km" in row and parse_number(row.get("consumption_kg_100km")) is not None:
+        car.pop("consumption_l_100km", None)
 
 
 def build_json(rows: list[dict[str, Any]], base_payload: dict[str, Any], clear_empty: bool) -> dict[str, Any]:
@@ -169,6 +200,7 @@ def build_json(rows: list[dict[str, Any]], base_payload: dict[str, Any], clear_e
     payload["status"] = payload.get("status") or "ok"
     payload["schema"] = payload.get("schema") or "cars_motornet_v1"
     payload["_excel_roundtrip"] = True
+    payload["_excel_curated_columns"] = CURATED_COLUMNS
     return payload
 
 
