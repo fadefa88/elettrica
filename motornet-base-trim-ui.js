@@ -199,6 +199,10 @@
     if(wrap) wrap.style.display = 'none';
     if(runCalc !== false) runAfterSelection();
   }
+  function userIsTyping(kind){
+    const input = byId(inputId(kind));
+    return !!(input && document.activeElement === input && clean(input.value));
+  }
   function renderResults(kind){
     const input = byId(inputId(kind));
     const box = byId(resultId(kind));
@@ -268,8 +272,15 @@
     const input = byId(inputId(kind));
     if(currentGroup){
       setSelectedGroupKey(kind, currentGroup.key);
-      if(input) input.value = [currentGroup.brand, currentGroup.label].filter(Boolean).join(' ');
+      if(input && !userIsTyping(kind)) input.value = [currentGroup.brand, currentGroup.label].filter(Boolean).join(' ');
       fillTrim(kind, false);
+    } else if(userIsTyping(kind)){
+      setSelectedGroupKey(kind, '');
+      setHiddenSelection(kind, '');
+      const trim = byId(trimId(kind));
+      const wrap = byId(trimWrapId(kind));
+      if(trim) trim.innerHTML = '<option value="">Prima scegli il modello</option>';
+      if(wrap) wrap.style.display = 'none';
     } else {
       clearSelection(kind, false);
     }
@@ -360,6 +371,7 @@
     syncManual();
   }
   function init(){
+    if(installed) return true;
     if(typeof EV === 'undefined' || typeof IC === 'undefined') return false;
     if(!byId('evSelect') || !byId('iceSelect')) return false;
     wire();
