@@ -26,22 +26,29 @@
     if(!raw) return '';
     try{
       const u = new URL(raw, window.location.href);
-      return u.pathname.replace(/^\/+/, '');
+      return u.pathname.replace(/^\/+/, '').replace(/^elettrica\//, '');
     }catch(e){
-      return raw.split('?')[0].replace(/^\/+/, '');
+      return raw.split('?')[0].replace(/^\/+/, '').replace(/^elettrica\//, '');
     }
+  }
+
+  function isBlockedLegacyPath(path){
+    if(BLOCKED.has(path)) return true;
+    return Array.from(BLOCKED).some(function(blocked){
+      return path.endsWith('/' + blocked) || path.endsWith(blocked);
+    });
   }
 
   const originalFetch = window.fetch.bind(window);
   window.fetch = function(resource, init){
     const path = normalizeUrl(resource);
-    if(BLOCKED.has(path)){
+    if(isBlockedLegacyPath(path)){
       return Promise.resolve(new Response(EMPTY_CATALOG, {
         status: 200,
         headers: { 'Content-Type': 'application/json; charset=utf-8' }
       }));
     }
-    if(path === 'data/cars_motornet.json'){
+    if(path === 'data/cars_motornet.json' || path.endsWith('/data/cars_motornet.json')){
       // Strip timestamp cache-busters added by older scripts. The catalogue is large;
       // allowing normal browser/HTTP cache makes repeated visits much faster.
       return originalFetch('data/cars_motornet.json', init);
