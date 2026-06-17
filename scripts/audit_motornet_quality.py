@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Audit Motornet car catalog data quality and export a full Excel workbook.
+"""Audit Motornet car catalog data quality and export a curated Excel workbook.
 
-Checks:
-- Electric cars: missing/out-of-range consumption kWh/100 km, battery kWh, WLTP range.
-- Thermal cars: missing/out-of-range fuel consumption and CO2 emissions.
-- Images are ignored by default.
+The Excel export is intentionally limited to fields used by the frontend for:
+- car selection and display;
+- TCO calculations;
+- tax/superbollo logic;
+- basic traceability back to Motornet.
 
-Outputs CSV reports, one full Excel workbook, summary JSON and Markdown.
+Large raw/debug fields such as specs_raw are not exported to the workbook, but are
+preserved by scripts/motornet_excel_to_json.py when converting back from Excel.
+Images are ignored by default in issue generation.
 """
 from __future__ import annotations
 
@@ -55,9 +58,9 @@ EMISSIONS_KEYS = ["emissions_g_km", "co2_g_km"]
 EMISSIONS_SPEC_KEYS = ["CO2 Combinato", "Emissioni CO2 NEDC", "Emissioni CO2 WLTP", "Emissioni CO2"]
 
 IMAGE_KEYS = [
+    "image_url",
     "image_local_path",
     "image_source_url",
-    "image_url",
     "image",
     "photo_url",
     "photo",
@@ -86,33 +89,32 @@ DISPLAY_NAME_BATTERY_RE = re.compile(
     flags=re.I,
 )
 
+# Keep this list aligned with scripts/motornet_excel_to_json.py.
 EXCEL_COLUMNS = [
     "issues",
-    "row_type",
+    "status",
+    "notes",
     "id",
+    "category",
     "brand",
     "model",
     "version",
     "powertrain",
     "fuel",
-    "fuel_code",
-    "category",
+    "year",
     "price_eur",
+    "price_source",
     "power_kw",
     "power_cv",
+    "consumption_l_100km",
+    "consumption_kg_100km",
     "consumption_kwh_100km",
     "battery_kwh",
     "range_wltp_km",
-    "consumption_value",
-    "consumption_unit",
     "emissions_g_km",
-    "motornet_model_id",
-    "motornet_trim_code",
+    "image_url",
     "source_url",
     "motornet_detail_url",
-    "image_local_path",
-    "image_source_url",
-    "notes",
 ]
 
 
@@ -172,9 +174,26 @@ def specs_raw(car: dict[str, Any]) -> dict[str, Any]:
     return raw if isinstance(raw, dict) else {}
 
 
+def iter_spec_entries(value: Any, prefix: str = "") -> Iterable[tuple[str, Any]]:
+    if isinstance(value, dict):
+        label = value.get("label") or value.get("name") or value.get("key") or value.get("title")
+        val = value.get("value") or value.get("val") or value.get("text")
+        if label is not None and val is not None:
+            yield clean_text(f"{prefix} {label}"), val
+        for key, nested in value.items():
+            if key in {"label", "name", "key", "title", "value", "val", "text"} and not isinstance(nested, (dict, list)):
+                continue
+            yield from iter_spec_entries(nested, clean_text(f"{prefix} {key}"))
+    elif isinstance(value, list):
+        for item in value:
+            yield from iter_spec_entries(item, prefix)
+    else:
+        if prefix:
+            yield clean_text(prefix), value
+
+
 def spec_number_exact(car: dict[str, Any], keys: Iterable[str]) -> float | None:
-    raw = specs_raw(car)
-    normalized = {clean_text(k).lower(): v for k, v in raw.items()}
+    normalized = {clean_text(k).lower(): v for k, v in iter_spec_entries(specs_raw(car))}
     for wanted in keys:
         value = parse_number(normalized.get(clean_text(wanted).lower()))
         if value is not None:
@@ -183,8 +202,7 @@ def spec_number_exact(car: dict[str, Any], keys: Iterable[str]) -> float | None:
 
 
 def spec_number_by_pattern(car: dict[str, Any], patterns: Iterable[str]) -> float | None:
-    raw = specs_raw(car)
-    for key, value in raw.items():
+    for key, value in iter_spec_entries(specs_raw(car)):
         key_l = clean_text(key).lower()
         for pattern in patterns:
             if re.search(pattern, key_l, flags=re.I):
@@ -196,15 +214,6 @@ def spec_number_by_pattern(car: dict[str, Any], patterns: Iterable[str]) -> floa
 
 def get_ev_consumption(car: dict[str, Any]) -> float | None:
     return first_number_from_fields(car, EV_CONSUMPTION_KEYS) or spec_number_exact(car, EV_CONSUMPTION_SPEC_KEYS)
-
-
-def display_name(car: dict[str, Any]) -> str:
-    brand = clean_text(car.get("brand"))
-    model = clean_text(car.get("model"))
-    version = clean_text(car.get("version"))
-    if version and version.lower() != model.lower() and not version.lower().startswith((brand + " " + model).lower()):
-        return clean_text(f"{brand} {model} · {version}")
-    return clean_text(f"{brand} {model}")
 
 
 def battery_from_display_name(car: dict[str, Any]) -> float | None:
@@ -231,12 +240,12 @@ def get_range_km(car: dict[str, Any]) -> float | None:
     return first_number_from_fields(car, RANGE_KEYS) or spec_number_exact(car, RANGE_SPEC_KEYS)
 
 
-def get_thermal_consumption(car: dict[str, Any], fuel: str) -> tuple[float | None, str]:
+def get_thermal_consumption(car: dict[str, Any], fuel: str) -> tuple[float | None, str, str]:
     if "metano" in fuel:
         kg = first_number_from_fields(car, THERMAL_CONSUMPTION_KG_KEYS) or spec_number_exact(car, THERMAL_GAS_CONSUMPTION_SPEC_KEYS)
-        return kg, "kg/100 km"
+        return kg, "kg/100 km", "consumption_kg_100km"
     liters = first_number_from_fields(car, THERMAL_CONSUMPTION_L_KEYS) or spec_number_exact(car, THERMAL_CONSUMPTION_SPEC_KEYS)
-    return liters, "l/100 km"
+    return liters, "l/100 km", "consumption_l_100km"
 
 
 def get_emissions(car: dict[str, Any]) -> float | None:
@@ -255,18 +264,6 @@ def is_electric(car: dict[str, Any]) -> bool:
     fuel = fuel_of(car)
     code = clean_text(car.get("fuel_code")).upper()
     return category == "electric" or code in {"E", "EH"} or "elettr" in fuel
-
-
-def motornet_model_id(car: dict[str, Any]) -> str:
-    text = " ".join(clean_text(car.get(k)) for k in ["source_url", "motornet_detail_url", "image_source_url", "image_local_path"])
-    match = re.search(r"/modello/(\d+)", text)
-    return match.group(1) if match else ""
-
-
-def motornet_trim_code(car: dict[str, Any]) -> str:
-    text = " ".join(clean_text(car.get(k)) for k in ["source_url", "motornet_detail_url", "image_source_url", "image_local_path"])
-    match = re.search(r"/allestimento/([A-Z0-9]+)", text, flags=re.I)
-    return match.group(1).upper() if match else ""
 
 
 def image_value(car: dict[str, Any]) -> str:
@@ -305,29 +302,36 @@ def add_issue(issues: list[str], metric: str, value: float | None, unit: str, mi
         issues.append(f"too high {metric}: {value:g} {unit} > {max_value:g}")
 
 
+def output_category(car: dict[str, Any]) -> str:
+    return "electric" if is_electric(car) else "thermal"
+
+
 def common_row(car: dict[str, Any], issues: list[str]) -> dict[str, Any]:
     return {
         "issues": " | ".join(issues) if issues else "tutto ok",
-        "row_type": "electric" if is_electric(car) else "thermal",
+        "status": "",
+        "notes": "",
         "id": clean_text(car.get("id")),
+        "category": output_category(car),
         "brand": clean_text(car.get("brand")),
         "model": clean_text(car.get("model")),
         "version": clean_text(car.get("version")),
         "powertrain": clean_text(car.get("powertrain")),
-        "display_name": display_name(car),
         "fuel": fuel_of(car),
-        "fuel_code": clean_text(car.get("fuel_code")),
-        "category": clean_text(car.get("category")),
+        "year": parse_number(car.get("year")) or "",
         "price_eur": parse_number(car.get("price_eur")) or "",
+        "price_source": clean_text(car.get("price_source")),
         "power_kw": parse_number(car.get("power_kw")) or "",
         "power_cv": parse_number(car.get("power_cv")) or "",
-        "motornet_model_id": motornet_model_id(car),
-        "motornet_trim_code": motornet_trim_code(car),
-        "source_url": clean_text(car.get("motornet_detail_url") or car.get("source_url")),
+        "consumption_l_100km": "",
+        "consumption_kg_100km": "",
+        "consumption_kwh_100km": "",
+        "battery_kwh": "",
+        "range_wltp_km": "",
+        "emissions_g_km": "",
+        "image_url": image_value(car),
+        "source_url": clean_text(car.get("source_url")),
         "motornet_detail_url": clean_text(car.get("motornet_detail_url")),
-        "image_local_path": clean_text(car.get("image_local_path")),
-        "image_source_url": clean_text(car.get("image_source_url")),
-        "notes": "",
     }
 
 
@@ -342,17 +346,35 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
         if not isinstance(car, dict):
             continue
 
+        base_issues: list[str] = []
+        if not clean_text(car.get("id")):
+            base_issues.append("missing id")
+        if not clean_text(car.get("brand")):
+            base_issues.append("missing brand")
+        if not clean_text(car.get("model")):
+            base_issues.append("missing model")
+
         if not has_image(car):
             counts["missing_images"] += 1
             if not args.ignore_images:
                 missing_image_rows.append(common_row(car, ["missing image"]))
+
+        price = parse_number(car.get("price_eur"))
+        power_kw = parse_number(car.get("power_kw"))
+        power_cv = parse_number(car.get("power_cv"))
+
+        issues = list(base_issues)
+        add_issue(issues, "prezzo", price, "EUR", args.price_min, args.price_max)
+        if power_kw is None and power_cv is None:
+            issues.append("missing power_kw/power_cv")
+        elif power_kw is not None:
+            add_issue(issues, "potenza kW", power_kw, "kW", args.power_kw_min, args.power_kw_max)
 
         if is_electric(car):
             counts["electric_total"] += 1
             consumption = get_ev_consumption(car)
             battery = get_battery_kwh(car)
             wltp_range = get_range_km(car)
-            issues: list[str] = []
             add_issue(issues, "Consumo kWh/100 km", consumption, "kWh/100 km", args.ev_consumption_min, args.ev_consumption_max)
             add_issue(issues, "Batteria kWh", battery, "kWh", args.ev_battery_min, args.ev_battery_max)
             add_issue(issues, "Autonomia WLTP", wltp_range, "km", args.ev_range_min, args.ev_range_max)
@@ -362,9 +384,6 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
                 "consumption_kwh_100km": consumption if consumption is not None else "",
                 "battery_kwh": battery if battery is not None else "",
                 "range_wltp_km": wltp_range if wltp_range is not None else "",
-                "consumption_value": "",
-                "consumption_unit": "",
-                "emissions_g_km": "",
             })
             all_rows.append(row)
             if issues:
@@ -373,9 +392,8 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
         else:
             counts["thermal_total"] += 1
             fuel = fuel_of(car)
-            consumption, unit = get_thermal_consumption(car, fuel)
+            consumption, unit, consumption_field = get_thermal_consumption(car, fuel)
             emissions = get_emissions(car)
-            issues = []
             if unit.startswith("kg"):
                 add_issue(issues, "consumo termico", consumption, unit, args.thermal_consumption_kg_min, args.thermal_consumption_kg_max)
             else:
@@ -384,11 +402,7 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
 
             row = common_row(car, issues)
             row.update({
-                "consumption_kwh_100km": "",
-                "battery_kwh": "",
-                "range_wltp_km": "",
-                "consumption_value": consumption if consumption is not None else "",
-                "consumption_unit": unit,
+                consumption_field: consumption if consumption is not None else "",
                 "emissions_g_km": emissions if emissions is not None else "",
             })
             all_rows.append(row)
@@ -405,7 +419,10 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
         "thermal_with_issues": counts["thermal_with_issues"],
         "missing_images": counts["missing_images"],
         "image_issues_ignored": bool(args.ignore_images),
+        "excel_columns": EXCEL_COLUMNS,
         "thresholds": {
+            "price_eur": [args.price_min, args.price_max],
+            "power_kw": [args.power_kw_min, args.power_kw_max],
             "ev_consumption_kwh_100km": [args.ev_consumption_min, args.ev_consumption_max],
             "ev_battery_kwh": [args.ev_battery_min, args.ev_battery_max],
             "ev_range_wltp_km": [args.ev_range_min, args.ev_range_max],
@@ -419,13 +436,11 @@ def audit(cars: list[dict[str, Any]], args: argparse.Namespace) -> tuple[list[di
 
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fieldnames = sorted({key for row in rows for key in row.keys()})
-    if not fieldnames:
-        fieldnames = ["issues", "id", "brand", "model", "version", "source_url"]
+    fieldnames = list(EXCEL_COLUMNS)
     with path.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows({key: row.get(key, "") for key in fieldnames} for row in rows)
 
 
 def write_excel(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any]) -> None:
@@ -435,9 +450,6 @@ def write_excel(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any])
     ws.title = "catalog"
 
     columns = list(EXCEL_COLUMNS)
-    extra_columns = sorted({key for row in rows for key in row.keys()} - set(columns))
-    columns.extend(extra_columns)
-
     header_fill = PatternFill("solid", fgColor="1F2937")
     ok_fill = PatternFill("solid", fgColor="DCFCE7")
     issue_fill = PatternFill("solid", fgColor="FEE2E2")
@@ -458,7 +470,7 @@ def write_excel(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any])
     for idx, column in enumerate(columns, start=1):
         letter = get_column_letter(idx)
         width = min(max(len(column) + 3, 12), 42)
-        if column in {"issues", "version", "powertrain", "source_url", "motornet_detail_url", "notes"}:
+        if column in {"issues", "notes", "version", "powertrain", "source_url", "motornet_detail_url", "image_url"}:
             width = 48
         ws.column_dimensions[letter].width = width
 
@@ -467,7 +479,7 @@ def write_excel(path: Path, rows: list[dict[str, Any]], summary: dict[str, Any])
     for key, value in summary.items():
         summary_ws.append([key, json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else value])
     summary_ws.column_dimensions["A"].width = 32
-    summary_ws.column_dimensions["B"].width = 80
+    summary_ws.column_dimensions["B"].width = 100
 
     wb.save(path)
 
@@ -478,7 +490,8 @@ def write_markdown(path: Path, ev_rows: list[dict[str, Any]], thermal_rows: list
             return "Nessuna anomalia trovata.\n"
         lines = []
         for row in rows[:max_preview]:
-            lines.append(f"- **{row.get('display_name','')}** — {row.get('issues','')} — `{row.get('source_url','')}`")
+            name = clean_text(f"{row.get('brand','')} {row.get('model','')} {row.get('version','')}")
+            lines.append(f"- **{name}** — {row.get('issues','')} — `{row.get('source_url') or row.get('motornet_detail_url') or ''}`")
         if len(rows) > max_preview:
             lines.append(f"- ... altre {len(rows) - max_preview} righe nel CSV/Excel")
         return "\n".join(lines) + "\n"
@@ -500,10 +513,16 @@ def write_markdown(path: Path, ev_rows: list[dict[str, Any]], thermal_rows: list
 
 ## Output principali
 
-- `motornet_catalog_audit.xlsx`: catalogo completo modificabile in Excel.
+- `motornet_catalog_audit.xlsx`: catalogo completo modificabile in Excel, limitato ai campi usati dal sito.
 - `all_cars_audit.csv`: stesso contenuto in CSV.
 - `ev_quality_issues.csv`: solo elettriche con problemi.
 - `thermal_quality_issues.csv`: solo termiche con problemi.
+
+## Colonne Excel esportate
+
+```json
+{json.dumps(summary['excel_columns'], indent=2, ensure_ascii=False)}
+```
 
 ## Soglie usate
 
@@ -525,13 +544,18 @@ def write_markdown(path: Path, ev_rows: list[dict[str, Any]], thermal_rows: list
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Audit Motornet catalog quality and export Excel.")
+    parser = argparse.ArgumentParser(description="Audit Motornet catalog quality and export curated Excel.")
     parser.add_argument("--catalog", default="data/cars_motornet.json", help="Path to cars_motornet.json")
     parser.add_argument("--out-dir", default="reports/motornet-quality", help="Output directory")
     parser.add_argument("--excel", default="motornet_catalog_audit.xlsx", help="Excel filename inside out-dir")
     parser.add_argument("--fail-on-issues", action="store_true", help="Exit with code 2 if issues are found")
     parser.add_argument("--preview", type=int, default=30, help="Rows to preview in Markdown report")
     parser.add_argument("--ignore-images", action=argparse.BooleanOptionalAction, default=True, help="Ignore missing images in issues")
+
+    parser.add_argument("--price-min", type=float, default=1000.0)
+    parser.add_argument("--price-max", type=float, default=1000000.0)
+    parser.add_argument("--power-kw-min", type=float, default=1.0)
+    parser.add_argument("--power-kw-max", type=float, default=1500.0)
 
     parser.add_argument("--ev-consumption-min", type=float, default=7.0)
     parser.add_argument("--ev-consumption-max", type=float, default=40.0)
