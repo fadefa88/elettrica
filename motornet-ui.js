@@ -85,6 +85,117 @@
     await loadScript(src);
   }
 
+  // Restore brand dropdown population from the already-clean Motornet JSON.
+  // This does not normalize or rewrite brand/model names: it only fills the visible selects.
+  (function(){
+    const LABELS = {
+      elettrica: 'Elettrica',
+      elettrica_idrogeno: 'Elettrica a idrogeno',
+      benzina: 'Benzina',
+      diesel: 'Diesel',
+      ibrida_benzina: 'Ibrida benzina',
+      ibrida_diesel: 'Ibrida diesel',
+      gpl: 'GPL',
+      ibrida_gpl: 'Ibrida GPL',
+      metano: 'Metano',
+      ibrida_metano: 'Ibrida metano'
+    };
+
+    function byId(id){ return document.getElementById(id); }
+    function clean(value){ return String(value || '').replace(/\s+/g, ' ').trim(); }
+    function esc(value){
+      return clean(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    function uniq(values){
+      return Array.from(new Set(values.map(clean).filter(Boolean))).sort(function(a,b){ return a.localeCompare(b, 'it'); });
+    }
+    function getCars(kind){
+      try{
+        const list = kind === 'ev' ? window.EV : window.IC;
+        return Array.isArray(list) ? list : [];
+      }catch(e){
+        return [];
+      }
+    }
+    function matchingCars(kind){
+      const cars = getCars(kind);
+      const fuelId = kind === 'ev' ? 'evFuelPick' : 'iceFuelPick';
+      const fuel = byId(fuelId)?.value || 'all';
+      if(!fuel || fuel === 'all') return cars;
+
+      const exact = cars.filter(function(car){ return clean(car.fuel) === fuel; });
+      if(exact.length) return exact;
+
+      // Safety fallback: if fuel labels or values changed, do not leave the brand list empty.
+      return cars;
+    }
+    function fillBrand(kind){
+      const select = byId(kind === 'ev' ? 'evBrandPick' : 'iceBrandPick');
+      if(!select) return;
+      const cars = matchingCars(kind);
+      const brands = uniq(cars.map(function(car){ return car.brand; }));
+      if(!brands.length) return;
+
+      const current = select.value || 'all';
+      const nextHtml = '<option value="all">Tutte</option>' + brands.map(function(brand){
+        return '<option value="' + esc(brand) + '">' + esc(brand) + '</option>';
+      }).join('');
+
+      if(select.innerHTML !== nextHtml) select.innerHTML = nextHtml;
+      select.value = brands.includes(current) ? current : 'all';
+    }
+    function fillEvFuelIfNeeded(){
+      const fuel = byId('evFuelPick');
+      if(!fuel) return;
+      const cars = getCars('ev');
+      const fuels = uniq(cars.map(function(car){ return car.fuel; }));
+      if(!fuels.length) return;
+      const current = fuel.value || 'all';
+      const html = '<option value="all">Tutte</option>' + fuels.map(function(f){
+        return '<option value="' + esc(f) + '">' + esc(LABELS[f] || f) + '</option>';
+      }).join('');
+      if(fuel.innerHTML !== html) fuel.innerHTML = html;
+      fuel.value = fuels.includes(current) || current === 'all' ? current : 'all';
+    }
+    function refreshBrands(){
+      fillEvFuelIfNeeded();
+      fillBrand('ev');
+      fillBrand('ice');
+    }
+    function runAfterRefresh(){
+      refreshBrands();
+      try { if(typeof fillEvSelect === 'function') fillEvSelect(); } catch(e) {}
+      try { if(typeof fillIceSelect === 'function') fillIceSelect(); } catch(e) {}
+      try { if(typeof setAutoFields === 'function') setAutoFields(); } catch(e) {}
+      try { if(typeof calculate === 'function') calculate(); } catch(e) {}
+      try { if(typeof updateNavigation === 'function') updateNavigation(); } catch(e) {}
+    }
+    function bindOnce(){
+      ['evFuelPick','evBrandPick','iceFuelPick','iceBrandPick'].forEach(function(id){
+        const el = byId(id);
+        if(!el || el.__motornetBrandGuardBound) return;
+        el.__motornetBrandGuardBound = true;
+        el.addEventListener('change', function(){ setTimeout(runAfterRefresh, 0); });
+        el.addEventListener('input', function(){ setTimeout(runAfterRefresh, 0); });
+      });
+    }
+
+    window.addEventListener('load', function(){
+      let ticks = 0;
+      const timer = setInterval(function(){
+        bindOnce();
+        refreshBrands();
+        ticks += 1;
+        if(ticks >= 40) clearInterval(timer);
+      }, 250);
+    });
+  })();
+
   // Inline mobile autocomplete fix.
   (function(){
     const ITEM_SELECTOR = '.motornet-autocomplete-results .motornet-autocomplete-item[data-key]';
