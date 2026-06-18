@@ -19,6 +19,17 @@
       .trim();
   }
 
+  function textNeedsMotornetCleanup(value){
+    return /Immagine:\s*motornet\.it|Motornet/i.test(String(value || ''));
+  }
+
+  function cleanValueProperty(el, prop){
+    const before = el && el[prop];
+    if(!before || !textNeedsMotornetCleanup(before)) return;
+    const after = cleanMotornetImageCaptionText(before);
+    if(after !== before) el[prop] = after;
+  }
+
   function removeMotornetImageCaptions(){
     if(!document.body) return;
 
@@ -29,7 +40,7 @@
       while((node = walker.nextNode())) nodes.push(node);
       nodes.forEach(function(textNode){
         const before = textNode.nodeValue || '';
-        if(!/Immagine:\s*motornet\.it|Motornet/i.test(before)) return;
+        if(!textNeedsMotornetCleanup(before)) return;
         const after = cleanMotornetImageCaptionText(before);
         if(after !== before) textNode.nodeValue = after;
       });
@@ -38,11 +49,17 @@
     document.querySelectorAll('[title],[alt],[aria-label]').forEach(function(el){
       ['title','alt','aria-label'].forEach(function(attr){
         const before = el.getAttribute(attr);
-        if(!before || !/Immagine:\s*motornet\.it|Motornet/i.test(before)) return;
+        if(!before || !textNeedsMotornetCleanup(before)) return;
         const after = cleanMotornetImageCaptionText(before);
         if(after) el.setAttribute(attr, after);
         else el.removeAttribute(attr);
       });
+    });
+
+    document.querySelectorAll('input, textarea, option, select').forEach(function(el){
+      cleanValueProperty(el, 'value');
+      cleanValueProperty(el, 'textContent');
+      cleanValueProperty(el, 'innerText');
     });
   }
 
