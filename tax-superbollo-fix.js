@@ -10,6 +10,28 @@
   function valueNumber(id){ return Number(byId(id)?.value || 0); }
   function checked(id){ return !!byId(id)?.checked; }
 
+  function globalList(name){
+    try{
+      const list = eval(name);
+      return Array.isArray(list) ? list : [];
+    }catch(e){
+      return [];
+    }
+  }
+
+  function normalizeSlimRuntimeFields(){
+    ['EV','IC'].forEach(function(name){
+      globalList(name).forEach(function(car){
+        if(!car || typeof car !== 'object') return;
+        if(!car.powertrain && car.version) car.powertrain = car.version;
+        if(!car.version && car.powertrain) car.version = car.powertrain;
+        if(!car.source_url && car.motornet_detail_url) car.source_url = car.motornet_detail_url;
+        if(!car.image_url && car.image_local_path) car.image_url = car.image_local_path;
+        if(!car.image_url && car.image_source_url) car.image_url = car.image_source_url;
+      });
+    });
+  }
+
   function cleanMotornetImageCaptionText(value){
     return String(value || '')
       .replace(/\s*Immagine:\s*motornet\.it\s*[·•\-]\s*Motornet/gi, '')
@@ -103,7 +125,8 @@
     try{ if(typeof selectedIce === 'function') return selectedIce(); }catch(e){}
     try{
       const id = byId('iceSelect') && byId('iceSelect').value;
-      if(id && Array.isArray(IC)) return IC.find(function(car){ return car && car.id === id; }) || null;
+      const list = globalList('IC');
+      if(id && list.length) return list.find(function(car){ return car && car.id === id; }) || null;
     }catch(e){}
     return null;
   }
@@ -192,12 +215,12 @@
     if(!note || !car) return;
     const extra = superbolloForCar(car);
     if(extra > 0){
-      const kw = readPowerKw(car);
       note.textContent = '* Manutenzione e bollo sono stime da verificare. Per questa termica è incluso anche il superbollo: ' + euro0.format(extra) + ' annui stimati perché supera ' + SUPERBOLLO_THRESHOLD_KW + ' kW.';
     }
   }
 
   function run(){
+    normalizeSlimRuntimeFields();
     updateIceTaxField();
     updateSummaryText();
     updateFootnote();
@@ -207,6 +230,7 @@
   if(typeof setAutoFields === 'function'){
     const originalSetAutoFields = setAutoFields;
     setAutoFields = function(){
+      normalizeSlimRuntimeFields();
       const result = originalSetAutoFields.apply(this, arguments);
       run();
       return result;
@@ -217,6 +241,7 @@
   if(typeof calculate === 'function'){
     const originalCalculate = calculate;
     calculate = function(){
+      normalizeSlimRuntimeFields();
       updateIceTaxField();
       const result = originalCalculate.apply(this, arguments);
       run();
@@ -228,6 +253,7 @@
   if(typeof drawSummary === 'function'){
     const originalDrawSummary = drawSummary;
     drawSummary = function(){
+      normalizeSlimRuntimeFields();
       const result = originalDrawSummary.apply(this, arguments);
       run();
       return result;
