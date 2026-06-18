@@ -10,6 +10,91 @@
   function valueNumber(id){ return Number(byId(id)?.value || 0); }
   function checked(id){ return !!byId(id)?.checked; }
 
+  function installAutocompleteScrollGuard(){
+    if(window.__motornetAutocompleteScrollGuardInstalled) return;
+    window.__motornetAutocompleteScrollGuardInstalled = true;
+
+    const nativeDocumentAdd = document.addEventListener.bind(document);
+    const itemSelector = '.motornet-autocomplete-results .motornet-autocomplete-item[data-key]';
+    let touchStart = null;
+    let lastSafeTapAt = 0;
+
+    document.addEventListener = function(type, listener, options){
+      if((type === 'pointerdown' || type === 'touchstart') && typeof listener === 'function'){
+        const source = Function.prototype.toString.call(listener);
+        if(source.indexOf('ITEM_SELECTOR') >= 0 && source.indexOf('activateAutocompleteItem') >= 0){
+          console.info('[motornet] blocked eager autocomplete ' + type + ' handler to allow mobile scrolling');
+          return;
+        }
+      }
+      return nativeDocumentAdd(type, listener, options);
+    };
+
+    function itemFromEvent(event){
+      return event && event.target && event.target.closest ? event.target.closest(itemSelector) : null;
+    }
+
+    function blurModelInputSoon(){
+      setTimeout(function(){
+        const active = document.activeElement;
+        if(active && active.classList && active.classList.contains('motornet-model-search')) active.blur();
+      }, 30);
+    }
+
+    function safeSelect(btn, event){
+      if(!btn) return;
+      const now = Date.now();
+      if(now - lastSafeTapAt < 250) return;
+      lastSafeTapAt = now;
+      if(event){
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      btn.dispatchEvent(new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      }));
+      blurModelInputSoon();
+    }
+
+    nativeDocumentAdd('touchstart', function(event){
+      const btn = itemFromEvent(event);
+      if(!btn) return;
+      const touch = event.touches && event.touches[0];
+      if(!touch) return;
+      touchStart = {
+        x: touch.clientX,
+        y: touch.clientY,
+        target: btn,
+        time: Date.now()
+      };
+    }, {capture: true, passive: true});
+
+    nativeDocumentAdd('touchend', function(event){
+      if(!touchStart) return;
+      const btn = itemFromEvent(event) || touchStart.target;
+      const touch = event.changedTouches && event.changedTouches[0];
+      if(!btn || !touch){
+        touchStart = null;
+        return;
+      }
+      const dx = Math.abs(touch.clientX - touchStart.x);
+      const dy = Math.abs(touch.clientY - touchStart.y);
+      const dt = Date.now() - touchStart.time;
+      const sameItem = btn === touchStart.target || (btn.contains && btn.contains(touchStart.target)) || (touchStart.target.contains && touchStart.target.contains(btn));
+      touchStart = null;
+      if(sameItem && dx < 10 && dy < 10 && dt < 900) safeSelect(btn, event);
+    }, {capture: true, passive: false});
+
+    nativeDocumentAdd('click', function(event){
+      const btn = itemFromEvent(event);
+      if(btn) blurModelInputSoon();
+    }, true);
+  }
+
+  installAutocompleteScrollGuard();
+
   function globalList(name){
     try{
       const list = eval(name);
