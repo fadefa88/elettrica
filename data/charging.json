@@ -1,23 +1,61 @@
 {
-  "updated_at": "2026-06-14",
-  "status": "indicative_italy_seed",
+  "updated_at": "2026-06-18T14:16:29.884527+00:00",
+  "status": "fallback_previous_values_no_public_prices_found",
   "charging_efficiency": {
     "home": 0.92,
-    "mixed": 0.90,
+    "mixed": 0.9,
     "public": 0.94
   },
   "market_average": {
-    "home": 0.30,
+    "home": 0.3,
     "ac": 0.59,
     "dc": 0.72,
     "hpc": 0.85,
-    "public_mixed": 0.74,
-    "tesla_supercharger_owner": 0.50,
+    "public_mixed": 0.707,
+    "tesla_supercharger_owner": 0.5,
     "tesla_supercharger_non_tesla": 0.62
   },
   "notes": {
-    "public_mixed": "stima media indicativa AC/DC/HPC Italia, non feed ufficiale unico",
-    "tesla_supercharger_owner": "stima indicativa proprietari Tesla; varia per stazione e orario",
-    "tesla_supercharger_non_tesla": "stima indicativa non Tesla; varia per stazione, orario e abbonamento"
-  }
+    "method": "Average from public tariff pages when explicit EUR/kWh values are found; previous values are kept otherwise.",
+    "public_mixed": "Weighted approximation from AC/DC/HPC where available; not an official national price index.",
+    "tesla_supercharger_owner": "Tesla prices can vary by station and time; parsed values are best-effort from public pages if available."
+  },
+  "source_reports": [
+    {
+      "name": "Enel X Way",
+      "url": "https://www.enelxway.com/it/it/servizi/soluzioni-ricarica-pubblica/tariffe",
+      "segment": "mixed",
+      "status": "no_kwh_prices_found",
+      "prices_found": [],
+      "values_used": {}
+    },
+    {
+      "name": "Plenitude On the Road",
+      "url": "https://www.plenitude.com/it-it/on-the-road/ricarica-pubblica/tariffe",
+      "segment": "mixed",
+      "status": "error",
+      "error": "HTTPSConnectionPool(host='www.plenitude.com', port=443): Max retries exceeded with url: /it-it/on-the-road/ricarica-pubblica/tariffe (Caused by NameResolutionError(\"HTTPSConnection(host='www.plenitude.com', port=443): Failed to resolve 'www.plenitude.com' ([Errno -5] No address associated with hostname)\"))"
+    },
+    {
+      "name": "A2A e-moving",
+      "url": "https://www.a2a.it/casa/mobilita-elettrica/ricarica-auto-elettrica/tariffe",
+      "segment": "mixed",
+      "status": "error",
+      "error": "404 Client Error: Not Found for url: https://www.a2a.it/casa/mobilita-elettrica/ricarica-auto-elettrica/tariffe"
+    },
+    {
+      "name": "IONITY",
+      "url": "https://ionity.eu/it/passport",
+      "segment": "hpc",
+      "status": "error",
+      "error": "404 Client Error: Not Found for url: https://www.ionity.eu/it/passport"
+    },
+    {
+      "name": "Tesla Supercharger",
+      "url": "https://www.tesla.com/it_it/supercharger",
+      "segment": "tesla",
+      "status": "error",
+      "error": "403 Client Error: Forbidden for url: https://www.tesla.com/it_it/supercharger"
+    }
+  ]
 }
