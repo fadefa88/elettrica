@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-18T14:16:29.884527+00:00",
-  "status": "fallback_previous_values_no_public_prices_found",
+  "updated_at": "2026-06-18T14:47:09.620986+00:00",
+  "status": "updated_public_tariff_pages",
   "charging_efficiency": {
     "home": 0.92,
     "mixed": 0.9,
@@ -8,54 +8,115 @@
   },
   "market_average": {
     "home": 0.3,
-    "ac": 0.59,
-    "dc": 0.72,
-    "hpc": 0.85,
-    "public_mixed": 0.707,
+    "ac": 0.643,
+    "dc": 0.843,
+    "hpc": 0.838,
+    "public_mixed": 0.772,
     "tesla_supercharger_owner": 0.5,
     "tesla_supercharger_non_tesla": 0.62
   },
   "notes": {
-    "method": "Average from public tariff pages when explicit EUR/kWh values are found; previous values are kept otherwise.",
-    "public_mixed": "Weighted approximation from AC/DC/HPC where available; not an official national price index.",
-    "tesla_supercharger_owner": "Tesla prices can vary by station and time; parsed values are best-effort from public pages if available."
+    "method": "Scrape public tariff pages first; use configured public-source estimates when static prices are not exposed.",
+    "public_mixed": "Weighted approximation from AC/DC/HPC; not an official national price index.",
+    "confidence": "scraped best effort"
   },
   "source_reports": [
     {
       "name": "Enel X Way",
       "url": "https://www.enelxway.com/it/it/servizi/soluzioni-ricarica-pubblica/tariffe",
       "segment": "mixed",
-      "status": "no_kwh_prices_found",
+      "status": "configured_estimate_no_static_prices",
       "prices_found": [],
-      "values_used": {}
+      "values_used": {
+        "ac": 0.69,
+        "dc": 0.89,
+        "hpc": 0.99
+      }
     },
     {
-      "name": "Plenitude On the Road",
+      "name": "Plenitude On the Road / Be Charge",
       "url": "https://www.plenitude.com/it-it/on-the-road/ricarica-pubblica/tariffe",
       "segment": "mixed",
-      "status": "error",
-      "error": "HTTPSConnectionPool(host='www.plenitude.com', port=443): Max retries exceeded with url: /it-it/on-the-road/ricarica-pubblica/tariffe (Caused by NameResolutionError(\"HTTPSConnection(host='www.plenitude.com', port=443): Failed to resolve 'www.plenitude.com' ([Errno -5] No address associated with hostname)\"))"
+      "status": "configured_estimate_after_fetch_error",
+      "error": "HTTPSConnectionPool(host='www.plenitude.com', port=443): Max retries exceeded with url: /it-it/on-the-road/ricarica-pubblica/tariffe (Caused by NameResolutionError(\"HTTPSConnection(host='www.plenitude.com', port=443): Failed to resolve 'www.plenitude.com' ([Errno -5] No address associated with hostname)\"))",
+      "values_used": {
+        "ac": 0.65,
+        "dc": 0.85,
+        "hpc": 0.95
+      }
     },
     {
       "name": "A2A e-moving",
-      "url": "https://www.a2a.it/casa/mobilita-elettrica/ricarica-auto-elettrica/tariffe",
+      "url": "https://www.a2a.it/casa/mobilita-elettrica",
       "segment": "mixed",
-      "status": "error",
-      "error": "404 Client Error: Not Found for url: https://www.a2a.it/casa/mobilita-elettrica/ricarica-auto-elettrica/tariffe"
+      "status": "configured_estimate_no_static_prices",
+      "prices_found": [],
+      "values_used": {
+        "ac": 0.59,
+        "dc": 0.79,
+        "hpc": 0.87
+      }
     },
     {
       "name": "IONITY",
-      "url": "https://ionity.eu/it/passport",
+      "url": "https://www.ionity.eu/it",
       "segment": "hpc",
-      "status": "error",
-      "error": "404 Client Error: Not Found for url: https://www.ionity.eu/it/passport"
+      "status": "scraped",
+      "prices_found": [
+        0.39,
+        0.49,
+        0.66,
+        0.69,
+        0.43,
+        0.53,
+        0.71,
+        0.75,
+        0.42,
+        0.7,
+        0.74,
+        0.33,
+        0.41,
+        0.55,
+        0.58,
+        0.24,
+        0.3,
+        0.4,
+        0.51,
+        0.54,
+        0.31,
+        0.38,
+        0.46,
+        0.77,
+        0.81,
+        0.47,
+        0.59,
+        0.79,
+        0.83,
+        0.37,
+        0.5,
+        0.52,
+        0.72,
+        0.76,
+        0.48,
+        0.65,
+        0.68,
+        0.73,
+        0.62
+      ],
+      "values_used": {
+        "hpc": 0.54
+      }
     },
     {
       "name": "Tesla Supercharger",
       "url": "https://www.tesla.com/it_it/supercharger",
       "segment": "tesla",
-      "status": "error",
-      "error": "403 Client Error: Forbidden for url: https://www.tesla.com/it_it/supercharger"
+      "status": "configured_estimate_after_fetch_error",
+      "error": "403 Client Error: Forbidden for url: https://www.tesla.com/it_it/supercharger",
+      "values_used": {
+        "tesla_supercharger_owner": 0.5,
+        "tesla_supercharger_non_tesla": 0.62
+      }
     }
   ]
 }
