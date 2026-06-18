@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
-"""Convert a cleaned Motornet Excel workbook back to cars_motornet.json.
+"""Convert a cleaned Motornet Excel workbook back to a slim cars_motornet.json.
 
-Default behavior is conservative:
-- Load the original JSON as base.
-- Match Excel rows by `id`.
-- Update only curated fields exported by audit_motornet_quality.py.
-- Ignore empty Excel cells unless --clear-empty is passed.
-- Preserve all raw/debug fields not present in the Excel file, including specs_raw.
+The output JSON intentionally contains only fields used by the frontend.
+Large scraping/debug fields such as specs_raw, image_source_url, image_bytes,
+source_site, fuel_code, fuel_original, year, powertrain and motornet_detail_url
+are not written.
 """
 from __future__ import annotations
 
 import argparse
-import copy
 import json
 import math
 from pathlib import Path
@@ -20,21 +17,14 @@ from typing import Any
 from openpyxl import load_workbook
 
 
-# Keep this list aligned with audit_motornet_quality.py.
-CURATED_COLUMNS = [
-    "issues",
-    "status",
-    "notes",
+SLIM_FIELDS = [
     "id",
     "category",
     "brand",
     "model",
     "version",
-    "powertrain",
     "fuel",
-    "year",
     "price_eur",
-    "price_source",
     "power_kw",
     "power_cv",
     "consumption_l_100km",
@@ -45,24 +35,10 @@ CURATED_COLUMNS = [
     "emissions_g_km",
     "image_url",
     "source_url",
-    "motornet_detail_url",
 ]
 
-TEXT_FIELDS = {
-    "category",
-    "brand",
-    "model",
-    "version",
-    "powertrain",
-    "fuel",
-    "price_source",
-    "image_url",
-    "source_url",
-    "motornet_detail_url",
-}
-
+TEXT_FIELDS = {"id", "category", "brand", "model", "version", "fuel", "image_url", "source_url"}
 NUMERIC_FIELDS = {
-    "year",
     "price_eur",
     "power_kw",
     "power_cv",
@@ -73,12 +49,19 @@ NUMERIC_FIELDS = {
     "range_wltp_km",
     "emissions_g_km",
 }
+IGNORED_FIELDS = {"issues", "status", "notes"}
 
-IGNORED_FIELDS = {
-    "issues",
-    "status",
-    "notes",
-    "id",
+FUEL_LABELS = {
+    "E": "elettrica",
+    "EH": "elettrica_idrogeno",
+    "B": "benzina",
+    "D": "diesel",
+    "IB": "ibrida_benzina",
+    "ID": "ibrida_diesel",
+    "G": "gpl",
+    "IG": "ibrida_gpl",
+    "M": "metano",
+    "IM": "ibrida_metano",
 }
 
 
@@ -131,28 +114,58 @@ def load_rows(path: Path, sheet_name: str) -> list[dict[str, Any]]:
 
 def load_base_json(path: Path | None) -> dict[str, Any]:
     if path is None:
-        return {"source": "motornet.it", "status": "ok", "schema": "cars_motornet_v1", "cars": []}
+        return {"source": "motornet.it", "status": "ok", "schema": "cars_motornet_slim_v1", "cars": []}
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict) or not isinstance(payload.get("cars"), list):
         raise SystemExit("Base JSON must be an object with cars[]")
     return payload
 
 
-def apply_row(car: dict[str, Any], row: dict[str, Any], clear_empty: bool) -> None:
-    editable_fields = TEXT_FIELDS | NUMERIC_FIELDS
-    unknown_fields = sorted(set(row.keys()) - set(CURATED_COLUMNS))
-    if unknown_fields:
-        # Unknown columns are intentionally ignored to avoid accidentally writing
-        # helper spreadsheet data back into frontend JSON.
-        pass
+def fuel_of(car: dict[str, Any]) -> str:
+    fuel = clean(car.get("fuel")).lower()
+    if fuel:
+        return fuel
+    code = clean(car.get("fuel_code")).upper()
+    if code in FUEL_LABELS:
+        return FUEL_LABELS[code]
+    return clean(car.get("fuel_original")).lower()
 
+
+def category_of(car: dict[str, Any]) -> str:
+    category = clean(car.get("category")).lower()
+    if category in {"electric", "thermal"}:
+        return category
+    fuel = fuel_of(car)
+    return "electric" if "elettr" in fuel else "thermal"
+
+
+def first_text(car: dict[str, Any], *keys: str) -> str:
+    for key in keys:
+        value = clean(car.get(key))
+        if value:
+            return value
+    return ""
+
+
+def first_number(car: dict[str, Any], *keys: str) -> float | int | None:
+    for key in keys:
+        value = parse_number(car.get(key))
+        if value is not None:
+            return value
+    return None
+
+
+def apply_excel_row(base: dict[str, Any], row: dict[str, Any], clear_empty: bool) -> dict[str, Any]:
+    car = dict(base)
     for field in TEXT_FIELDS:
-        if field not in row:
+        if field not in row or field in IGNORED_FIELDS:
             continue
         value = clean(row.get(field))
         if value or clear_empty:
-            car[field] = value
-
+            if value:
+                car[field] = value
+            else:
+                car.pop(field, None)
     for field in NUMERIC_FIELDS:
         if field not in row:
             continue
@@ -162,50 +175,68 @@ def apply_row(car: dict[str, Any], row: dict[str, Any], clear_empty: bool) -> No
         elif clear_empty:
             car.pop(field, None)
 
-    # Keep manual notes for traceability only; not used by frontend calculations.
-    note = clean(row.get("notes"))
-    status = clean(row.get("status"))
-    if note:
-        car["_excel_note"] = note
-    elif clear_empty:
-        car.pop("_excel_note", None)
-    if status:
-        car["_excel_status"] = status
-    elif clear_empty:
-        car.pop("_excel_status", None)
-
-    # Do not allow stale alternative consumption units to survive an explicit edit.
-    if "consumption_l_100km" in row and parse_number(row.get("consumption_l_100km")) is not None:
+    if parse_number(row.get("consumption_l_100km")) is not None:
         car.pop("consumption_kg_100km", None)
-    if "consumption_kg_100km" in row and parse_number(row.get("consumption_kg_100km")) is not None:
+    if parse_number(row.get("consumption_kg_100km")) is not None:
         car.pop("consumption_l_100km", None)
+    return car
+
+
+def slim_car(car: dict[str, Any]) -> dict[str, Any]:
+    slim: dict[str, Any] = {}
+    slim["id"] = first_text(car, "id")
+    slim["category"] = category_of(car)
+    slim["brand"] = first_text(car, "brand")
+    slim["model"] = first_text(car, "model")
+    slim["version"] = first_text(car, "version", "powertrain")
+    slim["fuel"] = fuel_of(car)
+
+    source_url = first_text(car, "source_url", "motornet_detail_url")
+    image_url = first_text(car, "image_url", "image_local_path", "image_source_url")
+    if source_url:
+        slim["source_url"] = source_url
+    if image_url:
+        slim["image_url"] = image_url
+
+    for field in NUMERIC_FIELDS:
+        value = first_number(car, field)
+        if value is not None:
+            slim[field] = value
+
+    return {key: value for key, value in slim.items() if value not in (None, "")}
 
 
 def build_json(rows: list[dict[str, Any]], base_payload: dict[str, Any], clear_empty: bool) -> dict[str, Any]:
-    payload = copy.deepcopy(base_payload)
-    cars = payload.setdefault("cars", [])
-    by_id = {clean(car.get("id")): car for car in cars if isinstance(car, dict) and clean(car.get("id"))}
+    base_cars = [car for car in base_payload.get("cars", []) if isinstance(car, dict)]
+    by_id = {clean(car.get("id")): car for car in base_cars if clean(car.get("id"))}
+
+    out_cars: list[dict[str, Any]] = []
+    seen: set[str] = set()
 
     for row in rows:
         car_id = clean(row.get("id"))
         if not car_id:
             continue
-        car = by_id.get(car_id)
-        if car is None:
-            car = {"id": car_id}
-            cars.append(car)
-            by_id[car_id] = car
-        apply_row(car, row, clear_empty=clear_empty)
+        base = by_id.get(car_id, {"id": car_id})
+        merged = apply_excel_row(base, row, clear_empty=clear_empty)
+        out_cars.append(slim_car(merged))
+        seen.add(car_id)
 
-    payload["status"] = payload.get("status") or "ok"
-    payload["schema"] = payload.get("schema") or "cars_motornet_v1"
-    payload["_excel_roundtrip"] = True
-    payload["_excel_curated_columns"] = CURATED_COLUMNS
-    return payload
+    for car in base_cars:
+        car_id = clean(car.get("id"))
+        if car_id and car_id not in seen:
+            out_cars.append(slim_car(car))
+
+    return {
+        "source": base_payload.get("source") or "motornet.it",
+        "status": "ok",
+        "schema": "cars_motornet_slim_v1",
+        "cars": out_cars,
+    }
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Convert cleaned Motornet Excel back to JSON.")
+    parser = argparse.ArgumentParser(description="Convert cleaned Motornet Excel back to slim JSON.")
     parser.add_argument("--excel", required=True, help="Excel workbook exported by audit_motornet_quality.py")
     parser.add_argument("--sheet", default="catalog", help="Worksheet name")
     parser.add_argument("--base-json", default="data/cars_motornet.json", help="Original JSON used as base")
