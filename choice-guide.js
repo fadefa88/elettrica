@@ -9,7 +9,7 @@
     km: 15000,
     years: 5,
     home: 80,
-    priority: "risparmio"
+    priority: "equilibrio"
   };
   let evItems = [];
   let iceItems = [];
@@ -116,11 +116,30 @@
   }
 
   function score(item, priority){
-    if(priority === "prezzo") return item.price;
-    if(priority === "autonomia") return -num(item.car.range_wltp_km, 0) + item.tco / 100000;
-    if(priority === "prestazioni") return -kw(item.car) + item.tco / 100000;
-    return item.tco;
+    if(priority === "spesa") return item.price;
+    if(priority === "risparmio") return item.tco;
+    if(priority === "autonomia"){
+      const range = isElectric(item.car) ? num(item.car && item.car.range_wltp_km, 0) : 0;
+      return range > 0 ? -range + item.tco / 100000 : item.tco;
+    }
+    if(priority === "potenza") return -kw(item.car) + item.tco / 100000;
+
+    // Miglior equilibrio: costo totale + prezzo iniziale, con bonus per autonomia e potenza.
+    const rangeBonus = isElectric(item.car) ? num(item.car && item.car.range_wltp_km, 0) * 35 : 0;
+    const powerBonus = kw(item.car) * 80;
+    return item.tco * 0.60 + item.price * 0.30 - rangeBonus - powerBonus;
   }
+
+  function priorityLabel(value){
+    return {
+      spesa: "Voglio spendere il meno possibile",
+      risparmio: "Voglio il maggiore risparmio nel tempo",
+      autonomia: "Voglio più autonomia",
+      potenza: "Voglio un’auto più potente",
+      equilibrio: "Voglio il miglior equilibrio"
+    }[value] || "Voglio il miglior equilibrio";
+  }
+
 
   function readInputs(){
     const min = byId("cgBudgetMin");
@@ -270,7 +289,7 @@
     }
 
     if(flowStep === 3){
-      body.innerHTML = '<p class="eyebrow">Priorità</p><h1>Cosa vuoi ottimizzare?</h1><p class="lead">Il sito ordina le proposte in base a questa priorità.</p><div class="cg-grid"><label>Priorità<select id="cgPriority"><option value="risparmio">Risparmio totale</option><option value="prezzo">Prezzo d’acquisto basso</option><option value="autonomia">Autonomia elettrica</option><option value="prestazioni">Prestazioni</option></select></label></div>';
+      body.innerHTML = '<p class="eyebrow">Priorità</p><h1>Cosa vuoi ottimizzare?</h1><p class="lead">Il sito ordina le proposte in base alla logica che scegli qui.</p><div class="cg-grid"><label>Priorità<select id="cgPriority"><option value="spesa">Voglio spendere il meno possibile</option><option value="risparmio">Voglio il maggiore risparmio nel tempo</option><option value="autonomia">Voglio più autonomia</option><option value="potenza">Voglio un’auto più potente</option><option value="equilibrio">Voglio il miglior equilibrio</option></select></label></div><div class="cg-budget-hint">“Miglior equilibrio” pesa insieme prezzo, costo totale, autonomia e potenza.</div>';
       setTimeout(function(){ if(byId("cgPriority")) byId("cgPriority").value = state.priority; },0);
       return;
     }
@@ -317,7 +336,7 @@
     let verdict = "";
     if(evItems[0] && iceItems[0]){
       const diff = iceItems[0].tco - evItems[0].tco;
-      verdict = '<div class="cg-verdict"><b>'+(diff >= 0 ? "La migliore elettrica costa meno nel periodo indicato." : "La migliore termica costa meno nel periodo indicato.")+'</b><span>Differenza stimata: '+euro0.format(Math.abs(diff))+' in '+state.years+' anni.</span></div>';
+      verdict = '<div class="cg-verdict"><b>'+(diff >= 0 ? "La migliore elettrica costa meno nel periodo indicato." : "La migliore termica costa meno nel periodo indicato.")+'</b><span>Differenza stimata: '+euro0.format(Math.abs(diff))+' in '+state.years+' anni.</span><span>Priorità: '+esc(priorityLabel(state.priority))+'</span></div>';
     }
 
     body.innerHTML = '<p class="eyebrow">Scelta</p><h1>Scegli una coppia da confrontare.</h1><p class="lead">Fascia budget: '+euro0.format(min)+' - '+euro0.format(max)+'. Dopo il finish arrivi allo stesso report del comparatore classico.</p>'+verdict+'<div class="cg-cols"><section><h3>Elettriche</h3>'+evItems.map(function(i){return renderCard(i,"ev");}).join("")+'</section><section><h3>Termiche</h3>'+iceItems.map(function(i){return renderCard(i,"ice");}).join("")+'</section></div>';
@@ -368,7 +387,7 @@
     callGlobal("calculate");
     callGlobal("drawSummary");
     closeGuide();
-    try{ eval("setStep")(7); }catch(e){}
+    try{ eval("setStep")(4); }catch(e){}
   }
 
   function injectEntry(){
