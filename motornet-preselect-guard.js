@@ -83,16 +83,33 @@
     });
   }
 
+  function loadChoiceGuide(){
+    if(window.__choiceGuideScriptRequested) return;
+    window.__choiceGuideScriptRequested = true;
+    function append(){
+      if(document.querySelector('script[src="choice-guide.js"]')) return;
+      const script = document.createElement('script');
+      script.src = 'choice-guide.js';
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', append);
+    else append();
+  }
+
   installLightSelectors();
+  loadChoiceGuide();
   setTimeout(bootNavigationEarly, 0);
   setTimeout(installLazyTriggers, 0);
   nativeAddEventListener('DOMContentLoaded', function(){
     installLightSelectors();
+    loadChoiceGuide();
     bootNavigationEarly();
     installLazyTriggers();
   });
   nativeAddEventListener('load', function(){
     installLightSelectors();
+    loadChoiceGuide();
     bootNavigationEarly();
     installLazyTriggers();
   });
