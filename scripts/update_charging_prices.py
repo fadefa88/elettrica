@@ -7,7 +7,7 @@ Italy. This script therefore uses a conservative approach:
 - extract only values clearly expressed as EUR/kWh;
 - group values by configured segment (AC, DC, HPC, Tesla);
 - update only segments with plausible values;
-- keep previous values when no reliable public value is found.
+- keep the file unchanged when no reliable public value is found.
 
 Sources can be overridden with CHARGING_PRICE_SOURCES_JSON, for example:
 [
@@ -45,12 +45,12 @@ DEFAULT_SOURCES = [
     },
     {
         "name": "A2A e-moving",
-        "url": "https://www.a2a.it/casa/mobilita-elettrica/ricarica-auto-elettrica/tariffe",
+        "url": "https://www.a2a.it/casa/mobilita-elettrica",
         "segment": "mixed",
     },
     {
         "name": "IONITY",
-        "url": "https://ionity.eu/it/passport",
+        "url": "https://www.ionity.eu/it",
         "segment": "hpc",
     },
     {
@@ -68,12 +68,10 @@ SEGMENT_KEYS = {
     "mixed": "public_mixed",
 }
 
-# Accept common Italian/European price formats close to an explicit kWh mention:
-# 0,59 €/kWh, € 0.59/kWh, 0.59 EUR/kWh, 59 cent/kWh.
 PRICE_PATTERNS = [
-    re.compile(r"(?P<value>\d{1,2}[\.,]\d{1,3})\s*(?:€|eur)\s*/?\s*kwh", re.I),
-    re.compile(r"(?:€|eur)\s*(?P<value>\d{1,2}[\.,]\d{1,3})\s*/?\s*kwh", re.I),
-    re.compile(r"(?P<value>\d{1,3})\s*(?:cent|centesimi)\s*/?\s*kwh", re.I),
+    re.compile(r"(?P<value>\d{1,2}[\.,]\d{1,3})\s*(?:€|eur|euro)\s*(?:/|al|per)?\s*kwh", re.I),
+    re.compile(r"(?:€|eur|euro)\s*(?P<value>\d{1,2}[\.,]\d{1,3})\s*(?:/|al|per)?\s*kwh", re.I),
+    re.compile(r"(?P<value>\d{1,3})\s*(?:cent|centesimi)\s*(?:/|al|per)?\s*kwh", re.I),
 ]
 
 
@@ -109,7 +107,6 @@ def extract_prices(text: str) -> list[float]:
             price = parse_price(raw, is_cent=is_cent)
             if price is not None:
                 prices.append(price)
-    # Deduplicate but keep deterministic order.
     out: list[float] = []
     for price in prices:
         if price not in out:
@@ -124,7 +121,6 @@ def classify_segment_prices(source: dict[str, str], prices: list[float]) -> dict
     values = sorted(prices)
 
     if segment == "mixed":
-        # Public pages often list AC/DC/HPC. Map low/mid/high when enough values exist.
         if len(values) >= 3:
             return {
                 "ac": values[0],
@@ -176,7 +172,7 @@ def fetch_source(source: dict[str, str]) -> tuple[dict[str, float], dict[str, An
             "prices_found": prices,
             "values_used": segment_values,
         }
-    except Exception as exc:  # keep workflow resilient
+    except Exception as exc:
         return {}, {
             "name": name,
             "url": url,
@@ -189,6 +185,7 @@ def fetch_source(source: dict[str, str]) -> tuple[dict[str, float], dict[str, An
 def load_payload(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {
+            "updated_at": datetime.now(timezone.utc).isoformat(),
             "status": "indicative_italy_seed",
             "charging_efficiency": {"home": 0.92, "mixed": 0.90, "public": 0.94},
             "market_average": {
@@ -209,7 +206,7 @@ def load_payload(path: Path) -> dict[str, Any]:
     return payload
 
 
-def update_payload(payload: dict[str, Any], sources: list[dict[str, str]]) -> dict[str, Any]:
+def update_payload(payload: dict[str, Any], sources: list[dict[str, str]]) -> tuple[dict[str, Any], bool]:
     market = dict(payload.get("market_average") or {})
     by_key: dict[str, list[float]] = {}
     source_reports: list[dict[str, Any]] = []
@@ -227,18 +224,21 @@ def update_payload(payload: dict[str, Any], sources: list[dict[str, str]]) -> di
             updated_values[key] = round(statistics.fmean(values), 3)
             market[key] = updated_values[key]
 
-    # Recompute public_mixed if AC/DC/HPC were discovered.
+    if not updated_values:
+        # Nothing reliable was found. Keep the JSON byte-for-byte stable except for
+        # stdout diagnostics, so the workflow does not create useless commits.
+        return payload, False
+
     public_parts = [market.get("ac"), market.get("dc"), market.get("hpc")]
     public_nums = [float(x) for x in public_parts if isinstance(x, (int, float)) and 0.15 <= float(x) <= 1.50]
     if public_nums:
-        # Weighted approximation: most public sessions are AC/DC, HPC less frequent.
         if len(public_nums) >= 3:
             market["public_mixed"] = round(public_nums[0] * 0.35 + public_nums[1] * 0.40 + public_nums[2] * 0.25, 3)
         else:
             market["public_mixed"] = round(statistics.fmean(public_nums), 3)
 
     payload["updated_at"] = datetime.now(timezone.utc).isoformat()
-    payload["status"] = "updated_public_tariff_pages" if updated_values else "fallback_previous_values_no_public_prices_found"
+    payload["status"] = "updated_public_tariff_pages"
     payload["market_average"] = market
     payload["source_reports"] = source_reports
     payload["notes"] = {
@@ -246,7 +246,7 @@ def update_payload(payload: dict[str, Any], sources: list[dict[str, str]]) -> di
         "public_mixed": "Weighted approximation from AC/DC/HPC where available; not an official national price index.",
         "tesla_supercharger_owner": "Tesla prices can vary by station and time; parsed values are best-effort from public pages if available.",
     }
-    return payload
+    return payload, True
 
 
 def main() -> int:
@@ -257,14 +257,17 @@ def main() -> int:
     out = Path(args.out)
     payload = load_payload(out)
     sources = load_sources()
-    payload = update_payload(payload, sources)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    payload, changed = update_payload(payload, sources)
+    if changed:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({
         "status": payload.get("status"),
+        "changed": changed,
         "updated_at": payload.get("updated_at"),
         "market_average": payload.get("market_average"),
-        "sources": payload.get("source_reports"),
+        "sources_checked": sources,
+        "note": "No reliable public EUR/kWh values found; charging.json kept unchanged." if not changed else "charging.json updated from public tariff pages."
     }, indent=2, ensure_ascii=False))
     return 0
 
