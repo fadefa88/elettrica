@@ -16,14 +16,16 @@ on:
         required: false
         default: 0
         type: number
-      input_dir:
-        description: "Cartella immagini Motornet"
+      final_quality:
+        description: "Qualità WEBP finale. Consigliato 70-85"
         required: false
-        default: "assets/cars/motornet"
-      output_dir:
-        description: "Cartella PNG generati"
+        default: 80
+        type: number
+      final_max_side:
+        description: "Lato massimo immagine finale in px. 0 = nessun resize"
         required: false
-        default: "assets/cars/motornet_processed"
+        default: 1600
+        type: number
 
 permissions:
   contents: write
@@ -62,14 +64,36 @@ jobs:
       - name: Resolve inputs
         id: vars
         shell: bash
+        env:
+          LIMIT_INPUT: ${{ inputs.limit }}
+          FORCE_INPUT: ${{ inputs.force }}
+          FINAL_QUALITY_INPUT: ${{ inputs.final_quality }}
+          FINAL_MAX_SIDE_INPUT: ${{ inputs.final_max_side }}
         run: |
-          LIMIT="${{ github.event.inputs.limit || '0' }}"
-          FORCE="${{ github.event.inputs.force || 'false' }}"
-          INPUT_DIR="${{ github.event.inputs.input_dir || 'assets/cars/motornet' }}"
-          OUTPUT_DIR="${{ github.event.inputs.output_dir || 'assets/cars/motornet_processed' }}"
+          INPUT_DIR="assets/cars/motornet"
+          OUTPUT_DIR="assets/cars/motornet_processed"
+          LIMIT="${LIMIT_INPUT:-0}"
+          FORCE="${FORCE_INPUT:-false}"
+          FINAL_QUALITY="${FINAL_QUALITY_INPUT:-80}"
+          FINAL_MAX_SIDE="${FINAL_MAX_SIDE_INPUT:-1600}"
 
           if [[ ! "$LIMIT" =~ ^[0-9]+$ ]]; then
             echo "Invalid limit: $LIMIT. Use 0 or a positive integer."
+            exit 1
+          fi
+
+          if [[ "$FORCE" != "true" && "$FORCE" != "false" ]]; then
+            echo "Invalid force: $FORCE. Use true or false."
+            exit 1
+          fi
+
+          if [[ ! "$FINAL_QUALITY" =~ ^[0-9]+$ ]] || [ "$FINAL_QUALITY" -lt 1 ] || [ "$FINAL_QUALITY" -gt 100 ]; then
+            echo "Invalid final_quality: $FINAL_QUALITY. Use an integer from 1 to 100."
+            exit 1
+          fi
+
+          if [[ ! "$FINAL_MAX_SIDE" =~ ^[0-9]+$ ]]; then
+            echo "Invalid final_max_side: $FINAL_MAX_SIDE. Use 0 or a positive integer."
             exit 1
           fi
 
@@ -77,12 +101,16 @@ jobs:
           echo "force=$FORCE"
           echo "input_dir=$INPUT_DIR"
           echo "output_dir=$OUTPUT_DIR"
+          echo "final_quality=$FINAL_QUALITY"
+          echo "final_max_side=$FINAL_MAX_SIDE"
 
           {
             echo "limit=$LIMIT"
             echo "force=$FORCE"
             echo "input_dir=$INPUT_DIR"
             echo "output_dir=$OUTPUT_DIR"
+            echo "final_quality=$FINAL_QUALITY"
+            echo "final_max_side=$FINAL_MAX_SIDE"
           } >> "$GITHUB_OUTPUT"
 
       - name: Process images
@@ -93,7 +121,9 @@ jobs:
             --background "assets/sfondopippo.jpg" \
             --logo "assets/logopippo.png" \
             --force "${{ steps.vars.outputs.force }}" \
-            --limit "${{ steps.vars.outputs.limit }}"
+            --limit "${{ steps.vars.outputs.limit }}" \
+            --final-quality "${{ steps.vars.outputs.final_quality }}" \
+            --final-max-side "${{ steps.vars.outputs.final_max_side }}"
 
       - name: Commit generated images if any
         run: |
