@@ -15,17 +15,17 @@ on:
         description: "Numero massimo immagini da ispezionare/processare. 0 = tutte"
         required: false
         default: 0
-        type: number
+        type: string
       final_quality:
         description: "Qualità WEBP finale. Consigliato 70-85"
         required: false
         default: 80
-        type: number
+        type: string
       final_max_side:
         description: "Lato massimo immagine finale in px. 0 = nessun resize"
         required: false
         default: 1600
-        type: number
+        type: string
       mirror:
         description: "Specchia orizzontalmente la macchina"
         required: false
