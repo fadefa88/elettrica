@@ -1,11 +1,32 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import argparse, sys
+import argparse
+import sys
+
 from PIL import Image, ImageOps
 import rembg
 from rembg import new_session
 
 EXT = {".jpg", ".jpeg", ".png", ".webp"}
+
+
+def parse_bool(value):
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def parse_limit(value):
+    raw = "0" if value is None else str(value).strip()
+    if raw == "":
+        return 0
+    try:
+        limit = int(raw)
+    except ValueError:
+        raise SystemExit(f"invalid --limit value: {value!r}. Use an integer, where 0 = all.")
+    if limit < 0:
+        raise SystemExit(f"invalid --limit value: {value!r}. Use 0 or a positive integer.")
+    return limit
 
 
 def im(p):
@@ -52,9 +73,12 @@ a.add_argument("--output-dir", default="assets/cars/motornet_processed")
 a.add_argument("--background", default="assets/sfondopippo.jpg")
 a.add_argument("--logo", default="assets/logopippo.png")
 a.add_argument("--force", default="false")
-a.add_argument("--limit", type=int, default=0)
+a.add_argument("--limit", default="0", help="Maximum number of source images to inspect/process. 0 = all.")
 a.add_argument("--logo-position", choices=["top-right", "top-left", "bottom-right", "bottom-left"], default="top-right")
 args = a.parse_args()
+
+force = parse_bool(args.force)
+limit = parse_limit(args.limit)
 
 src_dir = Path(args.input_dir)
 out_dir = Path(args.output_dir)
@@ -66,9 +90,16 @@ if not src_dir.exists():
 if not bg_path.exists():
     raise SystemExit(f"missing background file: {bg_path}")
 
-files = sorted(p for p in src_dir.rglob("*") if p.is_file() and p.suffix.lower() in EXT)
-if args.limit > 0:
-    files = files[:args.limit]
+all_files = sorted(p for p in src_dir.rglob("*") if p.is_file() and p.suffix.lower() in EXT)
+files = all_files[:limit] if limit > 0 else all_files
+
+print(f"input_dir={src_dir}")
+print(f"output_dir={out_dir}")
+print(f"force={force}")
+print(f"limit={limit} (0 means all)")
+print(f"source_images_found={len(all_files)}")
+print(f"source_images_selected={len(files)}")
+
 if not files:
     print("no images")
     raise SystemExit(0)
@@ -76,16 +107,23 @@ if not files:
 bg = im(bg_path)
 logo = im(logo_path)
 session = new_session("u2net")
-done = skip = fail = 0
+done = skip = fail = inspected = 0
 
 for n, src in enumerate(files, 1):
+    # Defensive hard stop: even if future edits alter the file selection above,
+    # a manual run with --limit 1 can never inspect/process more than one source image.
+    if limit > 0 and inspected >= limit:
+        print(f"limit reached: inspected={inspected}, limit={limit}")
+        break
+
+    inspected += 1
     rel = src.relative_to(src_dir).with_suffix(".png")
     cut_path = out_dir / "cutout" / rel
     final_path = out_dir / "final" / rel
     cut_path.parent.mkdir(parents=True, exist_ok=True)
     final_path.parent.mkdir(parents=True, exist_ok=True)
 
-    if args.force.lower() != "true" and cut_path.exists() and final_path.exists():
+    if not force and cut_path.exists() and final_path.exists():
         skip += 1
         print(f"[{n}/{len(files)}] skip {src}")
         continue
@@ -117,5 +155,5 @@ for n, src in enumerate(files, 1):
         fail += 1
         print(f"[{n}/{len(files)}] ERROR {src}: {e}", file=sys.stderr)
 
-print(f"done={done} skipped={skip} failed={fail}")
+print(f"inspected={inspected} done={done} skipped={skip} failed={fail}")
 raise SystemExit(1 if fail else 0)
