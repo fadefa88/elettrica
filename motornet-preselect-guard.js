@@ -6,8 +6,9 @@
 
   function byId(id){ return document.getElementById(id); }
 
-  // motornet-catalog.js registers a load listener that starts the huge JSON fetch/parse.
-  // Capture it here and run it only when the user reaches the car-selection steps.
+  // motornet-catalog.js registers a load listener that starts the old runtime normalizer.
+  // Capture it, but do not execute it: the Motornet catalogue must be loaded from
+  // data/cars_motornet.json as-is, without brand maps, URL/code inference or derived fields.
   window.addEventListener = function(type, listener, options){
     try {
       if(type === 'load' && typeof listener === 'function' && String(listener).includes('applyCatalog')){
@@ -19,15 +20,31 @@
     return nativeAddEventListener(type, listener, options);
   };
 
+  function loadJsonOnlyCatalog(){
+    if(window.__motornetJsonOnlyApplied && typeof window.__motornetApplyJsonOnly === 'function'){
+      try { window.__motornetApplyJsonOnly(); } catch(e) {}
+      return;
+    }
+    if(window.__motornetJsonOnlyScriptRequested) return;
+    window.__motornetJsonOnlyScriptRequested = true;
+    const script = document.createElement('script');
+    script.src = 'motornet-json-only-loader.js?v=20260622-json-only';
+    script.defer = true;
+    script.onload = function(){
+      try { if(typeof window.__motornetApplyJsonOnly === 'function') window.__motornetApplyJsonOnly(); } catch(e) {}
+    };
+    script.onerror = function(){
+      console.error('[motornet-preselect-guard] Unable to load motornet-json-only-loader.js');
+    };
+    document.body.appendChild(script);
+  }
+
   function requestCatalogLoad(){
     if(catalogRequested) return;
     catalogRequested = true;
-    const fn = catalogLoadListener || window.__motornetDeferredCatalogLoad;
-    if(typeof fn === 'function'){
-      setTimeout(function(){
-        try { fn.call(window, new Event('load')); } catch(e) {}
-      }, 0);
-    }
+    // Do not call catalogLoadListener / __motornetDeferredCatalogLoad here.
+    // That old path normalizes brands/models from Motornet codes. Use JSON-only loader instead.
+    loadJsonOnlyCatalog();
   }
   window.__motornetRequestCatalogLoad = requestCatalogLoad;
 
