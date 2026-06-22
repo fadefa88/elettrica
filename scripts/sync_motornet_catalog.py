@@ -15,6 +15,8 @@ from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeo
 import import_motornet as base
 import import_motornet_resume as resume
 
+IGNORED_BRAND_CODES = {"COR"}
+
 
 def bool_arg(value: object) -> bool:
     return str(value).strip().lower() in {"1", "true", "yes", "si", "sì", "on"}
@@ -29,14 +31,61 @@ def car_url(car: dict[str, Any]) -> str:
     return canonical_url(car.get("source_url") or car.get("motornet_detail_url"))
 
 
+def brand_code_from_brand_url(value: object) -> str:
+    text = canonical_url(value)
+    if not text:
+        return ""
+    return text.rstrip("/").split("/")[-1].strip().upper()
+
+
+def is_ignored_brand_code(value: object) -> bool:
+    return str(value or "").strip().upper() in IGNORED_BRAND_CODES
+
+
+def is_ignored_brand_url(value: object) -> bool:
+    return is_ignored_brand_code(brand_code_from_brand_url(value))
+
+
+def is_ignored_detail_url(value: object) -> bool:
+    code = resume.brand_code_from_detail_url(canonical_url(value))
+    return is_ignored_brand_code(code)
+
+
+def is_ignored_car(car: dict[str, Any]) -> bool:
+    brand = base.clean(car.get("brand")).upper()
+    url = car_url(car)
+    if is_ignored_brand_code(brand):
+        return True
+    if is_ignored_detail_url(url):
+        return True
+    return False
+
+
+def filter_ignored_brand_urls(urls: list[str]) -> list[str]:
+    filtered = []
+    skipped = 0
+    for url in urls:
+        if is_ignored_brand_url(url):
+            skipped += 1
+            continue
+        filtered.append(url)
+    if skipped:
+        print(f"Ignored brand URLs: {skipped} codes={sorted(IGNORED_BRAND_CODES)}")
+    return filtered
+
+
 def load_existing_catalog(path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     if not path.exists():
         return [], [], {}
     payload = json.loads(path.read_text(encoding="utf-8") or "{}")
     cars = payload.get("cars") or []
     errors = payload.get("errors") or []
+    valid_cars = [car for car in cars if isinstance(car, dict) and not is_ignored_car(car)]
+    skipped = len([car for car in cars if isinstance(car, dict)]) - len(valid_cars)
+    if skipped:
+        print(f"Ignored existing cars from skipped brand codes: {skipped} codes={sorted(IGNORED_BRAND_CODES)}")
     return (
-        [car for car in cars if isinstance(car, dict)],
+        valid_cars,
         [err for err in errors if isinstance(err, dict)],
         payload if isinstance(payload, dict) else {},
     )
@@ -45,6 +94,8 @@ def load_existing_catalog(path: Path) -> tuple[list[dict[str, Any]], list[dict[s
 def dedupe_keep_last(cars: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     by_url: dict[str, dict[str, Any]] = {}
     for car in cars:
+        if is_ignored_car(car):
+            continue
         url = car_url(car)
         if url:
             by_url[url] = car
@@ -57,9 +108,9 @@ def build_brand_urls(page, args, robots, errors: list[dict[str, Any]]) -> tuple[
         urls = [
             f"{base.BASE}/auto/scheda-modello/{code.strip().upper()}"
             for code in args.brand_codes.split(",")
-            if code.strip()
+            if code.strip() and not is_ignored_brand_code(code)
         ]
-        return urls, requests_count
+        return filter_ignored_brand_urls(urls), requests_count
 
     if not base.can_fetch(robots, base.LIST_URL):
         errors.append({"url": base.LIST_URL, "error": "blocked_by_robots"})
@@ -73,7 +124,7 @@ def build_brand_urls(page, args, robots, errors: list[dict[str, Any]]) -> tuple[
     if not urls:
         print("  automatic brand discovery returned 0 links; using known brand code fallback")
         urls = [f"{base.BASE}/auto/scheda-modello/{code}" for code in resume.extended_brand_codes()]
-    return urls, requests_count
+    return filter_ignored_brand_urls(urls), requests_count
 
 
 def discover_active_detail_urls(page, brand_urls: list[str], args, robots, errors: list[dict[str, Any]]) -> tuple[list[str], int]:
@@ -82,6 +133,9 @@ def discover_active_detail_urls(page, brand_urls: list[str], args, robots, error
     requests_count = 0
 
     for brand_url in brand_urls:
+        if is_ignored_brand_url(brand_url):
+            print("SKIP ignored brand", brand_url)
+            continue
         if not base.can_fetch(robots, brand_url):
             errors.append({"url": brand_url, "error": "blocked_by_robots"})
             continue
@@ -106,6 +160,8 @@ def discover_active_detail_urls(page, brand_urls: list[str], args, robots, error
             print("  active detail links:", len(detail_links))
             for detail_url in detail_links:
                 url = canonical_url(detail_url)
+                if is_ignored_detail_url(url):
+                    continue
                 if url and url not in seen:
                     seen.add(url)
                     active.append(url)
@@ -116,6 +172,9 @@ def discover_active_detail_urls(page, brand_urls: list[str], args, robots, error
 
 
 def parse_new_car(page, detail_url: str, brand_name: str, args, robots, image_session, errors: list[dict[str, Any]]) -> tuple[dict[str, Any] | None, bool]:
+    if is_ignored_detail_url(detail_url):
+        print("SKIP ignored detail", detail_url)
+        return None, False
     if not base.can_fetch(robots, detail_url):
         errors.append({"url": detail_url, "error": "blocked_by_robots"})
         return None, False
@@ -127,7 +186,7 @@ def parse_new_car(page, detail_url: str, brand_name: str, args, robots, image_se
         page.wait_for_timeout(2000)
 
     car = base.parse_detail(page, detail_url, brand_name)
-    if not car:
+    if not car or is_ignored_car(car):
         return None, False
 
     downloaded = False
@@ -204,6 +263,7 @@ def main() -> int:
 
         active_urls, count = discover_active_detail_urls(page, brand_urls, args, robots, errors)
         requests_count += count
+        active_urls = [url for url in active_urls if not is_ignored_detail_url(url)]
         print("Active Motornet detail URLs:", len(active_urls))
 
         if full_catalog_scan and len(active_urls) < args.min_active_links:
@@ -226,7 +286,7 @@ def main() -> int:
         elif args.remove_missing and not full_catalog_scan:
             print("Limited brand run: deletion disabled outside full-catalog scans.")
 
-        new_urls = [url for url in active_urls if url not in existing_by_url]
+        new_urls = [url for url in active_urls if url not in existing_by_url and not is_ignored_detail_url(url)]
         if args.new_limit > 0:
             new_urls = new_urls[: args.new_limit]
         print("New URLs to parse:", len(new_urls))
@@ -236,6 +296,9 @@ def main() -> int:
         brand_name_cache: dict[str, str] = {}
         for index, detail_url in enumerate(new_urls, start=1):
             brand_code = resume.brand_code_from_detail_url(detail_url)
+            if is_ignored_brand_code(brand_code):
+                print("SKIP ignored brand code", brand_code, detail_url)
+                continue
             brand_name = ""
             if brand_code:
                 brand_url = f"{base.BASE}/auto/scheda-modello/{brand_code}"
@@ -254,7 +317,7 @@ def main() -> int:
                 time.sleep(args.delay)
                 car, downloaded = parse_new_car(page, detail_url, brand_name, args, robots, image_session, errors)
                 requests_count += 1
-                if car:
+                if car and not is_ignored_car(car):
                     parsed_new[canonical_url(car.get("source_url") or detail_url)] = car
                     images_downloaded += int(downloaded)
                     print(f"  + [{index}/{len(new_urls)}] {car.get('brand')} {car.get('model')} price={car.get('price_eur')}")
@@ -267,11 +330,11 @@ def main() -> int:
         cars_by_url.update(parsed_new)
 
         # Preserve Motornet list order for stable frontend dropdowns and deterministic diffs.
-        ordered_cars = [cars_by_url[url] for url in active_urls if url in cars_by_url]
+        ordered_cars = [cars_by_url[url] for url in active_urls if url in cars_by_url and not is_ignored_car(cars_by_url[url])]
         if not full_catalog_scan:
             touched = set(active_urls)
-            untouched = [car for url, car in cars_by_url.items() if url not in touched]
-            ordered_cars = untouched + [cars_by_url[url] for url in active_urls if url in cars_by_url]
+            untouched = [car for url, car in cars_by_url.items() if url not in touched and not is_ignored_car(car)]
+            ordered_cars = untouched + [cars_by_url[url] for url in active_urls if url in cars_by_url and not is_ignored_car(cars_by_url[url])]
 
         context.close()
         browser.close()
@@ -291,6 +354,7 @@ def main() -> int:
         "existing_unique_urls_before": len(existing_by_url),
         "new_added": len(parsed_new),
         "removed_missing_from_motornet": len(removed_urls),
+        "ignored_brand_codes": sorted(IGNORED_BRAND_CODES),
         "new_limit": args.new_limit,
         "remove_missing": bool(args.remove_missing and full_catalog_scan),
     }
