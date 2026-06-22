@@ -948,8 +948,8 @@
       "power_cv": 665,
       "consumption_l_100km": 12.3,
       "emissions_g_km": 279,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1875/allestimento/AST0503",
-      "image_url": "assets/cars/motornet/Aston_Martin_Vantage_Roadster_4.0_V8_Auto.webp"
+      "image_url": "assets/cars/motornet/Aston_Martin_Vantage_Roadster_4.0_V8_Auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1875/allestimento/AST0503"
     },
     {
       "id": "motornet_ac05978e4f4a5b",
@@ -963,8 +963,8 @@
       "power_cv": 680,
       "consumption_l_100km": 12.1,
       "emissions_g_km": 274,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1875/allestimento/AST0507",
-      "image_url": "assets/cars/motornet/Aston_Martin_Vantage_Roadster_4.0_V8_S_Auto.webp"
+      "image_url": "assets/cars/motornet/Aston_Martin_Vantage_Roadster_4.0_V8_S_Auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1875/allestimento/AST0507"
     },
     {
       "id": "motornet_2e0da311a0e5be",
@@ -1068,8 +1068,8 @@
       "power_cv": 835,
       "consumption_l_100km": 13.7,
       "emissions_g_km": 312,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1873/allestimento/AST0511",
-      "image_url": "assets/cars/motornet/Aston_Martin_Vanquish_Volante_5.2_V12_Auto_4p.ti.webp"
+      "image_url": "assets/cars/motornet/Aston_Martin_Vanquish_Volante_5.2_V12_Auto_4p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1873/allestimento/AST0511"
     },
     {
       "id": "motornet_5f445c77954075",
@@ -1128,8 +1128,8 @@
       "power_cv": 727,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 323,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2749/allestimento/AST0505",
-      "image_url": "assets/cars/motornet/Aston_Martin_DBX_S_4.0_V8_Auto.webp"
+      "image_url": "assets/cars/motornet/Aston_Martin_DBX_S_4.0_V8_Auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2749/allestimento/AST0505"
     },
     {
       "id": "motornet_bab4d2609776d0",
@@ -4902,8 +4902,8 @@
       "battery_kwh": 67.2,
       "range_wltp_km": 439,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD167F",
-      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_Custom_Edition_204cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_Custom_Edition_204cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD167F"
     },
     {
       "id": "motornet_4b566bd52c43d4",
@@ -4919,8 +4919,8 @@
       "battery_kwh": 90.6,
       "range_wltp_km": 577,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD168F",
-      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_Business_286cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_Business_286cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD168F"
     },
     {
       "id": "motornet_cdf7aa318ec5f2",
@@ -4936,8 +4936,8 @@
       "battery_kwh": 90.6,
       "range_wltp_km": 577,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD169F",
-      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_Business_Advanced_286cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_Business_Advanced_286cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD169F"
     },
     {
       "id": "motornet_d94f022e36f254",
@@ -4953,8 +4953,8 @@
       "battery_kwh": 87.6,
       "range_wltp_km": 541,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD172F",
-      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_Business_Advanced_quattro_340cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_Business_Advanced_quattro_340cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD172F"
     },
     {
       "id": "motornet_5f93da95307aa5",
@@ -4970,8 +4970,8 @@
       "battery_kwh": 87.6,
       "range_wltp_km": 541,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD171F",
-      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_Business_quattro_340cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_Business_quattro_340cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD171F"
     },
     {
       "id": "motornet_3768e263299ea1",
@@ -4987,8 +4987,8 @@
       "battery_kwh": 90.6,
       "range_wltp_km": 577,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD170F",
-      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_S_line_286cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_S_line_286cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD170F"
     },
     {
       "id": "motornet_faa832d009e118",
@@ -5004,8 +5004,8 @@
       "battery_kwh": 87.6,
       "range_wltp_km": 541,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD173F",
-      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_S_line_quattro_340cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_e-tron_performance_S_line_quattro_340cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2297/allestimento/AUD173F"
     },
     {
       "id": "motornet_c9ffee103893a1",
@@ -5021,8 +5021,8 @@
       "battery_kwh": 67.1,
       "range_wltp_km": 450,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD174F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_Business_204cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_Business_204cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD174F"
     },
     {
       "id": "motornet_8755c83a1da8ba",
@@ -5038,8 +5038,8 @@
       "battery_kwh": 67.1,
       "range_wltp_km": 450,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD175F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_Business_Advanced_204cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_Business_Advanced_204cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD175F"
     },
     {
       "id": "motornet_daca765f0f9feb",
@@ -5055,8 +5055,8 @@
       "battery_kwh": 90,
       "range_wltp_km": 592,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD177F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_Business_286cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_Business_286cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD177F"
     },
     {
       "id": "motornet_32e5e8b807c459",
@@ -5072,8 +5072,8 @@
       "battery_kwh": 90,
       "range_wltp_km": 592,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD178F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_Business_Advanced_286cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_Business_Advanced_286cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD178F"
     },
     {
       "id": "motornet_0bcd54b543f6d3",
@@ -5089,8 +5089,8 @@
       "battery_kwh": 87.5,
       "range_wltp_km": 554,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD181F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_Business_Advanced_quattro_340cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_Business_Advanced_quattro_340cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD181F"
     },
     {
       "id": "motornet_3ff2c9499b212d",
@@ -5106,8 +5106,8 @@
       "battery_kwh": 87.5,
       "range_wltp_km": 554,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD180F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_Business_quattro_340cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_Business_quattro_340cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD180F"
     },
     {
       "id": "motornet_a305c99693b12d",
@@ -5123,8 +5123,8 @@
       "battery_kwh": 90,
       "range_wltp_km": 592,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD179F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_S_line_286cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_S_line_286cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD179F"
     },
     {
       "id": "motornet_89a6ac70588871",
@@ -5140,8 +5140,8 @@
       "battery_kwh": 87.5,
       "range_wltp_km": 554,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD182F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_S_line_quattro_340cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_performance_S_line_quattro_340cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD182F"
     },
     {
       "id": "motornet_8785b255861f74",
@@ -5157,8 +5157,8 @@
       "battery_kwh": 67.1,
       "range_wltp_km": 450,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD176F",
-      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_S_line_204cv.webp"
+      "image_url": "assets/cars/motornet/Audi_Q4_Sportback_e-tron_S_line_204cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2318/allestimento/AUD176F"
     },
     {
       "id": "motornet_3c89c4c953a54e",
@@ -11029,8 +11029,8 @@
       "power_cv": 400,
       "consumption_l_100km": 8,
       "emissions_g_km": 181,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW526E",
-      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_Design_Pure_Excellence_Steptronic.webp"
+      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_Design_Pure_Excellence_Steptronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW526E"
     },
     {
       "id": "motornet_71b1841507ae7e",
@@ -11044,8 +11044,8 @@
       "power_cv": 400,
       "consumption_l_100km": 8,
       "emissions_g_km": 181,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW529E",
-      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_Design_Pure_Excellence_Premiere_Collection_Steptronic.webp"
+      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_Design_Pure_Excellence_Premiere_Collection_Steptronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW529E"
     },
     {
       "id": "motornet_8c7cae144a7ca9",
@@ -11059,8 +11059,8 @@
       "power_cv": 400,
       "consumption_l_100km": 8,
       "emissions_g_km": 181,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW527E",
-      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_MSport_Steptronic.webp"
+      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_MSport_Steptronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW527E"
     },
     {
       "id": "motornet_f0e036ce2cdaf1",
@@ -11074,8 +11074,8 @@
       "power_cv": 400,
       "consumption_l_100km": 8,
       "emissions_g_km": 181,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW530E",
-      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_MSport_Premiere_Collection_Steptronic.webp"
+      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_MSport_Premiere_Collection_Steptronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW530E"
     },
     {
       "id": "motornet_418ced9df90fac",
@@ -11089,8 +11089,8 @@
       "power_cv": 400,
       "consumption_l_100km": 8,
       "emissions_g_km": 181,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW528E",
-      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_MSport_Pro_Steptronic.webp"
+      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_MSport_Pro_Steptronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW528E"
     },
     {
       "id": "motornet_1f298fc5ef68bf",
@@ -11104,8 +11104,8 @@
       "power_cv": 400,
       "consumption_l_100km": 8,
       "emissions_g_km": 181,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW531E",
-      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_MSport_Pro_Premiere_Collection_Steptronic.webp"
+      "image_url": "assets/cars/motornet/BMW_Serie_7_740_xDrive_MSport_Pro_Premiere_Collection_Steptronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2395/allestimento/BMW531E"
     },
     {
       "id": "motornet_3b6b3283800f30",
@@ -11121,8 +11121,8 @@
       "battery_kwh": 127.6,
       "range_wltp_km": 686,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW544E",
-      "image_url": "assets/cars/motornet/BMW_i7_M70.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_M70.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW544E"
     },
     {
       "id": "motornet_a9b2f21c26144b",
@@ -11138,8 +11138,8 @@
       "battery_kwh": 127.6,
       "range_wltp_km": 686,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW545E",
-      "image_url": "assets/cars/motornet/BMW_i7_M70_MPA_Premiere_Collection.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_M70_MPA_Premiere_Collection.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW545E"
     },
     {
       "id": "motornet_cc106375c8e429",
@@ -11155,8 +11155,8 @@
       "battery_kwh": 127.2,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW532E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_Design_Pure_Excellence.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_Design_Pure_Excellence.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW532E"
     },
     {
       "id": "motornet_01362bc1fe1042",
@@ -11172,8 +11172,8 @@
       "battery_kwh": 127.2,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW535E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_Design_Pure_Excellence_Premiere_Collection.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_Design_Pure_Excellence_Premiere_Collection.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW535E"
     },
     {
       "id": "motornet_af9284a5956fd4",
@@ -11189,8 +11189,8 @@
       "battery_kwh": 127.2,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW533E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_MSport.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_MSport.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW533E"
     },
     {
       "id": "motornet_4d0c8f80903d1d",
@@ -11206,8 +11206,8 @@
       "battery_kwh": 127.2,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW536E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_MSport_Premiere_Collection.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_MSport_Premiere_Collection.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW536E"
     },
     {
       "id": "motornet_ba27f0e6fa30fb",
@@ -11223,8 +11223,8 @@
       "battery_kwh": 127.2,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW534E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_MSport_Pro.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_MSport_Pro.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW534E"
     },
     {
       "id": "motornet_31d7eccd25f385",
@@ -11240,8 +11240,8 @@
       "battery_kwh": 127.2,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW537E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_MSport_Pro_Premiere_Collection.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive50_MSport_Pro_Premiere_Collection.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW537E"
     },
     {
       "id": "motornet_55c9e29bf90eb8",
@@ -11257,8 +11257,8 @@
       "battery_kwh": 128,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW538E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_Design_Pure_Excellence.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_Design_Pure_Excellence.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW538E"
     },
     {
       "id": "motornet_24dbff23ff540a",
@@ -11274,8 +11274,8 @@
       "battery_kwh": 128,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW541E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_Design_Pure_Excellence_Premiere_Collection.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_Design_Pure_Excellence_Premiere_Collection.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW541E"
     },
     {
       "id": "motornet_932c079bc41a05",
@@ -11291,8 +11291,8 @@
       "battery_kwh": 128,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW539E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_MSport.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_MSport.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW539E"
     },
     {
       "id": "motornet_be765e7b75a593",
@@ -11308,8 +11308,8 @@
       "battery_kwh": 128,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW542E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_MSport_Premiere_Collection.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_MSport_Premiere_Collection.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW542E"
     },
     {
       "id": "motornet_dc7473f1ba3938",
@@ -11325,8 +11325,8 @@
       "battery_kwh": 128,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW540E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_MSport_Pro.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_MSport_Pro.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW540E"
     },
     {
       "id": "motornet_e363d0c8eaf108",
@@ -11342,8 +11342,8 @@
       "battery_kwh": 128,
       "range_wltp_km": 727,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW543E",
-      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_MSport_Pro_Premiere_Collection.webp"
+      "image_url": "assets/cars/motornet/BMW_i7_xDrive60_MSport_Pro_Premiere_Collection.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2615/allestimento/BMW543E"
     },
     {
       "id": "motornet_52bbeb80d91e78",
@@ -13251,8 +13251,8 @@
       "power_cv": 95,
       "consumption_l_100km": 2.6,
       "emissions_g_km": 60,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2858/allestimento/BYD0044",
-      "image_url": "assets/cars/motornet/Byd_Dolphin_G_DM-i_1.5_175cv_Active.webp"
+      "image_url": "assets/cars/motornet/Byd_Dolphin_G_DM-i_1.5_175cv_Active.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2858/allestimento/BYD0044"
     },
     {
       "id": "motornet_f8677248dac882",
@@ -13266,8 +13266,8 @@
       "power_cv": 95,
       "consumption_l_100km": 1.4,
       "emissions_g_km": 32,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2858/allestimento/BYD0045",
-      "image_url": "assets/cars/motornet/Byd_Dolphin_G_DM-i_1.5_212cv_Boost.webp"
+      "image_url": "assets/cars/motornet/Byd_Dolphin_G_DM-i_1.5_212cv_Boost.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2858/allestimento/BYD0045"
     },
     {
       "id": "motornet_d5d09e7c956f7d",
@@ -13281,8 +13281,8 @@
       "power_cv": 95,
       "consumption_l_100km": 1.4,
       "emissions_g_km": 32,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2858/allestimento/BYD0046",
-      "image_url": "assets/cars/motornet/Byd_Dolphin_G_DM-i_1.5_212cv_Comfort.webp"
+      "image_url": "assets/cars/motornet/Byd_Dolphin_G_DM-i_1.5_212cv_Comfort.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2858/allestimento/BYD0046"
     },
     {
       "id": "motornet_bdafb9bc217cce",
@@ -13296,8 +13296,8 @@
       "power_cv": 95,
       "consumption_l_100km": 1.4,
       "emissions_g_km": 32,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2858/allestimento/BYD0047",
-      "image_url": "assets/cars/motornet/Byd_Dolphin_G_DM-i_1.5_212cv_Sport.webp"
+      "image_url": "assets/cars/motornet/Byd_Dolphin_G_DM-i_1.5_212cv_Sport.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2858/allestimento/BYD0047"
     },
     {
       "id": "motornet_a87260896381a4",
@@ -13926,8 +13926,8 @@
       "power_cv": 86,
       "consumption_l_100km": 2.03,
       "emissions_g_km": 47,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2806/allestimento/CHA0006",
-      "image_url": "assets/cars/motornet/Changan_Deepal_S05_1.5_Ultra-Hybrid_Max.webp"
+      "image_url": "assets/cars/motornet/Changan_Deepal_S05_1.5_Ultra-Hybrid_Max.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2806/allestimento/CHA0006"
     },
     {
       "id": "motornet_acc0f236f809d6",
@@ -13941,8 +13941,8 @@
       "power_cv": 86,
       "consumption_l_100km": 2.03,
       "emissions_g_km": 47,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2806/allestimento/CHA0005",
-      "image_url": "assets/cars/motornet/Changan_Deepal_S05_1.5_Ultra-Hybrid_Pro.webp"
+      "image_url": "assets/cars/motornet/Changan_Deepal_S05_1.5_Ultra-Hybrid_Pro.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2806/allestimento/CHA0005"
     },
     {
       "id": "motornet_06a6ea8f2f256e",
@@ -13958,8 +13958,8 @@
       "battery_kwh": 80,
       "range_wltp_km": 475,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2807/allestimento/CHA0004",
-      "image_url": "assets/cars/motornet/Changan_Deepal_S07_7997_kWh.webp"
+      "image_url": "assets/cars/motornet/Changan_Deepal_S07_7997_kWh.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2807/allestimento/CHA0004"
     },
     {
       "id": "motornet_10adabdd755d4c",
@@ -14433,8 +14433,8 @@
       "power_cv": 170,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 171,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2821/allestimento/CIR0160",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_3zero3_1.5_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_3zero3_1.5_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2821/allestimento/CIR0160"
     },
     {
       "id": "motornet_fe3c76833b61dc",
@@ -14449,8 +14449,8 @@
       "consumption_l_100km": 7.5,
       "consumption_kg_100km": 7.5,
       "emissions_g_km": 171,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2821/allestimento/CIR0161",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_3zero3_1.5_Bi-Fuel_Gpl_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_3zero3_1.5_Bi-Fuel_Gpl_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2821/allestimento/CIR0161"
     },
     {
       "id": "motornet_1008dd01b47125",
@@ -14464,8 +14464,8 @@
       "power_cv": 170,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 171,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2821/allestimento/CIR0162",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_3zero3_1.5_Mild_Hybrid_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_3zero3_1.5_Mild_Hybrid_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2821/allestimento/CIR0162"
     },
     {
       "id": "motornet_b580d76163063e",
@@ -14480,8 +14480,8 @@
       "consumption_l_100km": 7.5,
       "consumption_kg_100km": 7.5,
       "emissions_g_km": 171,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2821/allestimento/CIR0163",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_3zero3_1.5_Mild_Hybrid_Bi-Fuel_Gpl_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_3zero3_1.5_Mild_Hybrid_Bi-Fuel_Gpl_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2821/allestimento/CIR0163"
     },
     {
       "id": "motornet_5b16fea606314c",
@@ -14820,8 +14820,8 @@
       "power_cv": 177,
       "consumption_l_100km": 7.21,
       "emissions_g_km": 186,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0164",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0164"
     },
     {
       "id": "motornet_2a153653df0fd8",
@@ -14836,8 +14836,8 @@
       "consumption_l_100km": 7.21,
       "consumption_kg_100km": 7.21,
       "emissions_g_km": 186,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0165",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Bi-Fuel_Gpl_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Bi-Fuel_Gpl_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0165"
     },
     {
       "id": "motornet_f49aec0115ebe9",
@@ -14851,8 +14851,8 @@
       "power_cv": 177,
       "consumption_l_100km": 7.21,
       "emissions_g_km": 186,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0166",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Mild_Hybrid_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Mild_Hybrid_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0166"
     },
     {
       "id": "motornet_ea9d310eff62ff",
@@ -14866,8 +14866,8 @@
       "power_cv": 177,
       "consumption_l_100km": 5,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0168",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Reev_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Reev_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0168"
     },
     {
       "id": "motornet_d690034d0e0dc6",
@@ -14882,8 +14882,8 @@
       "consumption_l_100km": 7.21,
       "consumption_kg_100km": 7.21,
       "emissions_g_km": 186,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0167",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Mild_Hybrid_Bi-Fuel_Gpl_Single_Setup_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_5zero5_1.5_Mild_Hybrid_Bi-Fuel_Gpl_Single_Setup_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2822/allestimento/CIR0167"
     },
     {
       "id": "motornet_102e12c932ab1c",
@@ -15239,8 +15239,8 @@
       "power_cv": 101,
       "consumption_l_100km": 1,
       "emissions_g_km": 23,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2823/allestimento/CIR0170",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_7zero7_1.5_Reev_Single_Setup.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_7zero7_1.5_Reev_Single_Setup.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2823/allestimento/CIR0170"
     },
     {
       "id": "motornet_62dd3ef16e234e",
@@ -15378,8 +15378,8 @@
       "power_cv": 163,
       "consumption_l_100km": 8.9,
       "emissions_g_km": 234,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2550/allestimento/CIR0089",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_8_Pickup_2.3.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_8_Pickup_2.3.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2550/allestimento/CIR0089"
     },
     {
       "id": "motornet_2184dc5263b08f",
@@ -15393,8 +15393,8 @@
       "power_cv": 163,
       "consumption_l_100km": 8.9,
       "emissions_g_km": 234,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2550/allestimento/CIR0090",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_8_Pickup_2.3_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_8_Pickup_2.3_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2550/allestimento/CIR0090"
     },
     {
       "id": "motornet_e0338805f455bc",
@@ -15408,8 +15408,8 @@
       "power_cv": 163,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 234,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2550/allestimento/CIR0091",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_8_Pickup_2.3_Mild_Hybrid.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_8_Pickup_2.3_Mild_Hybrid.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2550/allestimento/CIR0091"
     },
     {
       "id": "motornet_1055d6a3aa1da4",
@@ -15423,8 +15423,8 @@
       "power_cv": 163,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 234,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2550/allestimento/CIR0092",
-      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_8_Pickup_2.3_Mild_Hybrid_auto.webp"
+      "image_url": "assets/cars/motornet/Cirelli_Motor_Company_8_Pickup_2.3_Mild_Hybrid_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2550/allestimento/CIR0092"
     },
     {
       "id": "motornet_70565f7dae33a9",
@@ -16459,8 +16459,8 @@
       "model": "Motornet.it | auto | scheda modello | modello | 2735 | allestimento | COR0556",
       "version": "Motornet.it | auto | scheda modello | modello | 2735 | allestimento | COR0556",
       "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2735/allestimento/COR0556",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2735_allestimento_COR0556.webp"
+      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2735_allestimento_COR0556.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2735/allestimento/COR0556"
     },
     {
       "id": "motornet_f9f33e3b229655",
@@ -16469,8 +16469,8 @@
       "model": "Motornet.it | auto | scheda modello | modello | 2735 | allestimento | COR0552",
       "version": "Motornet.it | auto | scheda modello | modello | 2735 | allestimento | COR0552",
       "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2735/allestimento/COR0552",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2735_allestimento_COR0552.webp"
+      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2735_allestimento_COR0552.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2735/allestimento/COR0552"
     },
     {
       "id": "motornet_99ab3cbd0cd4b6",
@@ -16479,8 +16479,8 @@
       "model": "Motornet.it | auto | scheda modello | modello | 2735 | allestimento | COR0553",
       "version": "Motornet.it | auto | scheda modello | modello | 2735 | allestimento | COR0553",
       "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2735/allestimento/COR0553",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2735_allestimento_COR0553.webp"
+      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2735_allestimento_COR0553.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2735/allestimento/COR0553"
     },
     {
       "id": "motornet_32b4c2393436d0",
@@ -16489,8 +16489,8 @@
       "model": "Motornet.it | auto | scheda modello | modello | 2735 | allestimento | COR0558",
       "version": "Motornet.it | auto | scheda modello | modello | 2735 | allestimento | COR0558",
       "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2735/allestimento/COR0558",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2735_allestimento_COR0558.webp"
+      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2735_allestimento_COR0558.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2735/allestimento/COR0558"
     },
     {
       "id": "motornet_35a6e5f2883d09",
@@ -16514,8 +16514,8 @@
       "model": "Motornet.it | auto | scheda modello | modello | 2734 | allestimento | COR0554",
       "version": "Motornet.it | auto | scheda modello | modello | 2734 | allestimento | COR0554",
       "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2734/allestimento/COR0554",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2734_allestimento_COR0554.webp"
+      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2734_allestimento_COR0554.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2734/allestimento/COR0554"
     },
     {
       "id": "motornet_ce36c9e2293de8",
@@ -16524,8 +16524,8 @@
       "model": "Motornet.it | auto | scheda modello | modello | 2734 | allestimento | COR0555",
       "version": "Motornet.it | auto | scheda modello | modello | 2734 | allestimento | COR0555",
       "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2734/allestimento/COR0555",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2734_allestimento_COR0555.webp"
+      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2734_allestimento_COR0555.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2734/allestimento/COR0555"
     },
     {
       "id": "motornet_1fd62162d582eb",
@@ -16564,8 +16564,8 @@
       "model": "Motornet.it | auto | scheda modello | modello | 2659 | allestimento | COR0554",
       "version": "Motornet.it | auto | scheda modello | modello | 2659 | allestimento | COR0554",
       "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2659/allestimento/COR0554",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2659_allestimento_COR0554.webp"
+      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2659_allestimento_COR0554.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2659/allestimento/COR0554"
     },
     {
       "id": "motornet_81e3efcff98254",
@@ -16574,8 +16574,8 @@
       "model": "Motornet.it | auto | scheda modello | modello | 2659 | allestimento | COR0555",
       "version": "Motornet.it | auto | scheda modello | modello | 2659 | allestimento | COR0555",
       "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2659/allestimento/COR0555",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2659_allestimento_COR0555.webp"
+      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2659_allestimento_COR0555.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2659/allestimento/COR0555"
     },
     {
       "id": "motornet_9c96637cb26c80",
@@ -18974,8 +18974,8 @@
       "power_cv": 349,
       "consumption_l_100km": 6.2,
       "emissions_g_km": 38,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2834/allestimento/DEN0001",
-      "image_url": "assets/cars/motornet/Denza_D9_1.5_Elegance.webp"
+      "image_url": "assets/cars/motornet/Denza_D9_1.5_Elegance.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2834/allestimento/DEN0001"
     },
     {
       "id": "motornet_074ac3b42e618a",
@@ -18989,8 +18989,8 @@
       "power_cv": 349,
       "consumption_l_100km": 6.7,
       "emissions_g_km": 43,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2834/allestimento/DEN0002",
-      "image_url": "assets/cars/motornet/Denza_D9_1.5_Ultimate.webp"
+      "image_url": "assets/cars/motornet/Denza_D9_1.5_Ultimate.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2834/allestimento/DEN0002"
     },
     {
       "id": "motornet_f0cdc5e32d3f65",
@@ -19005,8 +19005,8 @@
       "battery_kwh": 122.4,
       "range_wltp_km": 600,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2835/allestimento/DEN0004",
-      "image_url": "assets/cars/motornet/Denza_Z9GT_1224_kWh_EV.webp"
+      "image_url": "assets/cars/motornet/Denza_Z9GT_1224_kWh_EV.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2835/allestimento/DEN0004"
     },
     {
       "id": "motornet_d1dd401d151f7e",
@@ -19020,8 +19020,8 @@
       "power_cv": 860,
       "consumption_l_100km": 5.6,
       "emissions_g_km": 31,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2835/allestimento/DEN0003",
-      "image_url": "assets/cars/motornet/Denza_Z9GT_2.0_DM.webp"
+      "image_url": "assets/cars/motornet/Denza_Z9GT_2.0_DM.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2835/allestimento/DEN0003"
     },
     {
       "id": "motornet_5137fe5d8309e3",
@@ -19388,8 +19388,8 @@
       "power_cv": 117,
       "consumption_l_100km": 7,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2688/allestimento/DOG0009",
-      "image_url": "assets/cars/motornet/Dongfeng_Shine_1.5_E2_DCT.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Shine_1.5_E2_DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2688/allestimento/DOG0009"
     },
     {
       "id": "motornet_834073d5a73f57",
@@ -19403,8 +19403,8 @@
       "power_cv": 100,
       "consumption_l_100km": 5.3,
       "emissions_g_km": 14,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2683/allestimento/DOG0014",
-      "image_url": "assets/cars/motornet/Dongfeng_007_1.5_Turbo_REV.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_007_1.5_Turbo_REV.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2683/allestimento/DOG0014"
     },
     {
       "id": "motornet_b01eeab348e642",
@@ -19419,8 +19419,8 @@
       "battery_kwh": 52,
       "range_wltp_km": 471,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2843/allestimento/DOG0015",
-      "image_url": "assets/cars/motornet/Dongfeng_Vigo_E2.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Vigo_E2.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2843/allestimento/DOG0015"
     },
     {
       "id": "motornet_32236db8b9a0db",
@@ -19434,8 +19434,8 @@
       "power_cv": 117,
       "consumption_l_100km": 7.1,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2791/allestimento/DOG0012",
-      "image_url": "assets/cars/motornet/Dongfeng_Shine_GS_1.5_E1_DCT.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Shine_GS_1.5_E1_DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2791/allestimento/DOG0012"
     },
     {
       "id": "motornet_575482af09768a",
@@ -19449,8 +19449,8 @@
       "power_cv": 197,
       "consumption_l_100km": 7.2,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2687/allestimento/DOG0004",
-      "image_url": "assets/cars/motornet/Dongfeng_Mage_1.5_T_E2_320T_DCT.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Mage_1.5_T_E2_320T_DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2687/allestimento/DOG0004"
     },
     {
       "id": "motornet_517f10ebe4424d",
@@ -19464,8 +19464,8 @@
       "power_cv": 197,
       "consumption_l_100km": 7.2,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2687/allestimento/DOG0013",
-      "image_url": "assets/cars/motornet/Dongfeng_Mage_1.5_T_E3_320T_DCT.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Mage_1.5_T_E3_320T_DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2687/allestimento/DOG0013"
     },
     {
       "id": "motornet_e1771e0afd4c33",
@@ -19479,8 +19479,8 @@
       "power_cv": 190,
       "consumption_l_100km": 5.7,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2687/allestimento/DOG0005",
-      "image_url": "assets/cars/motornet/Dongfeng_Mage_1.5_T_HEV_E3_MHD500T_auto.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Mage_1.5_T_HEV_E3_MHD500T_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2687/allestimento/DOG0005"
     },
     {
       "id": "motornet_13ce53ee89f5ea",
@@ -19494,8 +19494,8 @@
       "power_cv": 150,
       "consumption_l_100km": 1,
       "emissions_g_km": 21,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2842/allestimento/DOG0016",
-      "image_url": "assets/cars/motornet/Dongfeng_Mage_L7_1.5_T_Phev.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Mage_L7_1.5_T_Phev.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2842/allestimento/DOG0016"
     },
     {
       "id": "motornet_2050953309b080",
@@ -19509,8 +19509,8 @@
       "power_cv": 197,
       "consumption_l_100km": 7.7,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2686/allestimento/DOG0006",
-      "image_url": "assets/cars/motornet/Dongfeng_Huge_1.5_T_E2_320T_auto.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Huge_1.5_T_E2_320T_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2686/allestimento/DOG0006"
     },
     {
       "id": "motornet_460d350eab50b9",
@@ -19524,8 +19524,8 @@
       "power_cv": 170,
       "consumption_l_100km": 5.7,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2686/allestimento/DOG0007",
-      "image_url": "assets/cars/motornet/Dongfeng_Huge_1.5_T_HEV_E2_MHD500T_CVT.webp"
+      "image_url": "assets/cars/motornet/Dongfeng_Huge_1.5_T_HEV_E2_MHD500T_CVT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2686/allestimento/DOG0007"
     },
     {
       "id": "motornet_cfb8e55446ab5e",
@@ -20688,8 +20688,8 @@
       "power_cv": 103,
       "consumption_l_100km": 7.2,
       "emissions_g_km": 167,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2696/allestimento/EMC0010",
-      "image_url": "assets/cars/motornet/EMC_Quattro_1.5_103cv_MT.webp"
+      "image_url": "assets/cars/motornet/EMC_Quattro_1.5_103cv_MT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2696/allestimento/EMC0010"
     },
     {
       "id": "motornet_5c2009c715bdec",
@@ -20703,8 +20703,8 @@
       "power_cv": 103,
       "consumption_l_100km": 7.33,
       "emissions_g_km": 173,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2696/allestimento/EMC0011",
-      "image_url": "assets/cars/motornet/EMC_Quattro_1.5_103cv_CVT.webp"
+      "image_url": "assets/cars/motornet/EMC_Quattro_1.5_103cv_CVT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2696/allestimento/EMC0011"
     },
     {
       "id": "motornet_eff463171a8f4a",
@@ -20719,8 +20719,8 @@
       "consumption_l_100km": 7.2,
       "consumption_kg_100km": 7.2,
       "emissions_g_km": 167,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2696/allestimento/EMC0012",
-      "image_url": "assets/cars/motornet/EMC_Quattro_1.5_Gpl_103cv_MT.webp"
+      "image_url": "assets/cars/motornet/EMC_Quattro_1.5_Gpl_103cv_MT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2696/allestimento/EMC0012"
     },
     {
       "id": "motornet_73ba8ebe61e1ac",
@@ -20735,8 +20735,8 @@
       "consumption_l_100km": 7.33,
       "consumption_kg_100km": 7.33,
       "emissions_g_km": 173,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2696/allestimento/EMC0013",
-      "image_url": "assets/cars/motornet/EMC_Quattro_1.5_Gpl_103cv_CVT.webp"
+      "image_url": "assets/cars/motornet/EMC_Quattro_1.5_Gpl_103cv_CVT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2696/allestimento/EMC0013"
     },
     {
       "id": "motornet_352eb6b4995bd9",
@@ -20752,8 +20752,8 @@
       "battery_kwh": 41.7,
       "range_wltp_km": 325,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2603/allestimento/EMC0009",
-      "image_url": "assets/cars/motornet/EMC_Yudo_41.7kWh.webp"
+      "image_url": "assets/cars/motornet/EMC_Yudo_41.7kWh.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2603/allestimento/EMC0009"
     },
     {
       "id": "motornet_91ddb8c4752aca",
@@ -20767,8 +20767,8 @@
       "power_cv": 113,
       "consumption_l_100km": 7.3,
       "emissions_g_km": 162,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2697/allestimento/EMC0014",
-      "image_url": "assets/cars/motornet/EMC_Sei_1.5_113cv_MT.webp"
+      "image_url": "assets/cars/motornet/EMC_Sei_1.5_113cv_MT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2697/allestimento/EMC0014"
     },
     {
       "id": "motornet_468eab63f77c8d",
@@ -20782,8 +20782,8 @@
       "power_cv": 147,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 175,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2697/allestimento/EMC0016",
-      "image_url": "assets/cars/motornet/EMC_Sei_1.5_147cv_CVT.webp"
+      "image_url": "assets/cars/motornet/EMC_Sei_1.5_147cv_CVT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2697/allestimento/EMC0016"
     },
     {
       "id": "motornet_a7a03dc679af18",
@@ -20798,8 +20798,8 @@
       "consumption_l_100km": 7.3,
       "consumption_kg_100km": 7.3,
       "emissions_g_km": 162,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2697/allestimento/EMC0015",
-      "image_url": "assets/cars/motornet/EMC_Sei_1.5_Gpl_113cv_MT.webp"
+      "image_url": "assets/cars/motornet/EMC_Sei_1.5_Gpl_113cv_MT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2697/allestimento/EMC0015"
     },
     {
       "id": "motornet_920142f07df040",
@@ -20814,8 +20814,8 @@
       "consumption_l_100km": 7.9,
       "consumption_kg_100km": 7.9,
       "emissions_g_km": 175,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2697/allestimento/EMC0017",
-      "image_url": "assets/cars/motornet/EMC_Sei_1.5_Gpl_147cv_CVT.webp"
+      "image_url": "assets/cars/motornet/EMC_Sei_1.5_Gpl_147cv_CVT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2697/allestimento/EMC0017"
     },
     {
       "id": "motornet_a8da17daaf786f",
@@ -20829,8 +20829,8 @@
       "power_cv": 174,
       "consumption_l_100km": 6.83,
       "emissions_g_km": 167,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2698/allestimento/EMC0018",
-      "image_url": "assets/cars/motornet/EMC_Sette_1.5_T_GDI_7DCT.webp"
+      "image_url": "assets/cars/motornet/EMC_Sette_1.5_T_GDI_7DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2698/allestimento/EMC0018"
     },
     {
       "id": "motornet_a2d70f9f1c8642",
@@ -20845,8 +20845,8 @@
       "consumption_l_100km": 7,
       "consumption_kg_100km": 7,
       "emissions_g_km": 167,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2698/allestimento/EMC0019",
-      "image_url": "assets/cars/motornet/EMC_Sette_1.5_T_GDI_Gpl_7DCT.webp"
+      "image_url": "assets/cars/motornet/EMC_Sette_1.5_T_GDI_Gpl_7DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2698/allestimento/EMC0019"
     },
     {
       "id": "motornet_52c7173c0fb5ed",
@@ -20860,8 +20860,8 @@
       "power_cv": 133,
       "consumption_l_100km": 10.61,
       "emissions_g_km": 241,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2844/allestimento/EMC0023",
-      "image_url": "assets/cars/motornet/EMC_Nove_2.0_8AT_7p.ti.webp"
+      "image_url": "assets/cars/motornet/EMC_Nove_2.0_8AT_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2844/allestimento/EMC0023"
     },
     {
       "id": "motornet_2f5989bc1f53c8",
@@ -20875,8 +20875,8 @@
       "power_cv": 133,
       "consumption_l_100km": 10.61,
       "emissions_g_km": 241,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2844/allestimento/EMC0024",
-      "image_url": "assets/cars/motornet/EMC_Nove_2.0_8AT_9p.ti.webp"
+      "image_url": "assets/cars/motornet/EMC_Nove_2.0_8AT_9p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2844/allestimento/EMC0024"
     },
     {
       "id": "motornet_eee33934cf4815",
@@ -20890,8 +20890,8 @@
       "power_cv": 217,
       "consumption_l_100km": 12.21,
       "emissions_g_km": 276,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2780/allestimento/EMC0020",
-      "image_url": "assets/cars/motornet/EMC_212_2.0_TGDI_Adventurer_4WD_8AT.webp"
+      "image_url": "assets/cars/motornet/EMC_212_2.0_TGDI_Adventurer_4WD_8AT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2780/allestimento/EMC0020"
     },
     {
       "id": "motornet_15488ebd4508fc",
@@ -20905,8 +20905,8 @@
       "power_cv": 217,
       "consumption_l_100km": 12.21,
       "emissions_g_km": 276,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2780/allestimento/EMC0021",
-      "image_url": "assets/cars/motornet/EMC_212_2.0_TGDI_Officer_4WD_8AT.webp"
+      "image_url": "assets/cars/motornet/EMC_212_2.0_TGDI_Officer_4WD_8AT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2780/allestimento/EMC0021"
     },
     {
       "id": "motornet_932b5b8cd0cdc8",
@@ -20920,8 +20920,8 @@
       "power_cv": 166,
       "consumption_l_100km": 8.8,
       "emissions_g_km": 226,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2780/allestimento/EMC0022",
-      "image_url": "assets/cars/motornet/EMC_212_2.0_TDI_Diesel_4WD_8AT.webp"
+      "image_url": "assets/cars/motornet/EMC_212_2.0_TDI_Diesel_4WD_8AT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2780/allestimento/EMC0022"
     },
     {
       "id": "motornet_d7e5350e9eaf6e",
@@ -21198,8 +21198,8 @@
       "power_cv": 174,
       "consumption_l_100km": 7.4,
       "emissions_g_km": 171,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2790/allestimento/EVO0031",
-      "image_url": "assets/cars/motornet/Evo_7_Kairos_1.5_Turbo_174cv.webp"
+      "image_url": "assets/cars/motornet/Evo_7_Kairos_1.5_Turbo_174cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2790/allestimento/EVO0031"
     },
     {
       "id": "motornet_5d214bc281562c",
@@ -21214,8 +21214,8 @@
       "consumption_l_100km": 7.4,
       "consumption_kg_100km": 7.4,
       "emissions_g_km": 171,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2790/allestimento/EVO0032",
-      "image_url": "assets/cars/motornet/Evo_7_Kairos_1.5_Turbo_Gpl_162cv.webp"
+      "image_url": "assets/cars/motornet/Evo_7_Kairos_1.5_Turbo_Gpl_162cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2790/allestimento/EVO0032"
     },
     {
       "id": "motornet_751d540aecbeb2",
@@ -21322,8 +21322,8 @@
       "power_cv": 176,
       "consumption_l_100km": 7.7,
       "emissions_g_km": 175,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2796/allestimento/EVO0033",
-      "image_url": "assets/cars/motornet/Evo_Spazio_1.5_Turbo_176cv_DCT.webp"
+      "image_url": "assets/cars/motornet/Evo_Spazio_1.5_Turbo_176cv_DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2796/allestimento/EVO0033"
     },
     {
       "id": "motornet_ed9b56effcaa7c",
@@ -21338,8 +21338,8 @@
       "consumption_l_100km": 7.7,
       "consumption_kg_100km": 7.7,
       "emissions_g_km": 175,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2796/allestimento/EVO0034",
-      "image_url": "assets/cars/motornet/Evo_Spazio_1.5_Turbo_Gpl_167cv_DCT.webp"
+      "image_url": "assets/cars/motornet/Evo_Spazio_1.5_Turbo_Gpl_167cv_DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2796/allestimento/EVO0034"
     },
     {
       "id": "motornet_e315bf39dcac6c",
@@ -21626,8 +21626,8 @@
       "battery_kwh": 122,
       "range_wltp_km": 530,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2859/allestimento/FER2186",
-      "image_url": "assets/cars/motornet/Ferrari_Luce_122_kWh.webp"
+      "image_url": "assets/cars/motornet/Ferrari_Luce_122_kWh.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2859/allestimento/FER2186"
     },
     {
       "id": "motornet_4c0082e21d3466",
@@ -24170,8 +24170,8 @@
       "power_cv": 162,
       "consumption_l_100km": 8.49,
       "emissions_g_km": 235,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2817/allestimento/FOT0001",
-      "image_url": "assets/cars/motornet/Foton_Tunland_G7_Double_Cab_2.0_TDI.webp"
+      "image_url": "assets/cars/motornet/Foton_Tunland_G7_Double_Cab_2.0_TDI.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2817/allestimento/FOT0001"
     },
     {
       "id": "motornet_f4dac1e830d660",
@@ -24185,8 +24185,8 @@
       "power_cv": 162,
       "consumption_l_100km": 9.9,
       "emissions_g_km": 264,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2817/allestimento/FOT0002",
-      "image_url": "assets/cars/motornet/Foton_Tunland_G7_Double_Cab_2.0_TDI_AT.webp"
+      "image_url": "assets/cars/motornet/Foton_Tunland_G7_Double_Cab_2.0_TDI_AT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2817/allestimento/FOT0002"
     },
     {
       "id": "motornet_4ab7d0b2e128e7",
@@ -24200,8 +24200,8 @@
       "power_cv": 160,
       "consumption_l_100km": 10.52,
       "emissions_g_km": 276,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2699/allestimento/FOT0003",
-      "image_url": "assets/cars/motornet/Foton_Tunland_V9_2.0_VGT_Turbo_48V_Hybrid_Sistem_Flagship.webp"
+      "image_url": "assets/cars/motornet/Foton_Tunland_V9_2.0_VGT_Turbo_48V_Hybrid_Sistem_Flagship.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2699/allestimento/FOT0003"
     },
     {
       "id": "motornet_01bc17db07acdc",
@@ -24215,8 +24215,8 @@
       "power_cv": 160,
       "consumption_l_100km": 10.52,
       "emissions_g_km": 276,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2699/allestimento/FOT0004",
-      "image_url": "assets/cars/motornet/Foton_Tunland_V9_2.0_VGT_Turbo_48V_Hybrid_Sistem_Ultra.webp"
+      "image_url": "assets/cars/motornet/Foton_Tunland_V9_2.0_VGT_Turbo_48V_Hybrid_Sistem_Ultra.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2699/allestimento/FOT0004"
     },
     {
       "id": "motornet_39a5f4a1902069",
@@ -24232,8 +24232,8 @@
       "battery_kwh": 65.6,
       "range_wltp_km": 410,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2771/allestimento/GEE0002",
-      "image_url": "assets/cars/motornet/Geely_EX5_Full_Electric_Launch_Edition.webp"
+      "image_url": "assets/cars/motornet/Geely_EX5_Full_Electric_Launch_Edition.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2771/allestimento/GEE0002"
     },
     {
       "id": "motornet_3ec8b1a064afbd",
@@ -24249,8 +24249,8 @@
       "battery_kwh": 68,
       "range_wltp_km": 425,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2771/allestimento/GEE0005",
-      "image_url": "assets/cars/motornet/Geely_EX5_Full_Electric_Max.webp"
+      "image_url": "assets/cars/motornet/Geely_EX5_Full_Electric_Max.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2771/allestimento/GEE0005"
     },
     {
       "id": "motornet_d19ff5494ea50e",
@@ -24266,8 +24266,8 @@
       "battery_kwh": 67.9,
       "range_wltp_km": 430,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2771/allestimento/GEE0001",
-      "image_url": "assets/cars/motornet/Geely_EX5_Full_Electric_Pro.webp"
+      "image_url": "assets/cars/motornet/Geely_EX5_Full_Electric_Pro.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2771/allestimento/GEE0001"
     },
     {
       "id": "motornet_8b56b2dadf2f25",
@@ -24296,8 +24296,8 @@
       "power_cv": 99,
       "consumption_l_100km": 2.4,
       "emissions_g_km": 54,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2772/allestimento/GEE0006",
-      "image_url": "assets/cars/motornet/Geely_Starray_EM-i_1.5_Plug-in_Hybrid_Max_1DHT.webp"
+      "image_url": "assets/cars/motornet/Geely_Starray_EM-i_1.5_Plug-in_Hybrid_Max_1DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2772/allestimento/GEE0006"
     },
     {
       "id": "motornet_f9157be820bd59",
@@ -24326,8 +24326,8 @@
       "power_cv": 99,
       "consumption_l_100km": 2.4,
       "emissions_g_km": 54,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2772/allestimento/GEE0007",
-      "image_url": "assets/cars/motornet/Geely_Starray_EM-i_1.5_Plug-in_Hybrid_Sky_Blue_Edition_1DHT.webp"
+      "image_url": "assets/cars/motornet/Geely_Starray_EM-i_1.5_Plug-in_Hybrid_Sky_Blue_Edition_1DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2772/allestimento/GEE0007"
     },
     {
       "id": "motornet_06eddd47d3da80",
@@ -24407,8 +24407,8 @@
       "battery_kwh": 84,
       "range_wltp_km": 425,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2873/allestimento/GEN0008",
-      "image_url": "assets/cars/motornet/Genesis_GV60_Magma_84kWh_AWD.webp"
+      "image_url": "assets/cars/motornet/Genesis_GV60_Magma_84kWh_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2873/allestimento/GEN0008"
     },
     {
       "id": "motornet_7ba8afd4424c61",
@@ -24470,8 +24470,8 @@
       "power_cv": 116,
       "consumption_l_100km": 7.6,
       "emissions_g_km": 182,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2576/allestimento/GVT0006",
-      "image_url": "assets/cars/motornet/Giotti_Victoria_V5_1.5_auto.webp"
+      "image_url": "assets/cars/motornet/Giotti_Victoria_V5_1.5_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2576/allestimento/GVT0006"
     },
     {
       "id": "motornet_e7dd29cd04830b",
@@ -24485,8 +24485,8 @@
       "power_cv": 184,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 182,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2577/allestimento/GVT0007",
-      "image_url": "assets/cars/motornet/Giotti_Victoria_V6_1.5_auto.webp"
+      "image_url": "assets/cars/motornet/Giotti_Victoria_V6_1.5_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2577/allestimento/GVT0007"
     },
     {
       "id": "motornet_e0085ea5f3a214",
@@ -24562,8 +24562,8 @@
       "power_cv": 420,
       "consumption_l_100km": 10,
       "emissions_g_km": 350,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2819/allestimento/GMC0005",
-      "image_url": "assets/cars/motornet/GMC_Yukon_6.2_V8_EcoTec3_420cv_Denali_auto.webp"
+      "image_url": "assets/cars/motornet/GMC_Yukon_6.2_V8_EcoTec3_420cv_Denali_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2819/allestimento/GMC0005"
     },
     {
       "id": "motornet_f51d3b1f94c046",
@@ -24578,8 +24578,8 @@
       "consumption_l_100km": 10,
       "consumption_kg_100km": 10,
       "emissions_g_km": 350,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2819/allestimento/GMC0006",
-      "image_url": "assets/cars/motornet/GMC_Yukon_6.2_V8_EcoTec3_Gpl_420cv_Denali_auto.webp"
+      "image_url": "assets/cars/motornet/GMC_Yukon_6.2_V8_EcoTec3_Gpl_420cv_Denali_auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2819/allestimento/GMC0006"
     },
     {
       "id": "motornet_1883a8c89a81f1",
@@ -24593,8 +24593,8 @@
       "power_cv": 160,
       "consumption_l_100km": 6.9,
       "emissions_g_km": 158,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0332",
-      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_1.5_Turbo_160cv_Origin_2WD_7DCT.webp"
+      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_1.5_Turbo_160cv_Origin_2WD_7DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0332"
     },
     {
       "id": "motornet_d7417644ef71bb",
@@ -24608,8 +24608,8 @@
       "power_cv": 160,
       "consumption_l_100km": 6.9,
       "emissions_g_km": 158,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0333",
-      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_1.5_Turbo_160cv_Premium_2WD_7DCT.webp"
+      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_1.5_Turbo_160cv_Premium_2WD_7DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0333"
     },
     {
       "id": "motornet_3e2fa3f781eb43",
@@ -24625,8 +24625,8 @@
       "battery_kwh": 58.3,
       "range_wltp_km": 376,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0336",
-      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_583_kWh_PSM_EV_Origin_2WD.webp"
+      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_583_kWh_PSM_EV_Origin_2WD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0336"
     },
     {
       "id": "motornet_ffa52a9140a1a4",
@@ -24642,8 +24642,8 @@
       "battery_kwh": 58.3,
       "range_wltp_km": 376,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0337",
-      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_583_kWh_PSM_EV_Premium_2WD.webp"
+      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_583_kWh_PSM_EV_Premium_2WD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0337"
     },
     {
       "id": "motornet_8434a54eb99a2e",
@@ -24657,8 +24657,8 @@
       "power_cv": 150,
       "consumption_l_100km": 5.1,
       "emissions_g_km": 117,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0334",
-      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_1.5_Turbo_PSM_Hi2_223cv_Origin_2WD_2DHT.webp"
+      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_1.5_Turbo_PSM_Hi2_223cv_Origin_2WD_2DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0334"
     },
     {
       "id": "motornet_0009a20c5480ec",
@@ -24672,8 +24672,8 @@
       "power_cv": 150,
       "consumption_l_100km": 5.1,
       "emissions_g_km": 117,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0335",
-      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_1.5_Turbo_PSM_Hi2_223cv_Premium_2WD_2DHT.webp"
+      "image_url": "assets/cars/motornet/Great_Wall_Ora_5_1.5_Turbo_PSM_Hi2_223cv_Premium_2WD_2DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2860/allestimento/GRW0335"
     },
     {
       "id": "motornet_4ce2dd9919158f",
@@ -28511,8 +28511,8 @@
       "power_cv": 143,
       "consumption_l_100km": 2.1,
       "emissions_g_km": 47,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2814/allestimento/JAE0019",
-      "image_url": "assets/cars/motornet/Jaecoo_8_SHS-P_1.5_TGDi_Plug-In_Hybrid_Exclusive_AWD_3DHT.webp"
+      "image_url": "assets/cars/motornet/Jaecoo_8_SHS-P_1.5_TGDi_Plug-In_Hybrid_Exclusive_AWD_3DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2814/allestimento/JAE0019"
     },
     {
       "id": "motornet_65fd3baf53923e",
@@ -28526,8 +28526,8 @@
       "power_cv": 100,
       "consumption_l_100km": 5.6,
       "emissions_g_km": 127,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2701",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_100cv_85th_Anniversary_FWD.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_100cv_85th_Anniversary_FWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2701"
     },
     {
       "id": "motornet_512830e922e7ff",
@@ -28541,8 +28541,8 @@
       "power_cv": 100,
       "consumption_l_100km": 5.6,
       "emissions_g_km": 127,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2698",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_100cv_Altitude_FWD.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_100cv_Altitude_FWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2698"
     },
     {
       "id": "motornet_b849006cfca6ab",
@@ -28556,8 +28556,8 @@
       "power_cv": 100,
       "consumption_l_100km": 5.6,
       "emissions_g_km": 127,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2699",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_100cv_Longitude_FWD.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_100cv_Longitude_FWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2699"
     },
     {
       "id": "motornet_14b7a211a45ffb",
@@ -28571,8 +28571,8 @@
       "power_cv": 100,
       "consumption_l_100km": 5.6,
       "emissions_g_km": 127,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2700",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_100cv_Summit_FWD.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_100cv_Summit_FWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2700"
     },
     {
       "id": "motornet_f7ba6c360be7ac",
@@ -28588,8 +28588,8 @@
       "battery_kwh": 62,
       "range_wltp_km": 400,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2712",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_Full-Electric_85th_Anniversary_FWD_Auto.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_Full-Electric_85th_Anniversary_FWD_Auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2712"
     },
     {
       "id": "motornet_67d3191865a4ad",
@@ -28605,8 +28605,8 @@
       "battery_kwh": 62,
       "range_wltp_km": 400,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2709",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_Full-Electric_Altitude_FWD_Auto.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_Full-Electric_Altitude_FWD_Auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2709"
     },
     {
       "id": "motornet_76696209a1914b",
@@ -28622,8 +28622,8 @@
       "battery_kwh": 62,
       "range_wltp_km": 400,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2710",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_Full-Electric_Longitude_FWD_Auto.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_Full-Electric_Longitude_FWD_Auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2710"
     },
     {
       "id": "motornet_1c7fd5c858b6bf",
@@ -28639,8 +28639,8 @@
       "battery_kwh": 62,
       "range_wltp_km": 400,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2711",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_Full-Electric_Summit_FWD_Auto.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_Full-Electric_Summit_FWD_Auto.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2711"
     },
     {
       "id": "motornet_7d395f910a6ac8",
@@ -28654,8 +28654,8 @@
       "power_cv": 136,
       "consumption_l_100km": 5.3,
       "emissions_g_km": 121,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2707",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_145cv_85th_Anniversary_4xe.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_145cv_85th_Anniversary_4xe.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2707"
     },
     {
       "id": "motornet_63c4f1d8c3b91e",
@@ -28669,8 +28669,8 @@
       "power_cv": 100,
       "consumption_l_100km": 4.9,
       "emissions_g_km": 110,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2705",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_110cv_85th_Anniversary_FWD_eDCT6.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_110cv_85th_Anniversary_FWD_eDCT6.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2705"
     },
     {
       "id": "motornet_6253fdc291c038",
@@ -28684,8 +28684,8 @@
       "power_cv": 100,
       "consumption_l_100km": 4.9,
       "emissions_g_km": 110,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2702",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_110cv_Altitude_FWD_eDCT6.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_110cv_Altitude_FWD_eDCT6.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2702"
     },
     {
       "id": "motornet_8ff54e7d6b4f12",
@@ -28699,8 +28699,8 @@
       "power_cv": 100,
       "consumption_l_100km": 4.9,
       "emissions_g_km": 110,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2703",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_110cv_Longitude_FWD_eDCT6.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_110cv_Longitude_FWD_eDCT6.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2703"
     },
     {
       "id": "motornet_783113a341a10a",
@@ -28714,8 +28714,8 @@
       "power_cv": 136,
       "consumption_l_100km": 5.3,
       "emissions_g_km": 121,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2708",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_145cv_Overland_4xe.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_145cv_Overland_4xe.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2708"
     },
     {
       "id": "motornet_dd21d7d38d06d2",
@@ -28729,8 +28729,8 @@
       "power_cv": 100,
       "consumption_l_100km": 4.9,
       "emissions_g_km": 110,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2704",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_110cv_Summit_FWD_eDCT6.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_110cv_Summit_FWD_eDCT6.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2704"
     },
     {
       "id": "motornet_0caddbf755aea9",
@@ -28744,8 +28744,8 @@
       "power_cv": 136,
       "consumption_l_100km": 5.3,
       "emissions_g_km": 121,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2706",
-      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_145cv_Upland_4xe.webp"
+      "image_url": "assets/cars/motornet/Jeep_Avenger_1.2_Turbo_e-Hybrid_MHEV_145cv_Upland_4xe.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2436/allestimento/JEE2706"
     },
     {
       "id": "motornet_ef02ebc238236d",
@@ -30421,8 +30421,8 @@
       "power_cv": 102,
       "consumption_l_100km": 4.5,
       "emissions_g_km": 103,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1323/allestimento/KIA5418",
-      "image_url": "assets/cars/motornet/Kia_Niro_1.6_GDi_HEV_Business_DCT6.webp"
+      "image_url": "assets/cars/motornet/Kia_Niro_1.6_GDi_HEV_Business_DCT6.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1323/allestimento/KIA5418"
     },
     {
       "id": "motornet_9a7daa9a24b8fe",
@@ -30436,8 +30436,8 @@
       "power_cv": 102,
       "consumption_l_100km": 4.5,
       "emissions_g_km": 103,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1323/allestimento/KIA5420",
-      "image_url": "assets/cars/motornet/Kia_Niro_1.6_GDi_HEV_Evolution_DCT6.webp"
+      "image_url": "assets/cars/motornet/Kia_Niro_1.6_GDi_HEV_Evolution_DCT6.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1323/allestimento/KIA5420"
     },
     {
       "id": "motornet_920ee57347a944",
@@ -30451,8 +30451,8 @@
       "power_cv": 102,
       "consumption_l_100km": 4.5,
       "emissions_g_km": 103,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1323/allestimento/KIA5419",
-      "image_url": "assets/cars/motornet/Kia_Niro_1.6_GDi_HEV_Style_DCT6.webp"
+      "image_url": "assets/cars/motornet/Kia_Niro_1.6_GDi_HEV_Style_DCT6.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/1323/allestimento/KIA5419"
     },
     {
       "id": "motornet_8413513eff841b",
@@ -35564,8 +35564,8 @@
       "battery_kwh": 56.2,
       "range_wltp_km": 401,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2845/allestimento/LEA0020",
-      "image_url": "assets/cars/motornet/Leapmotor_B05_562kWh_Life.webp"
+      "image_url": "assets/cars/motornet/Leapmotor_B05_562kWh_Life.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2845/allestimento/LEA0020"
     },
     {
       "id": "motornet_8ed134253cf674",
@@ -35581,8 +35581,8 @@
       "battery_kwh": 67.1,
       "range_wltp_km": 482,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2845/allestimento/LEA0022",
-      "image_url": "assets/cars/motornet/Leapmotor_B05_671kWh_Design.webp"
+      "image_url": "assets/cars/motornet/Leapmotor_B05_671kWh_Design.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2845/allestimento/LEA0022"
     },
     {
       "id": "motornet_906013429655a4",
@@ -35598,8 +35598,8 @@
       "battery_kwh": 67.1,
       "range_wltp_km": 482,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2845/allestimento/LEA0021",
-      "image_url": "assets/cars/motornet/Leapmotor_B05_671kWh_Life.webp"
+      "image_url": "assets/cars/motornet/Leapmotor_B05_671kWh_Life.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2845/allestimento/LEA0021"
     },
     {
       "id": "motornet_91fda5e1d9ceb5",
@@ -35615,8 +35615,8 @@
       "battery_kwh": 56.2,
       "range_wltp_km": 361,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0010",
-      "image_url": "assets/cars/motornet/Leapmotor_B10_562kWh_Life.webp"
+      "image_url": "assets/cars/motornet/Leapmotor_B10_562kWh_Life.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0010"
     },
     {
       "id": "motornet_48b2ead6b65f8a",
@@ -35632,8 +35632,8 @@
       "battery_kwh": 67.1,
       "range_wltp_km": 434,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0012",
-      "image_url": "assets/cars/motornet/Leapmotor_B10_671kWh_Design.webp"
+      "image_url": "assets/cars/motornet/Leapmotor_B10_671kWh_Design.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0012"
     },
     {
       "id": "motornet_6bed1ba29b03be",
@@ -35649,8 +35649,8 @@
       "battery_kwh": 67.1,
       "range_wltp_km": 434,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0011",
-      "image_url": "assets/cars/motornet/Leapmotor_B10_671kWh_Life.webp"
+      "image_url": "assets/cars/motornet/Leapmotor_B10_671kWh_Life.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0011"
     },
     {
       "id": "motornet_692af7af14dff5",
@@ -35664,8 +35664,8 @@
       "power_cv": 109,
       "consumption_l_100km": 2.4,
       "emissions_g_km": 54,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0017",
-      "image_url": "assets/cars/motornet/Leapmotor_B10_REEV_Hybrid_Design.webp"
+      "image_url": "assets/cars/motornet/Leapmotor_B10_REEV_Hybrid_Design.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0017"
     },
     {
       "id": "motornet_7bd913bb3ec62c",
@@ -35679,8 +35679,8 @@
       "power_cv": 109,
       "consumption_l_100km": 2.4,
       "emissions_g_km": 54,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0016",
-      "image_url": "assets/cars/motornet/Leapmotor_B10_REEV_Hybrid_Life.webp"
+      "image_url": "assets/cars/motornet/Leapmotor_B10_REEV_Hybrid_Life.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2777/allestimento/LEA0016"
     },
     {
       "id": "motornet_913e9e90b9eb61",
@@ -35826,8 +35826,8 @@
       "power_cv": 143,
       "consumption_l_100km": 2.2,
       "emissions_g_km": 53,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2863/allestimento/LEP0002",
-      "image_url": "assets/cars/motornet/Lepas_L8_1.5_TGDi_Ibrido_Plug-in_Elegance_DHT.webp"
+      "image_url": "assets/cars/motornet/Lepas_L8_1.5_TGDi_Ibrido_Plug-in_Elegance_DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2863/allestimento/LEP0002"
     },
     {
       "id": "motornet_5a55fb21fbda63",
@@ -35841,8 +35841,8 @@
       "power_cv": 143,
       "consumption_l_100km": 2.2,
       "emissions_g_km": 53,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2863/allestimento/LEP0001",
-      "image_url": "assets/cars/motornet/Lepas_L8_1.5_TGDi_Ibrido_Plug-in_Essence_DHT.webp"
+      "image_url": "assets/cars/motornet/Lepas_L8_1.5_TGDi_Ibrido_Plug-in_Essence_DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2863/allestimento/LEP0001"
     },
     {
       "id": "motornet_066d746b6287f6",
@@ -36761,8 +36761,8 @@
       "power_cv": 279,
       "consumption_l_100km": 7,
       "emissions_g_km": 50,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2864/allestimento/LOT2189",
-      "image_url": "assets/cars/motornet/Lotus_Eletre_X_2.0_H1000.webp"
+      "image_url": "assets/cars/motornet/Lotus_Eletre_X_2.0_H1000.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2864/allestimento/LOT2189"
     },
     {
       "id": "motornet_62e04e60ab83dc",
@@ -36776,8 +36776,8 @@
       "power_cv": 279,
       "consumption_l_100km": 7,
       "emissions_g_km": 50,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2864/allestimento/LOT2188",
-      "image_url": "assets/cars/motornet/Lotus_Eletre_X_2.0_H550.webp"
+      "image_url": "assets/cars/motornet/Lotus_Eletre_X_2.0_H550.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2864/allestimento/LOT2188"
     },
     {
       "id": "motornet_5a699c73e8720d",
@@ -37178,8 +37178,8 @@
       "power_cv": 216,
       "consumption_l_100km": 9.1,
       "emissions_g_km": 239,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2802/allestimento/MAX0004",
-      "image_url": "assets/cars/motornet/Maxus_T60_2.0_Twin_Turbo_Luxury_AWD_8AT.webp"
+      "image_url": "assets/cars/motornet/Maxus_T60_2.0_Twin_Turbo_Luxury_AWD_8AT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2802/allestimento/MAX0004"
     },
     {
       "id": "motornet_e981733fafdfad",
@@ -52669,8 +52669,8 @@
       "power_cv": 449,
       "consumption_l_100km": 2.9,
       "emissions_g_km": 66,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER799G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_e_Plug-In-Hybrid_Premium_4Matic_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_e_Plug-In-Hybrid_Premium_4Matic_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER799G"
     },
     {
       "id": "motornet_4a1233425251e0",
@@ -52684,8 +52684,8 @@
       "power_cv": 449,
       "consumption_l_100km": 2.9,
       "emissions_g_km": 66,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER801G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_e_Plug-In-Hybrid_Premium_Night_Series_4Matic_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_e_Plug-In-Hybrid_Premium_Night_Series_4Matic_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER801G"
     },
     {
       "id": "motornet_06a1322a35543d",
@@ -52699,8 +52699,8 @@
       "power_cv": 449,
       "consumption_l_100km": 2.9,
       "emissions_g_km": 66,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER800G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_e_Plug-In-Hybrid_Premium_Plus_4Matic_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_e_Plug-In-Hybrid_Premium_Plus_4Matic_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER800G"
     },
     {
       "id": "motornet_62e548b8885bc7",
@@ -52714,8 +52714,8 @@
       "power_cv": 449,
       "consumption_l_100km": 2.9,
       "emissions_g_km": 66,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER802G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_e_Plug-In-Hybrid_Premium_Plus_Night_Series_4Matic_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_e_Plug-In-Hybrid_Premium_Plus_Night_Series_4Matic_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER802G"
     },
     {
       "id": "motornet_48d4056ac09e63",
@@ -52729,8 +52729,8 @@
       "power_cv": 537,
       "consumption_l_100km": 10.8,
       "emissions_g_km": 247,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER795G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_V8_Mild_hybrid_Premium_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_V8_Mild_hybrid_Premium_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER795G"
     },
     {
       "id": "motornet_89a5fff7ec7e5f",
@@ -52744,8 +52744,8 @@
       "power_cv": 537,
       "consumption_l_100km": 10.8,
       "emissions_g_km": 247,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER797G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_V8_Mild_hybrid_Premium_Night_Series_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_V8_Mild_hybrid_Premium_Night_Series_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER797G"
     },
     {
       "id": "motornet_ce3408c8d5d92e",
@@ -52759,8 +52759,8 @@
       "power_cv": 537,
       "consumption_l_100km": 10.8,
       "emissions_g_km": 247,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER796G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_V8_Mild_hybrid_Premium_Plus_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_V8_Mild_hybrid_Premium_Plus_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER796G"
     },
     {
       "id": "motornet_461d0fab0df885",
@@ -52774,8 +52774,8 @@
       "power_cv": 537,
       "consumption_l_100km": 10.8,
       "emissions_g_km": 247,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER798G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_V8_Mild_hybrid_Premium_Plus_Night_Series_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_580_V8_Mild_hybrid_Premium_Plus_Night_Series_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER798G"
     },
     {
       "id": "motornet_55673b04856b7b",
@@ -52789,8 +52789,8 @@
       "power_cv": 612,
       "consumption_l_100km": 11,
       "emissions_g_km": 252,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER803G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_680_V8_Mild_hybrid_Premium_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_680_V8_Mild_hybrid_Premium_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER803G"
     },
     {
       "id": "motornet_c439d8eeb6fc28",
@@ -52804,8 +52804,8 @@
       "power_cv": 612,
       "consumption_l_100km": 11,
       "emissions_g_km": 252,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER805G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_680_V8_Mild_hybrid_Premium_Night_Series_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_680_V8_Mild_hybrid_Premium_Night_Series_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER805G"
     },
     {
       "id": "motornet_b9dfb1e39eb814",
@@ -52819,8 +52819,8 @@
       "power_cv": 612,
       "consumption_l_100km": 11,
       "emissions_g_km": 252,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER804G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_680_V8_Mild_hybrid_Premium_Plus_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_680_V8_Mild_hybrid_Premium_Plus_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER804G"
     },
     {
       "id": "motornet_860b2315862957",
@@ -52834,8 +52834,8 @@
       "power_cv": 612,
       "consumption_l_100km": 11,
       "emissions_g_km": 252,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER806G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_680_V8_Mild_hybrid_Premium_Plus_Night_Series_9G-Tronic_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_S_Maybach_680_V8_Mild_hybrid_Premium_Plus_Night_Series_9G-Tronic_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2301/allestimento/MER806G"
     },
     {
       "id": "motornet_4d9e4d9c10e0de",
@@ -53001,8 +53001,8 @@
       "battery_kwh": 124.6,
       "range_wltp_km": 700,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER861G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_55_Advanced_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_55_Advanced_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER861G"
     },
     {
       "id": "motornet_0dc568d4e5adf0",
@@ -53018,8 +53018,8 @@
       "battery_kwh": 124.6,
       "range_wltp_km": 700,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER862G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_55_Premium.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_55_Premium.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER862G"
     },
     {
       "id": "motornet_c0d45754e95755",
@@ -53035,8 +53035,8 @@
       "battery_kwh": 124.6,
       "range_wltp_km": 700,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER863G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_55_Premium_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_55_Premium_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER863G"
     },
     {
       "id": "motornet_2901fa7a21f512",
@@ -53052,8 +53052,8 @@
       "battery_kwh": 124.8,
       "range_wltp_km": 697,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER864G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_63_Advanced_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_63_Advanced_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER864G"
     },
     {
       "id": "motornet_28608694874054",
@@ -53069,8 +53069,8 @@
       "battery_kwh": 124.8,
       "range_wltp_km": 697,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER865G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_63_Premium.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_63_Premium.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER865G"
     },
     {
       "id": "motornet_4a63831a319e18",
@@ -53086,8 +53086,8 @@
       "battery_kwh": 124.8,
       "range_wltp_km": 697,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER866G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_63_Premium_Plus.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_AMG_GT_Coupe_4_63_Premium_Plus.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/370/allestimento/MER866G"
     },
     {
       "id": "motornet_3a720de2bfe078",
@@ -61699,8 +61699,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.5,
       "emissions_g_km": 216,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER848G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER848G"
     },
     {
       "id": "motornet_a98aa5981e5245",
@@ -61714,8 +61714,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.5,
       "emissions_g_km": 216,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER849G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER849G"
     },
     {
       "id": "motornet_1b52ac45372d3a",
@@ -61729,8 +61729,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.5,
       "emissions_g_km": 216,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER846G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER846G"
     },
     {
       "id": "motornet_b741970b844c79",
@@ -61744,8 +61744,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.5,
       "emissions_g_km": 216,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER847G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Advanced_Plus_4Matic_9G-Tronic_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Advanced_Plus_4Matic_9G-Tronic_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER847G"
     },
     {
       "id": "motornet_1aad42f5edae92",
@@ -61759,8 +61759,8 @@
       "power_cv": 326,
       "consumption_l_100km": 3.2,
       "emissions_g_km": 73,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER853G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_e_Plug-In-Hybrid_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_e_Plug-In-Hybrid_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER853G"
     },
     {
       "id": "motornet_6021805239dbe9",
@@ -61774,8 +61774,8 @@
       "power_cv": 326,
       "consumption_l_100km": 3.2,
       "emissions_g_km": 73,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER852G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_e_Plug-In-Hybrid_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_e_Plug-In-Hybrid_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER852G"
     },
     {
       "id": "motornet_a66cd14a2a48f4",
@@ -61789,8 +61789,8 @@
       "power_cv": 326,
       "consumption_l_100km": 3.2,
       "emissions_g_km": 73,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER854G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_e_Plug-In-Hybrid_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_e_Plug-In-Hybrid_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER854G"
     },
     {
       "id": "motornet_6f6ccee67ff533",
@@ -61804,8 +61804,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.5,
       "emissions_g_km": 216,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER850G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER850G"
     },
     {
       "id": "motornet_02a78b4a5b05ae",
@@ -61819,8 +61819,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.5,
       "emissions_g_km": 216,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER851G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Premium_4Matic_9G-Tronic_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_Premium_4Matic_9G-Tronic_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER851G"
     },
     {
       "id": "motornet_058d5c1d52a97c",
@@ -61834,8 +61834,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.4,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER836G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER836G"
     },
     {
       "id": "motornet_ef7b0d11ad3b62",
@@ -61849,8 +61849,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.4,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER837G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Advanced_4Matic_9G-Tronic_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Advanced_4Matic_9G-Tronic_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER837G"
     },
     {
       "id": "motornet_51d9bbaa512242",
@@ -61864,8 +61864,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.4,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER834G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER834G"
     },
     {
       "id": "motornet_40eb294d73aa1f",
@@ -61879,8 +61879,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.4,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER835G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Advanced_Plus_4Matic_9G-Tronic_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Advanced_Plus_4Matic_9G-Tronic_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER835G"
     },
     {
       "id": "motornet_7bc8502c191fb4",
@@ -61894,8 +61894,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.4,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER838G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER838G"
     },
     {
       "id": "motornet_a5b4412f18ec57",
@@ -61909,8 +61909,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.4,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER839G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Premium_4Matic_9G-Tronic_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_350_d_Premium_4Matic_9G-Tronic_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER839G"
     },
     {
       "id": "motornet_8e9eb65cac0e31",
@@ -61924,8 +61924,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER842G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER842G"
     },
     {
       "id": "motornet_8b10e2f4e8128d",
@@ -61939,8 +61939,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER843G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Advanced_4Matic_9G-Tronic_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Advanced_4Matic_9G-Tronic_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER843G"
     },
     {
       "id": "motornet_3d0984d094a417",
@@ -61954,8 +61954,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER840G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER840G"
     },
     {
       "id": "motornet_527c59330c800e",
@@ -61969,8 +61969,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER841G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Advanced_Plus_4Matic_9G-Tronic_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Advanced_Plus_4Matic_9G-Tronic_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER841G"
     },
     {
       "id": "motornet_9dcd314e5d08c0",
@@ -61984,8 +61984,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER844G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER844G"
     },
     {
       "id": "motornet_d8820c9af54d90",
@@ -61999,8 +61999,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.5,
       "emissions_g_km": 195,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER845G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Premium_4Matic_9G-Tronic_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_450_d_Premium_4Matic_9G-Tronic_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2452/allestimento/MER845G"
     },
     {
       "id": "motornet_db05fe0936ee76",
@@ -62014,8 +62014,8 @@
       "power_cv": 449,
       "consumption_l_100km": 10.6,
       "emissions_g_km": 241,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER855G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_Advanced_Plus_4Matic_Speedshift_MCT_AMG.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_Advanced_Plus_4Matic_Speedshift_MCT_AMG.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER855G"
     },
     {
       "id": "motornet_d7bd12973705e8",
@@ -62029,8 +62029,8 @@
       "power_cv": 449,
       "consumption_l_100km": 10.6,
       "emissions_g_km": 241,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER856G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_Advanced_Plus_4Matic_Speedshift_MCT_AMG_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_Advanced_Plus_4Matic_Speedshift_MCT_AMG_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER856G"
     },
     {
       "id": "motornet_5d4239e3c80e9d",
@@ -62044,8 +62044,8 @@
       "power_cv": 449,
       "consumption_l_100km": 3.9,
       "emissions_g_km": 88,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER859G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_HYBRID_Advanced_Plus_4Matic_Speedshift_MCT_AMG.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_HYBRID_Advanced_Plus_4Matic_Speedshift_MCT_AMG.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER859G"
     },
     {
       "id": "motornet_dcc3157c5f39d3",
@@ -62059,8 +62059,8 @@
       "power_cv": 449,
       "consumption_l_100km": 3.9,
       "emissions_g_km": 88,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER860G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_HYBRID_Premium_4Matic_Speedshift_MCT_AMG.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_HYBRID_Premium_4Matic_Speedshift_MCT_AMG.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER860G"
     },
     {
       "id": "motornet_ccb6da44a21c53",
@@ -62074,8 +62074,8 @@
       "power_cv": 449,
       "consumption_l_100km": 10.6,
       "emissions_g_km": 241,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER857G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_Premium_4Matic_Speedshift_MCT_AMG.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_Premium_4Matic_Speedshift_MCT_AMG.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER857G"
     },
     {
       "id": "motornet_63a0a3e64c7235",
@@ -62089,8 +62089,8 @@
       "power_cv": 449,
       "consumption_l_100km": 10.6,
       "emissions_g_km": 241,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER858G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_Premium_4Matic_Speedshift_MCT_AMG_7p.ti.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_53_Premium_4Matic_Speedshift_MCT_AMG_7p.ti.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2497/allestimento/MER858G"
     },
     {
       "id": "motornet_0deb20cd8b6111",
@@ -62104,8 +62104,8 @@
       "power_cv": 326,
       "consumption_l_100km": 3.1,
       "emissions_g_km": 70,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER819G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_e_Plug-In-Hybrid_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_e_Plug-In-Hybrid_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER819G"
     },
     {
       "id": "motornet_a731478c89ffb6",
@@ -62119,8 +62119,8 @@
       "power_cv": 326,
       "consumption_l_100km": 3.1,
       "emissions_g_km": 70,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER818G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_e_Plug-In-Hybrid_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_e_Plug-In-Hybrid_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER818G"
     },
     {
       "id": "motornet_2813263280cfb5",
@@ -62134,8 +62134,8 @@
       "power_cv": 326,
       "consumption_l_100km": 3.1,
       "emissions_g_km": 70,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER820G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_e_Plug-In-Hybrid_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_e_Plug-In-Hybrid_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER820G"
     },
     {
       "id": "motornet_43d88e4a6f8d0f",
@@ -62149,8 +62149,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.3,
       "emissions_g_km": 192,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER813G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_350_d_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_350_d_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER813G"
     },
     {
       "id": "motornet_54692587e52f39",
@@ -62164,8 +62164,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.3,
       "emissions_g_km": 192,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER812G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_350_d_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_350_d_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER812G"
     },
     {
       "id": "motornet_7c393c756d8d79",
@@ -62179,8 +62179,8 @@
       "power_cv": 286,
       "consumption_l_100km": 7.3,
       "emissions_g_km": 192,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER814G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_350_d_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_350_d_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER814G"
     },
     {
       "id": "motornet_a7f64c99ce3c19",
@@ -62194,8 +62194,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.3,
       "emissions_g_km": 192,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER816G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_d_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_d_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER816G"
     },
     {
       "id": "motornet_5e73d59c2be9ec",
@@ -62209,8 +62209,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.3,
       "emissions_g_km": 192,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER815G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_d_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_d_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER815G"
     },
     {
       "id": "motornet_5dd444b7973e63",
@@ -62224,8 +62224,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.3,
       "emissions_g_km": 192,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER817G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_d_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_Coupe_450_d_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/940/allestimento/MER817G"
     },
     {
       "id": "motornet_71c27786d8e70c",
@@ -62239,8 +62239,8 @@
       "power_cv": 449,
       "consumption_l_100km": 10.4,
       "emissions_g_km": 238,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2498/allestimento/MER821G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_Coupe_53_Advanced_Plus_4Matic_Speedshift_MCT_AMG.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_Coupe_53_Advanced_Plus_4Matic_Speedshift_MCT_AMG.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2498/allestimento/MER821G"
     },
     {
       "id": "motornet_ddc8645511e053",
@@ -62254,8 +62254,8 @@
       "power_cv": 449,
       "consumption_l_100km": 3.8,
       "emissions_g_km": 86,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2498/allestimento/MER823G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_Coupe_53_HYBRID_Advanced_Plus_4Matic_Speedshift_MCT_AMG.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_Coupe_53_HYBRID_Advanced_Plus_4Matic_Speedshift_MCT_AMG.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2498/allestimento/MER823G"
     },
     {
       "id": "motornet_093deac0abf01f",
@@ -62269,8 +62269,8 @@
       "power_cv": 449,
       "consumption_l_100km": 3.8,
       "emissions_g_km": 86,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2498/allestimento/MER824G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_Coupe_53_HYBRID_Premium_4Matic_Speedshift_MCT_AMG.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_Coupe_53_HYBRID_Premium_4Matic_Speedshift_MCT_AMG.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2498/allestimento/MER824G"
     },
     {
       "id": "motornet_b27b9871ec2d21",
@@ -62284,8 +62284,8 @@
       "power_cv": 449,
       "consumption_l_100km": 10.4,
       "emissions_g_km": 238,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2498/allestimento/MER822G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_Coupe_53_Premium_4Matic_Speedshift_MCT_AMG.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLE_AMG_Coupe_53_Premium_4Matic_Speedshift_MCT_AMG.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2498/allestimento/MER822G"
     },
     {
       "id": "motornet_ca9eae28f1ab5c",
@@ -63088,8 +63088,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.9,
       "emissions_g_km": 225,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER832G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER832G"
     },
     {
       "id": "motornet_6a0487210bd2d5",
@@ -63103,8 +63103,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.9,
       "emissions_g_km": 225,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER831G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER831G"
     },
     {
       "id": "motornet_f447410e982bb7",
@@ -63118,8 +63118,8 @@
       "power_cv": 381,
       "consumption_l_100km": 9.9,
       "emissions_g_km": 225,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER833G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER833G"
     },
     {
       "id": "motornet_b635ccecd8d239",
@@ -63133,8 +63133,8 @@
       "power_cv": 313,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 206,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER826G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_350_d_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_350_d_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER826G"
     },
     {
       "id": "motornet_770350a67738a1",
@@ -63148,8 +63148,8 @@
       "power_cv": 313,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 206,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER825G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_350_d_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_350_d_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER825G"
     },
     {
       "id": "motornet_735b4921dc8dfe",
@@ -63163,8 +63163,8 @@
       "power_cv": 313,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 206,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER827G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_350_d_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_350_d_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER827G"
     },
     {
       "id": "motornet_b335fdd5ca7604",
@@ -63178,8 +63178,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 206,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER829G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_d_Advanced_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_d_Advanced_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER829G"
     },
     {
       "id": "motornet_7aaf5016043678",
@@ -63193,8 +63193,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 206,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER828G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_d_Advanced_Plus_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_d_Advanced_Plus_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER828G"
     },
     {
       "id": "motornet_3969d40deb3dd3",
@@ -63208,8 +63208,8 @@
       "power_cv": 367,
       "consumption_l_100km": 7.9,
       "emissions_g_km": 206,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER830G",
-      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_d_Premium_4Matic_9G-Tronic.webp"
+      "image_url": "assets/cars/motornet/Mercedes-Benz_GLS_450_d_Premium_4Matic_9G-Tronic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/943/allestimento/MER830G"
     },
     {
       "id": "motornet_4a2ca586ad31cc",
@@ -63501,8 +63501,8 @@
       "battery_kwh": 79.6,
       "range_wltp_km": 452,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2413/allestimento/MGG0887",
-      "image_url": "assets/cars/motornet/Mg_MG4_Premium_64.webp"
+      "image_url": "assets/cars/motornet/Mg_MG4_Premium_64.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2413/allestimento/MGG0887"
     },
     {
       "id": "motornet_392c28b40a8e1d",
@@ -63518,8 +63518,8 @@
       "battery_kwh": 87.7,
       "range_wltp_km": 545,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2413/allestimento/MGG0888",
-      "image_url": "assets/cars/motornet/Mg_MG4_Premium_77.webp"
+      "image_url": "assets/cars/motornet/Mg_MG4_Premium_77.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2413/allestimento/MGG0888"
     },
     {
       "id": "motornet_b213498b28223b",
@@ -63535,8 +63535,8 @@
       "battery_kwh": 77,
       "range_wltp_km": 405,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2413/allestimento/MGG0889",
-      "image_url": "assets/cars/motornet/Mg_MG4_XPower_AWD.webp"
+      "image_url": "assets/cars/motornet/Mg_MG4_XPower_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2413/allestimento/MGG0889"
     },
     {
       "id": "motornet_c94e223d00f36b",
@@ -63552,8 +63552,8 @@
       "battery_kwh": 50.4,
       "range_wltp_km": 325,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2855/allestimento/MGG0890",
-      "image_url": "assets/cars/motornet/Mg_MG4_Urban_Comfort_43.webp"
+      "image_url": "assets/cars/motornet/Mg_MG4_Urban_Comfort_43.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2855/allestimento/MGG0890"
     },
     {
       "id": "motornet_59ae756363351b",
@@ -63569,8 +63569,8 @@
       "battery_kwh": 63.6,
       "range_wltp_km": 416,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2855/allestimento/MGG0891",
-      "image_url": "assets/cars/motornet/Mg_MG4_Urban_Comfort_54.webp"
+      "image_url": "assets/cars/motornet/Mg_MG4_Urban_Comfort_54.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2855/allestimento/MGG0891"
     },
     {
       "id": "motornet_99cfac246ba0a3",
@@ -63586,8 +63586,8 @@
       "battery_kwh": 62.8,
       "range_wltp_km": 405,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2855/allestimento/MGG0892",
-      "image_url": "assets/cars/motornet/Mg_MG4_Urban_Premium_54.webp"
+      "image_url": "assets/cars/motornet/Mg_MG4_Urban_Premium_54.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2855/allestimento/MGG0892"
     },
     {
       "id": "motornet_2e429f2ee4eb34",
@@ -63773,8 +63773,8 @@
       "battery_kwh": 142.7,
       "range_wltp_km": 450,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2846/allestimento/MHE0003",
-      "image_url": "assets/cars/motornet/Mhero_I_917_1427kWh.webp"
+      "image_url": "assets/cars/motornet/Mhero_I_917_1427kWh.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2846/allestimento/MHE0003"
     },
     {
       "id": "motornet_6e04222d15fdae",
@@ -63788,8 +63788,8 @@
       "power_cv": 197,
       "consumption_l_100km": 11.8,
       "emissions_g_km": 46,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2846/allestimento/MHE0001",
-      "image_url": "assets/cars/motornet/Mhero_I_917_1.5_Turbo_REV_II.webp"
+      "image_url": "assets/cars/motornet/Mhero_I_917_1.5_Turbo_REV_II.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2846/allestimento/MHE0001"
     },
     {
       "id": "motornet_957f56c0a2b8ae",
@@ -63803,8 +63803,8 @@
       "power_cv": 197,
       "consumption_l_100km": 11.8,
       "emissions_g_km": 46,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2846/allestimento/MHE0002",
-      "image_url": "assets/cars/motornet/Mhero_I_917_1.5_Turbo_REV_III.webp"
+      "image_url": "assets/cars/motornet/Mhero_I_917_1.5_Turbo_REV_III.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2846/allestimento/MHE0002"
     },
     {
       "id": "motornet_b771a49111c89f",
@@ -63818,8 +63818,8 @@
       "power_cv": 186,
       "consumption_l_100km": 9.8,
       "emissions_g_km": 31,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2847/allestimento/MHE0004",
-      "image_url": "assets/cars/motornet/Mhero_II_817_1.5_T_Phev_Terrain.webp"
+      "image_url": "assets/cars/motornet/Mhero_II_817_1.5_T_Phev_Terrain.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2847/allestimento/MHE0004"
     },
     {
       "id": "motornet_3a142290fc5eec",
@@ -63833,8 +63833,8 @@
       "power_cv": 186,
       "consumption_l_100km": 9.8,
       "emissions_g_km": 31,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2847/allestimento/MHE0005",
-      "image_url": "assets/cars/motornet/Mhero_II_817_1.5_T_Phev_Urban.webp"
+      "image_url": "assets/cars/motornet/Mhero_II_817_1.5_T_Phev_Urban.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2847/allestimento/MHE0005"
     },
     {
       "id": "motornet_5f00dc2de30f7a",
@@ -65610,8 +65610,8 @@
       "power_cv": 258,
       "consumption_l_100km": 7,
       "emissions_g_km": 159,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2293/allestimento/MOR0039",
-      "image_url": "assets/cars/motornet/Morgan_Plus_Four_2.0_automatic.webp"
+      "image_url": "assets/cars/motornet/Morgan_Plus_Four_2.0_automatic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2293/allestimento/MOR0039"
     },
     {
       "id": "motornet_3ed589930b867e",
@@ -65625,8 +65625,8 @@
       "power_cv": 258,
       "consumption_l_100km": 7.3,
       "emissions_g_km": 165,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2293/allestimento/MOR0038",
-      "image_url": "assets/cars/motornet/Morgan_Plus_Four_2.0_manual.webp"
+      "image_url": "assets/cars/motornet/Morgan_Plus_Four_2.0_manual.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2293/allestimento/MOR0038"
     },
     {
       "id": "motornet_5d2c9764d04eb0",
@@ -65640,8 +65640,8 @@
       "power_cv": 408,
       "consumption_l_100km": 7.7,
       "emissions_g_km": 180,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2773/allestimento/MOR0041",
-      "image_url": "assets/cars/motornet/Morgan_Supersport_3.0_400_automatic.webp"
+      "image_url": "assets/cars/motornet/Morgan_Supersport_3.0_400_automatic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2773/allestimento/MOR0041"
     },
     {
       "id": "motornet_00748472ad107a",
@@ -65655,8 +65655,8 @@
       "power_cv": 340,
       "consumption_l_100km": 7.7,
       "emissions_g_km": 175,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2773/allestimento/MOR0040",
-      "image_url": "assets/cars/motornet/Morgan_Supersport_3.0_automatic.webp"
+      "image_url": "assets/cars/motornet/Morgan_Supersport_3.0_automatic.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2773/allestimento/MOR0040"
     },
     {
       "id": "motornet_b1dfa2d7a2e329",
@@ -66674,8 +66674,8 @@
       "power_cv": 143,
       "consumption_l_100km": 2.3,
       "emissions_g_km": 53,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2799/allestimento/OMO0014",
-      "image_url": "assets/cars/motornet/Omoda_7_SHS-P_1.5_TGDi_Plug-In_Hybrid_Premium_DHT.webp"
+      "image_url": "assets/cars/motornet/Omoda_7_SHS-P_1.5_TGDi_Plug-In_Hybrid_Premium_DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2799/allestimento/OMO0014"
     },
     {
       "id": "motornet_9c07dcf93e4f63",
@@ -66689,8 +66689,8 @@
       "power_cv": 143,
       "consumption_l_100km": 2.3,
       "emissions_g_km": 53,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2799/allestimento/OMO0015",
-      "image_url": "assets/cars/motornet/Omoda_7_SHS-P_1.5_TGDi_Plug-In_Hybrid_Premium_Pro_DHT.webp"
+      "image_url": "assets/cars/motornet/Omoda_7_SHS-P_1.5_TGDi_Plug-In_Hybrid_Premium_Pro_DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2799/allestimento/OMO0015"
     },
     {
       "id": "motornet_662c7ac44d2f1c",
@@ -66704,8 +66704,8 @@
       "power_cv": 143,
       "consumption_l_100km": 2.3,
       "emissions_g_km": 53,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2799/allestimento/OMO0013",
-      "image_url": "assets/cars/motornet/Omoda_7_SHS-P_1.5_TGDi_Plug-In_Hybrid_Pure_DHT.webp"
+      "image_url": "assets/cars/motornet/Omoda_7_SHS-P_1.5_TGDi_Plug-In_Hybrid_Pure_DHT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2799/allestimento/OMO0013"
     },
     {
       "id": "motornet_2cd1eb65e271fc",
@@ -77278,8 +77278,8 @@
       "battery_kwh": 55,
       "range_wltp_km": 441,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2857/allestimento/SKO6618",
-      "image_url": "assets/cars/motornet/Skoda_Epiq_55kWh_55_First_Edition_210cv.webp"
+      "image_url": "assets/cars/motornet/Skoda_Epiq_55kWh_55_First_Edition_210cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2857/allestimento/SKO6618"
     },
     {
       "id": "motornet_3080519e586cc8",
@@ -77295,8 +77295,8 @@
       "battery_kwh": 55,
       "range_wltp_km": 441,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2857/allestimento/SKO6617",
-      "image_url": "assets/cars/motornet/Skoda_Epiq_55kWh_55_Selection_210cv.webp"
+      "image_url": "assets/cars/motornet/Skoda_Epiq_55kWh_55_Selection_210cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2857/allestimento/SKO6617"
     },
     {
       "id": "motornet_16eca7de1367ce",
@@ -79287,8 +79287,8 @@
       "battery_kwh": 57.7,
       "range_wltp_km": 451,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2862/allestimento/SUB6419",
-      "image_url": "assets/cars/motornet/Subaru_Uncharted_577_kWh_2E-xcite_FWD.webp"
+      "image_url": "assets/cars/motornet/Subaru_Uncharted_577_kWh_2E-xcite_FWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2862/allestimento/SUB6419"
     },
     {
       "id": "motornet_6f93966fab450a",
@@ -79303,8 +79303,8 @@
       "battery_kwh": 77,
       "range_wltp_km": 592,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2862/allestimento/SUB6420",
-      "image_url": "assets/cars/motornet/Subaru_Uncharted_770_kWh_2E-xcite_FWD.webp"
+      "image_url": "assets/cars/motornet/Subaru_Uncharted_770_kWh_2E-xcite_FWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2862/allestimento/SUB6420"
     },
     {
       "id": "motornet_5e8280e4bee31d",
@@ -79319,8 +79319,8 @@
       "battery_kwh": 77,
       "range_wltp_km": 495,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2862/allestimento/SUB6421",
-      "image_url": "assets/cars/motornet/Subaru_Uncharted_770_kWh_4E-xperience_AWD.webp"
+      "image_url": "assets/cars/motornet/Subaru_Uncharted_770_kWh_4E-xperience_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2862/allestimento/SUB6421"
     },
     {
       "id": "motornet_c49f09c024e650",
@@ -79335,8 +79335,8 @@
       "battery_kwh": 77,
       "range_wltp_km": 490,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2862/allestimento/SUB6422",
-      "image_url": "assets/cars/motornet/Subaru_Uncharted_770_kWh_4E-xperience_AWD.webp"
+      "image_url": "assets/cars/motornet/Subaru_Uncharted_770_kWh_4E-xperience_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2862/allestimento/SUB6422"
     },
     {
       "id": "motornet_5e940727fc959a",
@@ -79411,8 +79411,8 @@
       "battery_kwh": 73.1,
       "range_wltp_km": 509,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2418/allestimento/SUB6423",
-      "image_url": "assets/cars/motornet/Subaru_Solterra_731_kWh_4E-xperience_AWD.webp"
+      "image_url": "assets/cars/motornet/Subaru_Solterra_731_kWh_4E-xperience_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2418/allestimento/SUB6423"
     },
     {
       "id": "motornet_41979898793de8",
@@ -79427,8 +79427,8 @@
       "battery_kwh": 73.1,
       "range_wltp_km": 471,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2418/allestimento/SUB6424",
-      "image_url": "assets/cars/motornet/Subaru_Solterra_731_kWh_4E-xperience_AWD.webp"
+      "image_url": "assets/cars/motornet/Subaru_Solterra_731_kWh_4E-xperience_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2418/allestimento/SUB6424"
     },
     {
       "id": "motornet_da39871a05e615",
@@ -79443,8 +79443,8 @@
       "battery_kwh": 74.7,
       "range_wltp_km": 523,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2861/allestimento/SUB6425",
-      "image_url": "assets/cars/motornet/Subaru_E-Outback_747_kWh_4E-xperience_AWD.webp"
+      "image_url": "assets/cars/motornet/Subaru_E-Outback_747_kWh_4E-xperience_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2861/allestimento/SUB6425"
     },
     {
       "id": "motornet_b90ffac763173f",
@@ -79459,8 +79459,8 @@
       "battery_kwh": 74.7,
       "range_wltp_km": 477,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2861/allestimento/SUB6426",
-      "image_url": "assets/cars/motornet/Subaru_E-Outback_747_kWh_4E-xperience_AWD.webp"
+      "image_url": "assets/cars/motornet/Subaru_E-Outback_747_kWh_4E-xperience_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2861/allestimento/SUB6426"
     },
     {
       "id": "motornet_0a7d1373d4f7bc",
@@ -80525,8 +80525,8 @@
       "power_cv": 177,
       "consumption_l_100km": 7.8,
       "emissions_g_km": 180,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2786/allestimento/TIG0005",
-      "image_url": "assets/cars/motornet/Tiger_Eight_1.5_TDI_177cv_7DCT.webp"
+      "image_url": "assets/cars/motornet/Tiger_Eight_1.5_TDI_177cv_7DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2786/allestimento/TIG0005"
     },
     {
       "id": "motornet_233f9a40e0a50f",
@@ -80540,8 +80540,8 @@
       "power_cv": 177,
       "consumption_l_100km": 7.8,
       "emissions_g_km": 180,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2786/allestimento/TIG0006",
-      "image_url": "assets/cars/motornet/Tiger_Eight_1.5_TDI_177cv_British_Green_Edition_7DCT.webp"
+      "image_url": "assets/cars/motornet/Tiger_Eight_1.5_TDI_177cv_British_Green_Edition_7DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2786/allestimento/TIG0006"
     },
     {
       "id": "motornet_3c33bc52a17395",
@@ -80556,8 +80556,8 @@
       "consumption_l_100km": 7.8,
       "consumption_kg_100km": 7.8,
       "emissions_g_km": 180,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2786/allestimento/TIG0007",
-      "image_url": "assets/cars/motornet/Tiger_Eight_1.5_TDI_Gpl_167cv_7DCT.webp"
+      "image_url": "assets/cars/motornet/Tiger_Eight_1.5_TDI_Gpl_167cv_7DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2786/allestimento/TIG0007"
     },
     {
       "id": "motornet_7c54bb06acf724",
@@ -80572,8 +80572,8 @@
       "consumption_l_100km": 7.8,
       "consumption_kg_100km": 7.8,
       "emissions_g_km": 180,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2786/allestimento/TIG0008",
-      "image_url": "assets/cars/motornet/Tiger_Eight_1.5_TDI_Gpl_167cv_British_Green_Edition_7DCT.webp"
+      "image_url": "assets/cars/motornet/Tiger_Eight_1.5_TDI_Gpl_167cv_British_Green_Edition_7DCT.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2786/allestimento/TIG0008"
     },
     {
       "id": "motornet_ab7b07ad5a07cf",
@@ -80948,8 +80948,8 @@
       "battery_kwh": 74.7,
       "range_wltp_km": 528,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2856/allestimento/TOY5537",
-      "image_url": "assets/cars/motornet/Toyota_bZ4X_Touring_747_kWh_Icon_AWD-i.webp"
+      "image_url": "assets/cars/motornet/Toyota_bZ4X_Touring_747_kWh_Icon_AWD-i.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2856/allestimento/TOY5537"
     },
     {
       "id": "motornet_edde915a8b0cb9",
@@ -80964,8 +80964,8 @@
       "battery_kwh": 74.7,
       "range_wltp_km": 591,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2856/allestimento/TOY5536",
-      "image_url": "assets/cars/motornet/Toyota_bZ4X_Touring_747_kWh_Icon_FWD.webp"
+      "image_url": "assets/cars/motornet/Toyota_bZ4X_Touring_747_kWh_Icon_FWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2856/allestimento/TOY5536"
     },
     {
       "id": "motornet_c5518d50831c79",
@@ -80980,8 +80980,8 @@
       "battery_kwh": 74.7,
       "range_wltp_km": 480,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2856/allestimento/TOY5538",
-      "image_url": "assets/cars/motornet/Toyota_bZ4X_Touring_747_kWh_Premium_AWD-i.webp"
+      "image_url": "assets/cars/motornet/Toyota_bZ4X_Touring_747_kWh_Premium_AWD-i.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2856/allestimento/TOY5538"
     },
     {
       "id": "motornet_56101d8ddbe6f1",
@@ -81951,8 +81951,8 @@
       "battery_kwh": 52,
       "range_wltp_km": 454,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2853/allestimento/VLK685A",
-      "image_url": "assets/cars/motornet/Volkswagen_ID.Polo_52_kWh_Edition_1_211cv.webp"
+      "image_url": "assets/cars/motornet/Volkswagen_ID.Polo_52_kWh_Edition_1_211cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2853/allestimento/VLK685A"
     },
     {
       "id": "motornet_d0038ce9d53c46",
@@ -81967,8 +81967,8 @@
       "battery_kwh": 52,
       "range_wltp_km": 446,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2853/allestimento/VLK690A",
-      "image_url": "assets/cars/motornet/Volkswagen_ID.Polo_52_kWh_Edition_1_More_211cv.webp"
+      "image_url": "assets/cars/motornet/Volkswagen_ID.Polo_52_kWh_Edition_1_More_211cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2853/allestimento/VLK690A"
     },
     {
       "id": "motornet_c9e0ec36edb096",
@@ -82781,8 +82781,8 @@
       "battery_kwh": 50,
       "range_wltp_km": 416,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK684A",
-      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_50_kWh_Life_170cv.webp"
+      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_50_kWh_Life_170cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK684A"
     },
     {
       "id": "motornet_c12e2a3ac56baa",
@@ -82797,8 +82797,8 @@
       "battery_kwh": 58,
       "range_wltp_km": 492,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK686A",
-      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_58_kWh_Life_190cv.webp"
+      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_58_kWh_Life_190cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK686A"
     },
     {
       "id": "motornet_7c8d999f797186",
@@ -82813,8 +82813,8 @@
       "battery_kwh": 58,
       "range_wltp_km": 488,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK688A",
-      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_58_kWh_Style_190cv.webp"
+      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_58_kWh_Style_190cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK688A"
     },
     {
       "id": "motornet_21961584733a0b",
@@ -82829,8 +82829,8 @@
       "battery_kwh": 79,
       "range_wltp_km": 629,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK687A",
-      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_79_kWh_Life_231cv.webp"
+      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_79_kWh_Life_231cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK687A"
     },
     {
       "id": "motornet_c9bb14b6dc2078",
@@ -82845,8 +82845,8 @@
       "battery_kwh": 79,
       "range_wltp_km": 624,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK689A",
-      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_79_kWh_Style_231cv.webp"
+      "image_url": "assets/cars/motornet/Volkswagen_ID.3_Neo_79_kWh_Style_231cv.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2852/allestimento/VLK689A"
     },
     {
       "id": "motornet_052949a088efd1",
@@ -87175,8 +87175,8 @@
       "battery_kwh": 80,
       "range_wltp_km": 476,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2691/allestimento/VOY0004",
-      "image_url": "assets/cars/motornet/Voyah_Courage_80kWh_2WD.webp"
+      "image_url": "assets/cars/motornet/Voyah_Courage_80kWh_2WD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2691/allestimento/VOY0004"
     },
     {
       "id": "motornet_3d90b189a1cce9",
@@ -87191,8 +87191,8 @@
       "battery_kwh": 80,
       "range_wltp_km": 440,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2691/allestimento/VOY0001",
-      "image_url": "assets/cars/motornet/Voyah_Courage_80kWh_4WD.webp"
+      "image_url": "assets/cars/motornet/Voyah_Courage_80kWh_4WD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2691/allestimento/VOY0001"
     },
     {
       "id": "motornet_e90d01b7cfa202",
@@ -87208,8 +87208,8 @@
       "battery_kwh": 61.7,
       "range_wltp_km": 455,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2866/allestimento/XPE0015",
-      "image_url": "assets/cars/motornet/XPeng_P7_617_kWh_Standard_Range_RWD.webp"
+      "image_url": "assets/cars/motornet/XPeng_P7_617_kWh_Standard_Range_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2866/allestimento/XPE0015"
     },
     {
       "id": "motornet_cf24be85be7964",
@@ -87225,8 +87225,8 @@
       "battery_kwh": 74.9,
       "range_wltp_km": 530,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2866/allestimento/XPE0016",
-      "image_url": "assets/cars/motornet/XPeng_P7_749_kWh_Long_Range_RWD.webp"
+      "image_url": "assets/cars/motornet/XPeng_P7_749_kWh_Long_Range_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2866/allestimento/XPE0016"
     },
     {
       "id": "motornet_878ae9e5ef6fc6",
@@ -87242,8 +87242,8 @@
       "battery_kwh": 74.9,
       "range_wltp_km": 500,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2866/allestimento/XPE0017",
-      "image_url": "assets/cars/motornet/XPeng_P7_749_kWh_Performance_AWD.webp"
+      "image_url": "assets/cars/motornet/XPeng_P7_749_kWh_Performance_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2866/allestimento/XPE0017"
     },
     {
       "id": "motornet_6cd7512eafb024",
@@ -87395,8 +87395,8 @@
       "battery_kwh": 49,
       "range_wltp_km": 330,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2827/allestimento/ZEE0001",
-      "image_url": "assets/cars/motornet/Zeekr_X_49_kWh_Full_electric_Core_RWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_X_49_kWh_Full_electric_Core_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2827/allestimento/ZEE0001"
     },
     {
       "id": "motornet_526d8ae9076a3b",
@@ -87412,8 +87412,8 @@
       "battery_kwh": 61,
       "range_wltp_km": 405,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2827/allestimento/ZEE0002",
-      "image_url": "assets/cars/motornet/Zeekr_X_61_kWh_Full_electric_Long_Range_RWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_X_61_kWh_Full_electric_Long_Range_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2827/allestimento/ZEE0002"
     },
     {
       "id": "motornet_e947b19cfb1929",
@@ -87429,8 +87429,8 @@
       "battery_kwh": 69,
       "range_wltp_km": 415,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2827/allestimento/ZEE0003",
-      "image_url": "assets/cars/motornet/Zeekr_X_69_kWh_Full_electric_Privilege_AWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_X_69_kWh_Full_electric_Privilege_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2827/allestimento/ZEE0003"
     },
     {
       "id": "motornet_20d2fe9fb383f6",
@@ -87446,8 +87446,8 @@
       "battery_kwh": 100,
       "range_wltp_km": 615,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2826/allestimento/ZEE0005",
-      "image_url": "assets/cars/motornet/Zeekr_7X_100_kWh_Full_electric_Long_Range_RWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_7X_100_kWh_Full_electric_Long_Range_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2826/allestimento/ZEE0005"
     },
     {
       "id": "motornet_466e6524e00d88",
@@ -87463,8 +87463,8 @@
       "battery_kwh": 100,
       "range_wltp_km": 543,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2826/allestimento/ZEE0006",
-      "image_url": "assets/cars/motornet/Zeekr_7X_100_kWh_Full_electric_Privilege_AWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_7X_100_kWh_Full_electric_Privilege_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2826/allestimento/ZEE0006"
     },
     {
       "id": "motornet_c38ed8a5b0eb6e",
@@ -87480,8 +87480,8 @@
       "battery_kwh": 75,
       "range_wltp_km": 480,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2826/allestimento/ZEE0004",
-      "image_url": "assets/cars/motornet/Zeekr_7X_75_kWh_Full_electric_Core_RWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_7X_75_kWh_Full_electric_Core_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2826/allestimento/ZEE0004"
     },
     {
       "id": "motornet_2caedd46443f67",
@@ -87496,8 +87496,8 @@
       "battery_kwh": 100,
       "range_wltp_km": 655,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2825/allestimento/ZEE0008",
-      "image_url": "assets/cars/motornet/Zeekr_7GT_100_kWh_Full_electric_Long_Range_RWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_7GT_100_kWh_Full_electric_Long_Range_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2825/allestimento/ZEE0008"
     },
     {
       "id": "motornet_404a01a25d914c",
@@ -87512,8 +87512,8 @@
       "battery_kwh": 100,
       "range_wltp_km": 558,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2825/allestimento/ZEE0009",
-      "image_url": "assets/cars/motornet/Zeekr_7GT_100_kWh_Full_electric_Privilege_AWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_7GT_100_kWh_Full_electric_Privilege_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2825/allestimento/ZEE0009"
     },
     {
       "id": "motornet_e53d2abc23f411",
@@ -87528,8 +87528,8 @@
       "battery_kwh": 75,
       "range_wltp_km": 519,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2825/allestimento/ZEE0007",
-      "image_url": "assets/cars/motornet/Zeekr_7GT_75_kWh_Full_electric_Core_RWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_7GT_75_kWh_Full_electric_Core_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2825/allestimento/ZEE0007"
     },
     {
       "id": "motornet_fad21417962f3c",
@@ -87545,8 +87545,8 @@
       "battery_kwh": 100,
       "range_wltp_km": 620,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2824/allestimento/ZEE0010",
-      "image_url": "assets/cars/motornet/Zeekr_001_100_kWh_Full_electric_Long_Range_RWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_001_100_kWh_Full_electric_Long_Range_RWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2824/allestimento/ZEE0010"
     },
     {
       "id": "motornet_3581d679516694",
@@ -87562,8 +87562,8 @@
       "battery_kwh": 100,
       "range_wltp_km": 594,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2824/allestimento/ZEE0011",
-      "image_url": "assets/cars/motornet/Zeekr_001_100_kWh_Full_electric_Performance_AWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_001_100_kWh_Full_electric_Performance_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2824/allestimento/ZEE0011"
     },
     {
       "id": "motornet_368b71cac0b62c",
@@ -87579,24 +87579,8 @@
       "battery_kwh": 100,
       "range_wltp_km": 585,
       "emissions_g_km": 2,
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2824/allestimento/ZEE0012",
-      "image_url": "assets/cars/motornet/Zeekr_001_100_kWh_Full_electric_Privilege_AWD.webp"
+      "image_url": "assets/cars/motornet/Zeekr_001_100_kWh_Full_electric_Privilege_AWD.webp",
+      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2824/allestimento/ZEE0012"
     }
-  ],
-  "postprocess": {
-    "version": "motornet_price_consumption_battery_v3",
-    "changed_fields": 0,
-    "missing_prices": 0,
-    "estimated_batteries": 0,
-    "rule": "prices only from explicit Motornet euro price/listino fields; EV battery filled from direct kWh, model name, or WLTP range * consumption",
-    "ev_battery_derivation": {
-      "version": "ev_battery_derivation_v1",
-      "changed_cars": 0,
-      "ev_with_consumption_kwh_100km": 1260,
-      "ev_with_range_wltp_km": 1260,
-      "ev_with_battery_kwh": 1260,
-      "estimated_batteries": 0,
-      "rule": "EV battery_kwh derived from direct battery specs, model-name kWh, or WLTP range * kWh/100 km; handles Motornet Automonia typo and kW/h 100 km labels"
-    }
-  }
+  ]
 }
