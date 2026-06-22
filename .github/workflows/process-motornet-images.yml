@@ -64,7 +64,7 @@ jobs:
             --input-dir "${{ inputs.input_dir }}" \
             --output-dir "${{ inputs.output_dir }}" \
             --background "assets/sfondopippo.jpg" \
-            --logo "assets/logopippo.jpg" \
+            --logo "assets/logopippo.png" \
             --force "${{ inputs.force }}" \
             --limit "${{ inputs.limit }}"
 
