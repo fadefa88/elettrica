@@ -217,11 +217,9 @@
     }
     return '';
   }
-  function normalizeBrand(car){
-    const code = codeFromUrl([car.source_url, car.motornet_detail_url, car.image_source_url, car.image_local_path].join(' '));
-    if(BRAND_BY_CODE[code]) return BRAND_BY_CODE[code];
-    return brandFromText([car.brand, car.model, car.version, car.powertrain].join(' ')) || cleanName(car.brand) || 'Motornet';
-  }
+function normalizeBrand(car){
+  return cleanName(car && car.brand);
+}
   function stripBrand(value, brand){
     let text = cleanName(value);
     const b = cleanName(brand);
