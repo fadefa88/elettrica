@@ -14,6 +14,7 @@ import json
 import math
 import re
 from collections import Counter
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -68,6 +69,28 @@ THERMAL_FUELS = {
     "ibrida_gpl",
     "ibrida_metano",
 }
+
+
+@dataclass(frozen=True)
+class AuditLimits:
+    ev_consumption_min: float = 7
+    ev_consumption_max: float = 40
+    ev_battery_min: float = 5
+    ev_battery_max: float = 250
+    ev_range_min: float = 30
+    ev_range_max: float = 1000
+    thermal_consumption_l_min: float = 1
+    thermal_consumption_l_max: float = 30
+    thermal_consumption_kg_min: float = 1
+    thermal_consumption_kg_max: float = 15
+    emissions_min: float = 1
+    emissions_max: float = 500
+    price_min: float = 1000
+    price_max: float = 600000
+    power_kw_min: float = 10
+    power_kw_max: float = 900
+    power_cv_min: float = 10
+    power_cv_max: float = 1300
 
 
 def clean_text(value: Any) -> str:
@@ -162,7 +185,7 @@ def range_issue(issues: list[str], label: str, value: float | None, unit: str, m
         issues.append(f"too high {label}: {value:g} {unit} > {max_value:g}")
 
 
-def issues_for(car: dict[str, Any]) -> list[str]:
+def issues_for(car: dict[str, Any], limits: AuditLimits) -> list[str]:
     issues: list[str] = []
     category = category_of(car)
     fuel = fuel_of(car)
@@ -174,32 +197,50 @@ def issues_for(car: dict[str, Any]) -> list[str]:
     add_issue(issues, "fuel", fuel)
     add_issue(issues, "source_url", source_url(car))
 
-    price = first_number(car, "price_eur")
-    power_kw = first_number(car, "power_kw")
-    power_cv = first_number(car, "power_cv")
-    range_issue(issues, "price_eur", price, "€", 1000, 600000)
-    range_issue(issues, "power_kw", power_kw, "kW", 10, 900)
-    range_issue(issues, "power_cv", power_cv, "CV", 10, 1300)
+    range_issue(issues, "price_eur", first_number(car, "price_eur"), "€", limits.price_min, limits.price_max)
+    range_issue(issues, "power_kw", first_number(car, "power_kw"), "kW", limits.power_kw_min, limits.power_kw_max)
+    range_issue(issues, "power_cv", first_number(car, "power_cv"), "CV", limits.power_cv_min, limits.power_cv_max)
 
     if category == "electric":
-        range_issue(issues, "consumption_kwh_100km", first_number(car, "consumption_kwh_100km"), "kWh/100 km", 5, 40)
-        range_issue(issues, "battery_kwh", first_number(car, "battery_kwh"), "kWh", 5, 250)
-        range_issue(issues, "range_wltp_km", first_number(car, "range_wltp_km"), "km", 50, 1200)
+        range_issue(
+            issues,
+            "consumption_kwh_100km",
+            first_number(car, "consumption_kwh_100km"),
+            "kWh/100 km",
+            limits.ev_consumption_min,
+            limits.ev_consumption_max,
+        )
+        range_issue(issues, "battery_kwh", first_number(car, "battery_kwh"), "kWh", limits.ev_battery_min, limits.ev_battery_max)
+        range_issue(issues, "range_wltp_km", first_number(car, "range_wltp_km"), "km", limits.ev_range_min, limits.ev_range_max)
     else:
         if fuel not in THERMAL_FUELS:
             issues.append(f"unknown thermal fuel: {fuel or '-'}")
         if fuel in GAS_FUELS:
-            range_issue(issues, "consumption_kg_100km", first_number(car, "consumption_kg_100km"), "kg/100 km", 1, 15)
+            range_issue(
+                issues,
+                "consumption_kg_100km",
+                first_number(car, "consumption_kg_100km"),
+                "kg/100 km",
+                limits.thermal_consumption_kg_min,
+                limits.thermal_consumption_kg_max,
+            )
         else:
-            range_issue(issues, "consumption_l_100km", first_number(car, "consumption_l_100km"), "l/100 km", 1, 30)
-        range_issue(issues, "emissions_g_km", first_number(car, "emissions_g_km"), "g/km", 1, 600)
+            range_issue(
+                issues,
+                "consumption_l_100km",
+                first_number(car, "consumption_l_100km"),
+                "l/100 km",
+                limits.thermal_consumption_l_min,
+                limits.thermal_consumption_l_max,
+            )
+        range_issue(issues, "emissions_g_km", first_number(car, "emissions_g_km"), "g/km", limits.emissions_min, limits.emissions_max)
 
     return issues
 
 
-def row_for(car: dict[str, Any]) -> dict[str, Any]:
-    issues = issues_for(car)
-    row = {
+def row_for(car: dict[str, Any], limits: AuditLimits) -> dict[str, Any]:
+    issues = issues_for(car, limits)
+    return {
         "issues": " | ".join(issues) if issues else "tutto ok",
         "id": first_text(car, "id"),
         "category": category_of(car),
@@ -219,7 +260,6 @@ def row_for(car: dict[str, Any]) -> dict[str, Any]:
         "image_url": car_image_url(car),
         "source_url": source_url(car),
     }
-    return row
 
 
 def load_cars(path: Path) -> list[dict[str, Any]]:
@@ -269,7 +309,7 @@ def write_csv(rows: list[dict[str, Any]], path: Path) -> None:
         writer.writerows(rows)
 
 
-def write_summary(rows: list[dict[str, Any]], path: Path) -> None:
+def write_summary(rows: list[dict[str, Any]], path: Path, limits: AuditLimits) -> None:
     total = len(rows)
     ok = sum(1 for row in rows if row.get("issues") == "tutto ok")
     categories = Counter(row.get("category") or "unknown" for row in rows)
@@ -289,6 +329,15 @@ def write_summary(rows: list[dict[str, Any]], path: Path) -> None:
         f"- OK rows: {ok}",
         f"- Rows with issues: {total - ok}",
         "",
+        "## Audit thresholds",
+        "",
+        f"- EV consumption: {limits.ev_consumption_min:g}-{limits.ev_consumption_max:g} kWh/100 km",
+        f"- EV battery: {limits.ev_battery_min:g}-{limits.ev_battery_max:g} kWh",
+        f"- EV WLTP range: {limits.ev_range_min:g}-{limits.ev_range_max:g} km",
+        f"- Thermal consumption: {limits.thermal_consumption_l_min:g}-{limits.thermal_consumption_l_max:g} l/100 km",
+        f"- Methane consumption: {limits.thermal_consumption_kg_min:g}-{limits.thermal_consumption_kg_max:g} kg/100 km",
+        f"- CO2 emissions: {limits.emissions_min:g}-{limits.emissions_max:g} g/km",
+        "",
         "## Categories",
         "",
     ]
@@ -306,31 +355,70 @@ def write_summary(rows: list[dict[str, Any]], path: Path) -> None:
         "",
         "- motornet_catalog_audit.xlsx: curated workbook for manual cleanup",
         "- motornet_catalog_audit.csv: same data in CSV format",
+        "- quality_report.md: markdown summary",
         "",
         "Images are intentionally ignored in issue generation.",
     ])
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def build_limits(args: argparse.Namespace) -> AuditLimits:
+    return AuditLimits(
+        ev_consumption_min=args.ev_consumption_min,
+        ev_consumption_max=args.ev_consumption_max,
+        ev_battery_min=args.ev_battery_min,
+        ev_battery_max=args.ev_battery_max,
+        ev_range_min=args.ev_range_min,
+        ev_range_max=args.ev_range_max,
+        thermal_consumption_l_min=args.thermal_consumption_l_min,
+        thermal_consumption_l_max=args.thermal_consumption_l_max,
+        thermal_consumption_kg_min=args.thermal_consumption_kg_min,
+        thermal_consumption_kg_max=args.thermal_consumption_kg_max,
+        emissions_min=args.emissions_min,
+        emissions_max=args.emissions_max,
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Audit Motornet catalog and export a slim Excel workbook.")
     parser.add_argument("--catalog", default="data/cars_motornet.json", help="Motornet JSON catalog")
     parser.add_argument("--out-dir", default="reports/motornet-quality", help="Output directory")
+    parser.add_argument("--fail-on-issues", action="store_true", help="Exit with code 1 if anomalies are found")
+    parser.add_argument("--ev-consumption-min", type=float, default=AuditLimits.ev_consumption_min)
+    parser.add_argument("--ev-consumption-max", type=float, default=AuditLimits.ev_consumption_max)
+    parser.add_argument("--ev-battery-min", type=float, default=AuditLimits.ev_battery_min)
+    parser.add_argument("--ev-battery-max", type=float, default=AuditLimits.ev_battery_max)
+    parser.add_argument("--ev-range-min", type=float, default=AuditLimits.ev_range_min)
+    parser.add_argument("--ev-range-max", type=float, default=AuditLimits.ev_range_max)
+    parser.add_argument("--thermal-consumption-l-min", type=float, default=AuditLimits.thermal_consumption_l_min)
+    parser.add_argument("--thermal-consumption-l-max", type=float, default=AuditLimits.thermal_consumption_l_max)
+    parser.add_argument("--thermal-consumption-kg-min", type=float, default=AuditLimits.thermal_consumption_kg_min)
+    parser.add_argument("--thermal-consumption-kg-max", type=float, default=AuditLimits.thermal_consumption_kg_max)
+    parser.add_argument("--emissions-min", type=float, default=AuditLimits.emissions_min)
+    parser.add_argument("--emissions-max", type=float, default=AuditLimits.emissions_max)
     args = parser.parse_args()
 
     catalog_path = Path(args.catalog)
     out_dir = Path(args.out_dir)
+    limits = build_limits(args)
     cars = load_cars(catalog_path)
-    rows = [row_for(car) for car in cars]
+    rows = [row_for(car, limits) for car in cars]
 
     out_dir.mkdir(parents=True, exist_ok=True)
     write_excel(rows, out_dir / "motornet_catalog_audit.xlsx")
     write_csv(rows, out_dir / "motornet_catalog_audit.csv")
-    write_summary(rows, out_dir / "motornet_quality_summary.md")
+    write_summary(rows, out_dir / "quality_report.md", limits)
+    # Backward-compatible filename used by older runs/docs.
+    write_summary(rows, out_dir / "motornet_quality_summary.md", limits)
 
+    issue_rows = sum(1 for row in rows if row.get("issues") != "tutto ok")
     print(f"Cars audited: {len(rows)}")
+    print(f"Rows with issues: {issue_rows}")
     print(f"Excel: {out_dir / 'motornet_catalog_audit.xlsx'}")
-    print(f"Summary: {out_dir / 'motornet_quality_summary.md'}")
+    print(f"Summary: {out_dir / 'quality_report.md'}")
+    if args.fail_on_issues and issue_rows:
+        print("Failing because --fail-on-issues is set and anomalies were found.")
+        return 1
     return 0
 
 
