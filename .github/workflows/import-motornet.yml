@@ -125,6 +125,7 @@ jobs:
           python scripts/postprocess_motornet_catalog.py
           python scripts/derive_ev_battery_fields.py
           python scripts/slim_motornet_catalog.py --input data/cars_motornet.json --out data/cars_motornet.json
+          python scripts/normalize_motornet_image_urls.py --catalog data/cars_motornet.json --image-prefix assets/cars/motornet
           python -m json.tool data/cars_motornet.json > /dev/null
           python - <<'PY'
           import json
