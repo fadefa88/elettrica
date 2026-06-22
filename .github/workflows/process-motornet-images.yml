@@ -12,9 +12,10 @@ on:
           - "false"
           - "true"
       limit:
-        description: "Numero massimo immagini da processare. 0 = tutte"
+        description: "Numero massimo immagini da ispezionare/processare. 0 = tutte"
         required: false
-        default: "0"
+        default: 0
+        type: number
       input_dir:
         description: "Cartella immagini Motornet"
         required: false
@@ -58,21 +59,47 @@ jobs:
           python -m pip install --upgrade pip
           pip install pillow rembg onnxruntime
 
+      - name: Resolve inputs
+        id: vars
+        shell: bash
+        run: |
+          LIMIT="${{ github.event.inputs.limit || '0' }}"
+          FORCE="${{ github.event.inputs.force || 'false' }}"
+          INPUT_DIR="${{ github.event.inputs.input_dir || 'assets/cars/motornet' }}"
+          OUTPUT_DIR="${{ github.event.inputs.output_dir || 'assets/cars/motornet_processed' }}"
+
+          if [[ ! "$LIMIT" =~ ^[0-9]+$ ]]; then
+            echo "Invalid limit: $LIMIT. Use 0 or a positive integer."
+            exit 1
+          fi
+
+          echo "limit=$LIMIT"
+          echo "force=$FORCE"
+          echo "input_dir=$INPUT_DIR"
+          echo "output_dir=$OUTPUT_DIR"
+
+          {
+            echo "limit=$LIMIT"
+            echo "force=$FORCE"
+            echo "input_dir=$INPUT_DIR"
+            echo "output_dir=$OUTPUT_DIR"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Process images
         run: |
           python scripts/process_motornet_images.py \
-            --input-dir "${{ inputs.input_dir }}" \
-            --output-dir "${{ inputs.output_dir }}" \
+            --input-dir "${{ steps.vars.outputs.input_dir }}" \
+            --output-dir "${{ steps.vars.outputs.output_dir }}" \
             --background "assets/sfondopippo.jpg" \
             --logo "assets/logopippo.png" \
-            --force "${{ inputs.force }}" \
-            --limit "${{ inputs.limit }}"
+            --force "${{ steps.vars.outputs.force }}" \
+            --limit "${{ steps.vars.outputs.limit }}"
 
       - name: Commit generated images if any
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add "${{ inputs.output_dir }}"
+          git add "${{ steps.vars.outputs.output_dir }}"
 
           if git diff --cached --quiet; then
             echo "No processed Motornet images to commit."
