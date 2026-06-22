@@ -1,0 +1,2 @@
+import rembg
+print('ok')
