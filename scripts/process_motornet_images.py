@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import argparse
+import shutil
 import sys
 
 from PIL import Image, ImageOps
@@ -70,6 +71,13 @@ def save_final_webp(x, path, quality=80, max_side=1600):
     )
 
 
+def remove_file(path):
+    if path.exists() and path.is_file():
+        path.unlink()
+        return True
+    return False
+
+
 def resolve_logo_path(raw_path):
     """Prefer the provided logo path, then try common variants in the same folder."""
     path = Path(raw_path)
@@ -117,6 +125,8 @@ src_dir = Path(args.input_dir)
 out_dir = Path(args.output_dir)
 bg_path = Path(args.background)
 logo_path = resolve_logo_path(args.logo)
+cutout_dir = out_dir / "cutout"
+final_dir = out_dir / "final"
 
 if not src_dir.exists():
     raise SystemExit(f"missing input dir: {src_dir}")
@@ -143,7 +153,7 @@ if not files:
 bg = im(bg_path)
 logo = im(logo_path)
 session = new_session("u2net")
-done = skip = fail = inspected = 0
+done = skip = fail = inspected = removed_legacy_png = removed_cutout = 0
 
 for n, src in enumerate(files, 1):
     # Defensive hard stop: even if future edits alter the file selection above,
@@ -154,19 +164,21 @@ for n, src in enumerate(files, 1):
 
     inspected += 1
     rel = src.relative_to(src_dir)
-    cut_path = out_dir / "cutout" / rel.with_suffix(".png")
-    final_path = out_dir / "final" / rel.with_suffix(".webp")
-    legacy_png_path = out_dir / "final" / rel.with_suffix(".png")
-    cut_path.parent.mkdir(parents=True, exist_ok=True)
+    cut_path = cutout_dir / rel.with_suffix(".png")
+    final_path = final_dir / rel.with_suffix(".webp")
+    legacy_png_path = final_dir / rel.with_suffix(".png")
     final_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Remove legacy final PNGs to avoid filling the repository after switching
-    # final composited images to WEBP. Cutout PNGs are intentionally preserved.
-    if legacy_png_path.exists():
-        legacy_png_path.unlink()
+    # Remove legacy files to avoid filling the repository. The cutout is now only
+    # used in memory and is not saved as an extra artifact.
+    if remove_file(legacy_png_path):
+        removed_legacy_png += 1
         print(f"[{n}/{len(files)}] removed legacy final PNG {legacy_png_path}")
+    if remove_file(cut_path):
+        removed_cutout += 1
+        print(f"[{n}/{len(files)}] removed legacy cutout PNG {cut_path}")
 
-    if not force and cut_path.exists() and final_path.exists():
+    if not force and final_path.exists():
         skip += 1
         print(f"[{n}/{len(files)}] skip {src}")
         continue
@@ -174,7 +186,6 @@ for n, src in enumerate(files, 1):
     try:
         cut = getattr(rembg, "re" + "move")(im(src), session=session).convert("RGBA")
         cut = trim(ImageOps.mirror(cut), 20)
-        cut.save(cut_path, "PNG", optimize=True)
 
         canvas = bg.copy().convert("RGBA")
         cw, ch = canvas.size
@@ -198,5 +209,12 @@ for n, src in enumerate(files, 1):
         fail += 1
         print(f"[{n}/{len(files)}] ERROR {src}: {e}", file=sys.stderr)
 
-print(f"inspected={inspected} done={done} skipped={skip} failed={fail}")
+# On full runs, remove the whole legacy cutout directory so orphaned cutouts whose
+# source image no longer exists are deleted as well. For limited test runs, only
+# cutouts matching inspected sources are removed.
+if limit == 0 and cutout_dir.exists():
+    shutil.rmtree(cutout_dir)
+    print(f"removed legacy cutout directory {cutout_dir}")
+
+print(f"inspected={inspected} done={done} skipped={skip} failed={fail} removed_legacy_png={removed_legacy_png} removed_cutout={removed_cutout}")
 raise SystemExit(1 if fail else 0)
