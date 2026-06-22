@@ -1,2 +1,0 @@
-import rembg
-print('ok')
