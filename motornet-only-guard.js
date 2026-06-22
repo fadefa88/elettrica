@@ -48,11 +48,6 @@
         headers: { 'Content-Type': 'application/json; charset=utf-8' }
       }));
     }
-    if(path === 'data/cars_motornet.json' || path.endsWith('/data/cars_motornet.json')){
-      // Strip timestamp cache-busters added by older scripts. The catalogue is large;
-      // allowing normal browser/HTTP cache makes repeated visits much faster.
-      return originalFetch('data/cars_motornet.json', init);
-    }
     return originalFetch(resource, init);
   };
 
