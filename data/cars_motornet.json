@@ -87300,5 +87300,21 @@
       "emissions_g_km": 2,
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2824/allestimento/ZEE0012"
     }
-  ]
+  ],
+  "postprocess": {
+    "version": "motornet_price_consumption_battery_v3",
+    "changed_fields": 0,
+    "missing_prices": 0,
+    "estimated_batteries": 0,
+    "rule": "prices only from explicit Motornet euro price/listino fields; EV battery filled from direct kWh, model name, or WLTP range * consumption",
+    "ev_battery_derivation": {
+      "version": "ev_battery_derivation_v1",
+      "changed_cars": 0,
+      "ev_with_consumption_kwh_100km": 1260,
+      "ev_with_range_wltp_km": 1260,
+      "ev_with_battery_kwh": 1260,
+      "estimated_batteries": 0,
+      "rule": "EV battery_kwh derived from direct battery specs, model-name kWh, or WLTP range * kWh/100 km; handles Motornet Automonia typo and kW/h 100 km labels"
+    }
+  }
 }
