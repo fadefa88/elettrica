@@ -4,15 +4,21 @@
   const SITE_NAME='Elettrica o Termica';
   const SITE_URL='elettricaotermica.it';
 
+  function byId(id){return document.getElementById(id)}
+  function clean(v){return String(v||'').replace(/\s+/g,' ').trim()}
+  function money(v){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Number(v)||0)}
+  function text(sel,fallback){const el=document.querySelector(sel);return clean(el&&el.textContent)||fallback||''}
+  function currentYearLabel(){const y=new Date().getFullYear();return y<=START_YEAR?String(START_YEAR):START_YEAR+'-'+y}
+
   function saveChoice(choice){
     try{localStorage.setItem(STORAGE_KEY,choice)}catch(e){}
-    const banner=document.getElementById('cookieBanner');
+    const banner=byId('cookieBanner');
     if(banner) banner.classList.remove('is-visible');
     if(choice==='accepted' && typeof window.EOT_ENABLE_ANALYTICS==='function') window.EOT_ENABLE_ANALYTICS();
   }
   function readChoice(){try{return localStorage.getItem(STORAGE_KEY)}catch(e){return null}}
   function showBanner(){
-    if(document.getElementById('cookieBanner')) return;
+    if(byId('cookieBanner')) return;
     const banner=document.createElement('div');
     banner.id='cookieBanner';
     banner.className='cookie-banner';
@@ -24,12 +30,6 @@
     setTimeout(function(){banner.classList.add('is-visible')},250);
   }
 
-  function byId(id){return document.getElementById(id)}
-  function clean(v){return String(v||'').replace(/\s+/g,' ').trim()}
-  function money(v){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Number(v)||0)}
-  function text(sel,fallback){const el=document.querySelector(sel);return clean(el&&el.textContent)||fallback||''}
-  function currentYearLabel(){const y=new Date().getFullYear();return y<=START_YEAR?String(START_YEAR):START_YEAR+'-'+y}
-
   function installFooter(){
     const shell=document.querySelector('.app-shell');
     if(!shell || document.querySelector('.site-footer')) return;
@@ -40,40 +40,121 @@
   }
 
   async function loadGuideCatalog(){
-    if(window.EV && window.IC && window.EV.length && window.IC.length) return;
     try{
       const r=await fetch('/data/cars_motornet.json',{cache:'no-store'});
       if(!r.ok) return;
       const payload=await r.json();
       const cars=(payload.cars||[]).filter(function(c){return c&&clean(c.id)&&clean(c.brand)&&clean(c.model)});
       const seenEv=new Set(),seenIc=new Set();
-      window.EV=cars.filter(function(c){const ok=clean(c.category)==='electric'&&!seenEv.has(c.id); if(ok)seenEv.add(c.id); return ok;});
-      window.IC=cars.filter(function(c){const ok=clean(c.category)!=='electric'&&!seenIc.has(c.id); if(ok)seenIc.add(c.id); return ok;});
+      window.__eotGuideEV=cars.filter(function(c){const ok=clean(c.category)==='electric'&&!seenEv.has(c.id); if(ok)seenEv.add(c.id); return ok;});
+      window.__eotGuideIC=cars.filter(function(c){const ok=clean(c.category)!=='electric'&&!seenIc.has(c.id); if(ok)seenIc.add(c.id); return ok;});
       window.__eotGuideCatalogReady=true;
     }catch(e){}
   }
 
-  function imageToJpegDataUrl(src){
-    return new Promise(function(resolve){
+  function activeStep(){
+    const screen=document.querySelector('.screen.active');
+    return screen ? Number(screen.dataset.step) : 0;
+  }
+  function syncStepUi(){
+    const step=activeStep();
+    const prev=byId('prevStep');
+    const shell=document.querySelector('.app-shell');
+    if(shell) shell.dataset.currentStep=String(step);
+    if(prev) prev.style.display = step===0 ? 'none' : '';
+  }
+  function pvIsValid(){
+    if(activeStep()!==5) return true;
+    const noPv=!!byId('noPv')?.checked;
+    const unknownPv=!!byId('unknownPv')?.checked;
+    const solar=Number(byId('solarShare')?.value||0);
+    return noPv || unknownPv || solar>0;
+  }
+  function showPvError(){
+    const section=document.querySelector('.screen[data-step="5"] .card.soft');
+    if(!section) return;
+    let msg=byId('pvValidationMsg');
+    if(!msg){
+      msg=document.createElement('div');
+      msg.id='pvValidationMsg';
+      msg.className='explain small pv-error';
+      section.appendChild(msg);
+    }
+    msg.innerHTML='<b>Dato fotovoltaico mancante.</b> Se non hai impianto fotovoltaico seleziona “Non ho impianto fotovoltaico”, altrimenti indica una quota fotovoltaico maggiore di 0%.';
+    msg.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function patchNavigation(){
+    if(window.__eotNavigationPatched) return;
+    window.__eotNavigationPatched=true;
+    document.addEventListener('click',function(ev){
+      const next=ev.target.closest && ev.target.closest('#nextStep');
+      if(next && !pvIsValid()){
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        showPvError();
+      }
+      setTimeout(syncStepUi,0);
+      setTimeout(syncStepUi,80);
+    },true);
+    document.addEventListener('input',function(ev){
+      if(ev.target && ['noPv','unknownPv','solarShare'].includes(ev.target.id)){
+        const msg=byId('pvValidationMsg');
+        if(msg && pvIsValid()) msg.remove();
+      }
+      setTimeout(syncStepUi,0);
+    },true);
+    const observer=new MutationObserver(syncStepUi);
+    document.querySelectorAll('.screen').forEach(s=>observer.observe(s,{attributes:true,attributeFilter:['class']}));
+    syncStepUi();
+    setInterval(syncStepUi,1000);
+  }
+
+  async function imageToJpegDataUrl(input){
+    return new Promise(async function(resolve){
+      let src='';
+      if(!input) return resolve(null);
+      if(typeof input==='string') src=input;
+      else src=input.currentSrc || input.src || input.getAttribute?.('src') || '';
       if(!src) return resolve(null);
-      const img=new Image();
-      img.crossOrigin='anonymous';
-      img.onload=function(){
+
+      async function drawUrl(url){
+        return new Promise(function(done){
+          const img=new Image();
+          img.crossOrigin='anonymous';
+          img.onload=function(){
+            try{
+              const canvas=document.createElement('canvas');
+              const maxW=900;
+              const ratio=Math.min(1,maxW/img.naturalWidth);
+              canvas.width=Math.max(1,Math.round(img.naturalWidth*ratio));
+              canvas.height=Math.max(1,Math.round(img.naturalHeight*ratio));
+              const ctx=canvas.getContext('2d');
+              ctx.fillStyle='#f7faf8';
+              ctx.fillRect(0,0,canvas.width,canvas.height);
+              ctx.drawImage(img,0,0,canvas.width,canvas.height);
+              done(canvas.toDataURL('image/jpeg',0.9));
+            }catch(e){done(null)}
+          };
+          img.onerror=function(){done(null)};
+          img.src=url;
+        });
+      }
+
+      try{
+        const absolute=new URL(src,location.href).href;
         try{
-          const canvas=document.createElement('canvas');
-          const maxW=720;
-          const ratio=Math.min(1,maxW/img.naturalWidth);
-          canvas.width=Math.max(1,Math.round(img.naturalWidth*ratio));
-          canvas.height=Math.max(1,Math.round(img.naturalHeight*ratio));
-          const ctx=canvas.getContext('2d');
-          ctx.fillStyle='#f7faf8';
-          ctx.fillRect(0,0,canvas.width,canvas.height);
-          ctx.drawImage(img,0,0,canvas.width,canvas.height);
-          resolve(canvas.toDataURL('image/jpeg',0.88));
-        }catch(e){resolve(null)}
-      };
-      img.onerror=function(){resolve(null)};
-      try{img.src=new URL(src,location.href).href}catch(e){resolve(null)}
+          const response=await fetch(absolute,{cache:'no-store'});
+          if(response.ok){
+            const blob=await response.blob();
+            const objectUrl=URL.createObjectURL(blob);
+            const data=await drawUrl(objectUrl);
+            URL.revokeObjectURL(objectUrl);
+            if(data) return resolve(data);
+          }
+        }catch(e){}
+        const direct=await drawUrl(absolute);
+        return resolve(direct);
+      }catch(e){return resolve(null)}
     });
   }
 
@@ -94,8 +175,8 @@
     const evImg=document.querySelector('#reportEvVisual img.car-photo');
     const iceImg=document.querySelector('#reportIceVisual img.car-photo');
     const logo=await imageToJpegDataUrl('/assets/logopippo.png');
-    const evPhoto=await imageToJpegDataUrl(evImg&&evImg.getAttribute('src'));
-    const icePhoto=await imageToJpegDataUrl(iceImg&&iceImg.getAttribute('src'));
+    const evPhoto=await imageToJpegDataUrl(evImg);
+    const icePhoto=await imageToJpegDataUrl(iceImg);
 
     const doc=new jsPDF({unit:'mm',format:'a4'});
     doc.setFillColor(7,17,14);doc.rect(0,0,210,64,'F');
@@ -139,25 +220,30 @@
 
   function patchPdfButton(){
     const btn=byId('downloadPdf');
-    if(!btn || btn.dataset.eotPdfEnhanced==='1') return;
+    if(!btn) return;
     btn.dataset.eotPdfEnhanced='1';
     btn.onclick=function(ev){if(ev)ev.preventDefault(); enhancedPdf(); return false};
   }
 
   window.EOT_RESET_COOKIE_CHOICE=function(){try{localStorage.removeItem(STORAGE_KEY)}catch(e){} showBanner()};
 
-  document.addEventListener('DOMContentLoaded',function(){
+  function boot(){
     const choice=readChoice();
     if(!choice) showBanner();
     else if(choice==='accepted' && typeof window.EOT_ENABLE_ANALYTICS==='function') window.EOT_ENABLE_ANALYTICS();
-    const reset=document.getElementById('resetCookieChoice');
+    const reset=byId('resetCookieChoice');
     if(reset) reset.addEventListener('click',window.EOT_RESET_COOKIE_CHOICE);
     installFooter();
     loadGuideCatalog();
+    patchNavigation();
     patchPdfButton();
     setTimeout(patchPdfButton,1200);
     setTimeout(patchPdfButton,3000);
-  });
-  window.addEventListener('load',function(){installFooter();loadGuideCatalog();patchPdfButton();});
-  window.addEventListener('motornet:catalog-ready',function(){loadGuideCatalog();patchPdfButton();});
+    setTimeout(syncStepUi,500);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
+  else boot();
+  window.addEventListener('load',function(){installFooter();loadGuideCatalog();patchNavigation();patchPdfButton();syncStepUi();});
+  window.addEventListener('motornet:catalog-ready',function(){loadGuideCatalog();patchPdfButton();syncStepUi();});
 })();
