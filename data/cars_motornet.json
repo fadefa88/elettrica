@@ -16468,26 +16468,6 @@
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2734/allestimento/COR0557"
     },
     {
-      "id": "motornet_aa45112ef79468",
-      "category": "thermal",
-      "brand": "COR",
-      "model": "Motornet.it | auto | scheda modello | modello | 2734 | allestimento | COR0554",
-      "version": "Motornet.it | auto | scheda modello | modello | 2734 | allestimento | COR0554",
-      "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2734/allestimento/COR0554",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2734_allestimento_COR0554.webp"
-    },
-    {
-      "id": "motornet_ce36c9e2293de8",
-      "category": "thermal",
-      "brand": "COR",
-      "model": "Motornet.it | auto | scheda modello | modello | 2734 | allestimento | COR0555",
-      "version": "Motornet.it | auto | scheda modello | modello | 2734 | allestimento | COR0555",
-      "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2734/allestimento/COR0555",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2734_allestimento_COR0555.webp"
-    },
-    {
       "id": "motornet_1fd62162d582eb",
       "category": "thermal",
       "brand": "Corvette",
@@ -16516,26 +16496,6 @@
       "emissions_g_km": 377,
       "image_url": "assets/cars/motornet/Corvette_C8_Cabrio_5.5_V8_Z06_3LZ_Auto.webp",
       "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2659/allestimento/COR0557"
-    },
-    {
-      "id": "motornet_b551ab22ee21c2",
-      "category": "thermal",
-      "brand": "COR",
-      "model": "Motornet.it | auto | scheda modello | modello | 2659 | allestimento | COR0554",
-      "version": "Motornet.it | auto | scheda modello | modello | 2659 | allestimento | COR0554",
-      "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2659/allestimento/COR0554",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2659_allestimento_COR0554.webp"
-    },
-    {
-      "id": "motornet_81e3efcff98254",
-      "category": "thermal",
-      "brand": "COR",
-      "model": "Motornet.it | auto | scheda modello | modello | 2659 | allestimento | COR0555",
-      "version": "Motornet.it | auto | scheda modello | modello | 2659 | allestimento | COR0555",
-      "fuel": "benzina",
-      "source_url": "https://www.motornet.it/auto/scheda-modello/modello/2659/allestimento/COR0555",
-      "image_url": "assets/cars/motornet/Motornet.it_auto_scheda_modello_modello_2659_allestimento_COR0555.webp"
     },
     {
       "id": "motornet_9c96637cb26c80",
