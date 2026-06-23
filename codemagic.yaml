@@ -4,10 +4,9 @@ workflows:
     max_build_duration: 120
     instance_type: mac_mini_m2
 
-    # In Codemagic, create an App Store Connect API key integration with this exact name,
-    # or change this value to the name you choose in Codemagic UI.
+    # In Codemagic, this must match the App Store Connect API key integration name exactly.
     integrations:
-      app_store_connect: codemagic_app_store_connect
+      app_store_connect: "Luca De Fassi"
 
     environment:
       node: 20
