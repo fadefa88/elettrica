@@ -34,6 +34,12 @@
 /guida.html
   Cache-Control: no-cache
 
+/metodologia.html
+  Cache-Control: no-cache
+
+/privacy.html
+  Cache-Control: no-cache
+
 /sitemap.xml
   Cache-Control: no-cache
 
@@ -41,10 +47,10 @@
   Cache-Control: no-cache
 
 /*.js
-  Cache-Control: public, max-age=3600
+  Cache-Control: no-cache
 
 /*.css
-  Cache-Control: public, max-age=3600
+  Cache-Control: no-cache
 
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
