@@ -10,7 +10,9 @@ workflows:
 
     environment:
       node: 20
-      xcode: 16.4
+      # Apple now requires App Store uploads to be built with the iOS 26 SDK.
+      # Xcode 26 includes the iOS 26 SDK; Xcode 16.x builds are rejected by App Store Connect.
+      xcode: 26.4
       ios_signing:
         distribution_type: app_store
         bundle_identifier: it.elettricaotermica.app
