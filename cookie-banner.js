@@ -24,7 +24,7 @@
     banner.className='cookie-banner';
     banner.setAttribute('role','dialog');
     banner.setAttribute('aria-label','Preferenze cookie');
-    banner.innerHTML='<p><b>Cookie e analytics</b>Usiamo solo cookie tecnici e, se accetti, analytics aggregati. <a href="/privacy.html">Leggi privacy e cookie</a>.</p><div class="cookie-actions"><button type="button" class="ghost" data-cookie-choice="rejected">Rifiuta</button><button type="button" data-cookie-choice="accepted">Accetta analytics</button></div>';
+    banner.innerHTML='<p><b>Cookie e analytics</b>Usiamo solo cookie tecnici e, se accetti, analytics aggregati. <a href="/privacy">Leggi privacy e cookie</a>.</p><div class="cookie-actions"><button type="button" class="ghost" data-cookie-choice="rejected">Rifiuta</button><button type="button" data-cookie-choice="accepted">Accetta analytics</button></div>';
     document.body.appendChild(banner);
     banner.addEventListener('click',function(ev){const btn=ev.target.closest('[data-cookie-choice]'); if(btn) saveChoice(btn.getAttribute('data-cookie-choice'))});
     setTimeout(function(){banner.classList.add('is-visible')},250);
@@ -35,7 +35,7 @@
     if(!shell || document.querySelector('.site-footer')) return;
     const footer=document.createElement('footer');
     footer.className='site-footer';
-    footer.innerHTML='<div class="footer-brand"><span class="copyright-icon">©</span><span><span data-footer-years>'+currentYearLabel()+'</span> '+SITE_NAME+' · '+SITE_URL+'</span></div><div class="footer-links"><a href="/">Calcolatore</a><a href="/guida.html">Guida</a><a href="/auto-elettrica-o-termica.html">Elettrica o termica</a><a href="/calcolatore-auto-elettrica-termica.html">Calcolatore TCO</a><a href="/wallbox-auto-elettrica-casa.html">Wallbox</a><a href="/metodologia.html">Metodologia</a><a href="/privacy.html">Privacy</a></div>';
+    footer.innerHTML='<div class="footer-brand"><span class="copyright-icon">©</span><span><span data-footer-years>'+currentYearLabel()+'</span> '+SITE_NAME+' · '+SITE_URL+'</span></div><div class="footer-links"><a href="/">Calcolatore</a><a href="/guida">Guida</a><a href="/auto-elettrica-o-termica">Elettrica o termica</a><a href="/calcolatore-auto-elettrica-termica">Calcolatore TCO</a><a href="/wallbox-auto-elettrica-casa">Wallbox</a><a href="/metodologia">Metodologia</a><a href="/privacy">Privacy</a></div>';
     shell.appendChild(footer);
   }
 

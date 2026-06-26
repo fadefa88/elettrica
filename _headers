@@ -63,3 +63,33 @@
 
 /.github/*
   X-Robots-Tag: noindex, nofollow, nosnippet
+
+/guida
+  Cache-Control: no-cache
+
+/metodologia
+  Cache-Control: no-cache
+
+/privacy
+  Cache-Control: no-cache
+
+/auto-elettrica-o-termica
+  Cache-Control: no-cache
+
+/auto-elettrica-o-benzina
+  Cache-Control: no-cache
+
+/auto-elettrica-o-diesel
+  Cache-Control: no-cache
+
+/conviene-auto-elettrica
+  Cache-Control: no-cache
+
+/costo-auto-elettrica-vs-termica
+  Cache-Control: no-cache
+
+/calcolatore-auto-elettrica-termica
+  Cache-Control: no-cache
+
+/wallbox-auto-elettrica-casa
+  Cache-Control: no-cache
