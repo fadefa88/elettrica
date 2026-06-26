@@ -35,7 +35,7 @@
     if(!shell || document.querySelector('.site-footer')) return;
     const footer=document.createElement('footer');
     footer.className='site-footer';
-    footer.innerHTML='<div class="footer-brand"><span class="copyright-icon">©</span><span><span data-footer-years>'+currentYearLabel()+'</span> '+SITE_NAME+' · '+SITE_URL+'</span></div><div class="footer-links"><a href="/">Calcolatore</a><a href="/guida.html">Guida</a><a href="/metodologia.html">Metodologia</a><a href="/privacy.html">Privacy</a></div>';
+    footer.innerHTML='<div class="footer-brand"><span class="copyright-icon">©</span><span><span data-footer-years>'+currentYearLabel()+'</span> '+SITE_NAME+' · '+SITE_URL+'</span></div><div class="footer-links"><a href="/">Calcolatore</a><a href="/guida.html">Guida</a><a href="/auto-elettrica-o-termica.html">Elettrica o termica</a><a href="/calcolatore-auto-elettrica-termica.html">Calcolatore TCO</a><a href="/wallbox-auto-elettrica-casa.html">Wallbox</a><a href="/metodologia.html">Metodologia</a><a href="/privacy.html">Privacy</a></div>';
     shell.appendChild(footer);
   }
 
