@@ -4,25 +4,25 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Numero massimo di nuove auto da importare. Usa 0 per nessun limite'
+        description: 'Numero massimo di nuove auto da aggiungere. Usa 0 per tutte le nuove auto trovate'
         required: false
-        default: '0'
+        default: '50'
       brand_codes:
-        description: 'Test su marche specifiche, es. ABA,ROL. Vuoto = tutte'
+        description: 'Test su marche specifiche, es. ABA,ROL. Vuoto = tutte. COR resta sempre escluso'
         required: false
         default: ''
       delay:
         description: 'Secondi tra pagine Motornet'
         required: false
-        default: '4'
+        default: '2'
       download_images:
-        description: 'Scarica immagini Motornet nel repo'
+        description: 'Scarica immagini Motornet nel repo. Default false per sync leggero catalogo'
         required: false
-        default: 'true'
+        default: 'false'
         type: choice
         options:
-          - 'true'
           - 'false'
+          - 'true'
       remove_missing:
         description: 'Rimuovi dal catalogo le auto non più presenti nel listino Motornet. Attivo solo su scansione completa'
         required: false
@@ -40,9 +40,9 @@ on:
           - 'false'
           - 'true'
       max_removal_ratio:
-        description: 'Soglia massima rimozioni sul catalogo esistente, es. 0.25 = 25%'
+        description: 'Soglia massima rimozioni sul catalogo esistente, es. 0.10 = 10%'
         required: false
-        default: '0.25'
+        default: '0.10'
       min_active_links:
         description: 'Numero minimo link attivi richiesti prima di modificare il catalogo'
         required: false
@@ -80,15 +80,15 @@ jobs:
           pip install requests playwright
           python -m playwright install --with-deps chromium
 
-      - name: Daily sync Motornet catalogue
+      - name: Sync Motornet catalogue changes
         env:
-          LIMIT: ${{ github.event.inputs.limit || '0' }}
+          LIMIT: ${{ github.event.inputs.limit || '50' }}
           BRAND_CODES: ${{ github.event.inputs.brand_codes || '' }}
-          DELAY: ${{ github.event.inputs.delay || '4' }}
-          DOWNLOAD_IMAGES: ${{ github.event.inputs.download_images || 'true' }}
+          DELAY: ${{ github.event.inputs.delay || '2' }}
+          DOWNLOAD_IMAGES: ${{ github.event.inputs.download_images || 'false' }}
           REMOVE_MISSING: ${{ github.event.inputs.remove_missing || 'true' }}
           ALLOW_LARGE_REMOVAL: ${{ github.event.inputs.allow_large_removal || 'false' }}
-          MAX_REMOVAL_RATIO: ${{ github.event.inputs.max_removal_ratio || '0.25' }}
+          MAX_REMOVAL_RATIO: ${{ github.event.inputs.max_removal_ratio || '0.10' }}
           MIN_ACTIVE_LINKS: ${{ github.event.inputs.min_active_links || '100' }}
         run: |
           python scripts/sync_motornet_catalog.py \
@@ -125,7 +125,7 @@ jobs:
           python scripts/postprocess_motornet_catalog.py
           python scripts/derive_ev_battery_fields.py
           python scripts/slim_motornet_catalog.py --input data/cars_motornet.json --out data/cars_motornet.json
-          python scripts/normalize_motornet_image_urls.py --catalog data/cars_motornet.json --image-prefix assets/cars/motornet
+          python scripts/normalize_motornet_image_urls.py --catalog data/cars_motornet.json --image-prefix assets/cars/motornet --require-existing
           python -m json.tool data/cars_motornet.json > /dev/null
           python - <<'PY'
           import json
