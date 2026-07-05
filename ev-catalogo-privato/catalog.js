@@ -1,4 +1,7 @@
 (function(){
+  var css = '.car-main{display:flex;align-items:center;gap:12px;min-width:320px}.thumb{width:88px;height:58px;border-radius:12px;overflow:hidden;background:#eef4f0;border:1px solid #dfe7e2;display:flex;align-items:center;justify-content:center;flex:0 0 auto}.thumb img{width:100%;height:100%;object-fit:cover;display:block}.thumb.fallback{font-size:13px;font-weight:800;color:#0b7a4b;background:#eef8f2}@media(max-width:850px){.car-main{min-width:260px}.thumb{width:74px;height:50px}}';
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
   var statusEl = document.getElementById('status');
   function setStatus(msg, err){ statusEl.textContent = msg; statusEl.className = err ? 'status error' : 'status'; }
   setStatus('Script esterno avviato. Carico il catalogo...');
