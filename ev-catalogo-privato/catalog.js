@@ -33,6 +33,12 @@
   function batt(c){ return toNum(c.battery_kwh || c.batteria_kwh || c.battery); }
   function power(c){ return toNum(c.power_kw || c.potenza_kw || c.kw); }
   function source(c){ return txt(c.source_url || c.url || c.model_url || ''); }
+  function image(c){
+    var src = txt(c.image_url || c.image_local_path || c.image_source_url || '');
+    if (!src) return '';
+    if (/^(https?:|data:|\/)/i.test(src)) return src;
+    return '/' + src.replace(/^\.\//,'');
+  }
 
   function findArray(payload){
     if (Array.isArray(payload)) return payload;
@@ -74,11 +80,12 @@
       if (rmin && range(c) < rmin) return false;
       if (cmax && (!cons(c) || cons(c) > cmax)) return false;
       if (bmin && batt(c) < bmin) return false;
-      if ($('complete').value === 'yes' && (!price(c) || !cons(c) || !range(c))) return false;
+      if ($('complete').value === 'yes' && (!price(c) || !cons(c) || !range(c) || !batt(c))) return false;
       if ($('extreme').value === 'hide') {
         if (price(c) && (price(c)<5000 || price(c)>600000)) return false;
         if (cons(c) && (cons(c)<7 || cons(c)>40)) return false;
         if (range(c) && (range(c)<30 || range(c)>1000)) return false;
+        if (batt(c) && (batt(c)<5 || batt(c)>250)) return false;
       }
       return true;
     });
@@ -95,6 +102,13 @@
     render();
   }
 
+  function photoCell(c){
+    var img = image(c);
+    if (!img) return '<span class="thumb fallback">EV</span>';
+    return '<span class="thumb"><img src="'+esc(img)+'" alt="'+esc(name(c))+'" loading="lazy" onerror="this.parentElement.className=\'thumb fallback\';this.parentElement.innerHTML=\'EV\';"></span>';
+  }
+  function metric(v, suffix){ return v ? num.format(v) + suffix : '-'; }
+
   function render(){
     var psRaw = $('pageSize').value;
     var ps = psRaw === 'all' ? filtered.length || 1 : Number(psRaw || 100);
@@ -105,12 +119,12 @@
     var html = visible.map(function(c){
       var src = source(c);
       return '<tr>'+
-        '<td><b>'+esc(name(c))+'</b><br><small>'+esc(c.version || c.powertrain || '')+'</small></td>'+
+        '<td><div class="car-main">'+photoCell(c)+'<div><b>'+esc(name(c))+'</b><br><small>'+esc(c.version || c.powertrain || '')+'</small></div></div></td>'+
         '<td><span class="pill">'+(price(c)?money.format(price(c)):'-')+'</span></td>'+
-        '<td>'+(cons(c)?num.format(cons(c))+' kWh/100 km':'-')+'</td>'+
-        '<td>'+(range(c)?num.format(range(c))+' km':'-')+'</td>'+
-        '<td>'+(batt(c)?num.format(batt(c))+' kWh':'-')+'</td>'+
-        '<td>'+(power(c)?num.format(power(c))+' kW':'-')+'</td>'+
+        '<td>'+metric(cons(c),' kWh/100 km')+'</td>'+
+        '<td>'+metric(range(c),' km')+'</td>'+
+        '<td>'+metric(batt(c),' kWh')+'</td>'+
+        '<td>'+metric(power(c),' kW')+'</td>'+
         '<td>'+(src ? '<a class="src" target="_blank" rel="noopener" href="'+esc(src)+'">Motornet</a>' : '-')+'</td>'+
       '</tr>';
     }).join('');
