@@ -96,7 +96,7 @@
     const positive = v => { const x = n(v); return x > 0 ? x : 0; };
     const isEv = c => clean(c.category) === 'electric' || clean(c.fuel).toLowerCase() === 'elettrica';
     const textOf = c => [c.brand, c.model, c.version, c.powertrain, c.motor, c.engine].map(clean).join(' ').toLowerCase();
-    const imgOf = c => clean(c.image_url || c.image_local_path || c.image_source_url);
+    const imgOf = c => { const src = clean(c.image_url || c.image_local_path || c.image_source_url); if (!src) return ''; if (/^(https?:|data:|\/)/i.test(src)) return src; return '/' + src.replace(/^\.\//, ''); };
     const price = c => positive(c.price_eur);
     const cons = c => positive(c.consumption_kwh_100km);
     const range = c => positive(c.range_wltp_km);
