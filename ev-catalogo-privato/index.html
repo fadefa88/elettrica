@@ -52,7 +52,7 @@
           <div class="catalog-checks">
             <label><input id="onlyComplete" type="checkbox"> Solo righe con prezzo, consumo e WLTP</label>
             <label><input id="onlyImages" type="checkbox"> Solo con immagine</label>
-            <label><input id="hideExtreme" type="checkbox" checked> Escludi valori anomali evidenti</label>
+            <label><input id="hideExtreme" type="checkbox"> Escludi valori anomali evidenti</label>
           </div>
         </div>
       </section>
@@ -92,9 +92,25 @@
     let allCars = [], filtered = [], page = 1;
 
     const clean = v => String(v ?? '').replace(/\s+/g, ' ').trim();
-    const n = v => { const x = Number(v); return Number.isFinite(x) ? x : 0; };
+    function parseNumber(v){
+      if (typeof v === 'number') return Number.isFinite(v) ? v : 0;
+      let s = clean(v).replace(/[^0-9,.-]/g, '');
+      if (!s) return 0;
+      const hasComma = s.includes(','), hasDot = s.includes('.');
+      if (hasComma && hasDot) {
+        s = s.lastIndexOf(',') > s.lastIndexOf('.') ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+      } else if (hasComma) {
+        s = s.replace(',', '.');
+      } else if (hasDot) {
+        const parts = s.split('.');
+        if (parts.length > 1 && parts.at(-1).length === 3) s = parts.join('');
+      }
+      const x = Number(s);
+      return Number.isFinite(x) ? x : 0;
+    }
+    const n = parseNumber;
     const positive = v => { const x = n(v); return x > 0 ? x : 0; };
-    const isEv = c => clean(c.category) === 'electric' || clean(c.fuel).toLowerCase() === 'elettrica';
+    const isEv = c => ['electric','elettrica','ev'].includes(clean(c.category).toLowerCase()) || clean(c.fuel).toLowerCase() === 'elettrica';
     const textOf = c => [c.brand, c.model, c.version, c.powertrain, c.motor, c.engine].map(clean).join(' ').toLowerCase();
     const imgOf = c => { const src = clean(c.image_url || c.image_local_path || c.image_source_url); if (!src) return ''; if (/^(https?:|data:|\/)/i.test(src)) return src; return '/' + src.replace(/^\.\//, ''); };
     const price = c => positive(c.price_eur);
