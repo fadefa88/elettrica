@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-31T09:17:01.396883+00:00",
-  "status": "updated_mimit_csv_daily",
+  "updated_at": "2026-08-01T08:34:10.704480+00:00",
+  "status": "fallback_previous_values",
   "fuel": {
     "benzina": 1.992,
     "gasolio": 2.09,
